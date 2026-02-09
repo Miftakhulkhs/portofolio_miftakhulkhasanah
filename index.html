@@ -1,0 +1,2604 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miftakhul Khasanah - Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --secondary: #06b6d4;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --white: #ffffff;
+            --text: #334155;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.8rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary);
+        }
+
+        .nav-menu a.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Mobile Menu */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 0 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        .hero-text {
+            animation: fadeInLeft 0.8s ease-out;
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .hero-text h1 .name {
+            color: var(--primary);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-text p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Profile Image with Decorative Background */
+        .profile-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            animation: fadeInRight 0.8s ease-out;
+        }
+
+        .profile-wrapper {
+            position: relative;
+            width: 450px;
+            height: 450px;
+        }
+
+        /* Decorative Elements */
+        .decorative-circle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .circle-1 {
+            width: 200px;
+            height: 200px;
+            background: var(--primary);
+            top: -20px;
+            left: -20px;
+            animation-delay: 0s;
+        }
+
+        .circle-2 {
+            width: 150px;
+            height: 150px;
+            background: var(--secondary);
+            bottom: 20px;
+            right: -10px;
+            animation-delay: 1s;
+        }
+
+        .circle-3 {
+            width: 100px;
+            height: 100px;
+            background: var(--primary);
+            top: 50%;
+            right: -30px;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Profile Circle Container */
+        .profile-circle {
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.3);
+            border: 8px solid white;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .profile-circle:hover {
+            transform: translate(-50%, -50%) scale(1.05);
+            box-shadow: 0 25px 70px rgba(14, 165, 233, 0.4);
+        }
+
+        .profile-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Floating Badge */
+        .floating-badge {
+            position: absolute;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            z-index: 10;
+            animation: floatBadge 3s ease-in-out infinite;
+        }
+
+        .badge-available {
+            top: 30px;
+            right: 0;
+        }
+
+        @keyframes floatBadge {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .badge-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .badge-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .badge-text strong {
+            color: var(--dark);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .badge-text span {
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+
+        /* Section Styling */
+        section {
+            padding: 5rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-label {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--primary);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 3rem;
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .about-content:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .about-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .education-card {
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .education-card:hover {
+            background: rgba(14, 165, 233, 0.05);
+        }
+
+        .education-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .education-header h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .gpa-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .education-details p {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .education-details strong {
+            color: var(--primary);
+        }
+
+        /* Experience Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--primary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: slideInRight 0.6s ease-out forwards;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .timeline-item:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .timeline-item:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.15);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -3.4rem;
+            top: 2rem;
+            width: 16px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 3px var(--light-gray);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-header h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-company {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+
+        .timeline-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .timeline-date {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .timeline-item ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .timeline-item li {
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            color: var(--text);
+        }
+
+        .timeline-item li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Projects */
+        .project-filters {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.5rem;
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.2);
+        }
+
+        /* Projects Container with Horizontal Scroll */
+        .projects-container {
+            display: none;
+            position: relative;
+        }
+
+        .projects-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .projects-wrapper {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 1rem 0;
+            margin: 0 -2rem;
+            padding-left: 2rem;
+            padding-right: 2rem;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .projects-wrapper::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .projects-wrapper::-webkit-scrollbar-track {
+            background: var(--light-gray);
+            border-radius: 10px;
+        }
+
+        .projects-wrapper::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .projects-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Projects Grid - 2 Rows Layout */
+        .projects-grid {
+            display: grid;
+            grid-template-rows: repeat(2, 1fr);
+            grid-auto-flow: column;
+            gap: 2rem;
+            width: max-content;
+        }
+
+        /* Graphic Design - Square Cards */
+        .projects-grid.graphic-grid {
+            grid-template-columns: repeat(auto-fit, 350px);
+        }
+
+        /* UI/UX & Web - Wide Cards */
+        .projects-grid.web-grid,
+        .projects-grid.uiux-grid {
+            grid-template-columns: repeat(auto-fit, 500px);
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.2);
+        }
+
+        /* Carousel - Square (1:1) for Graphic Design */
+        .project-carousel.square {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
+            overflow: hidden;
+        }
+
+        /* Carousel - Wide (16:9) for Web/UI */
+        .project-carousel.wide {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            overflow: hidden;
+        }
+
+        .carousel-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light-gray);
+            position: relative;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Image Zoom on Click */
+        .carousel-slide img {
+            cursor: pointer;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-dot.active {
+            background: white;
+            width: 24px;
+            border-radius: 5px;
+        }
+
+        .carousel-arrows {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+        }
+
+        .project-card:hover .carousel-arrows {
+            opacity: 1;
+        }
+
+        .carousel-arrow {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .carousel-arrow:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .project-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-info h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: var(--dark);
+        }
+
+        .project-info p {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            flex-grow: 1;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tag {
+            padding: 0.4rem 0.8rem;
+            background: rgba(14, 165, 233, 0.1);
+            color: var(--primary);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tag:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Image Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .image-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-image-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-image-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -3rem;
+            right: 0;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--dark);
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--primary);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-category {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .skill-category:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .skill-category:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .skill-category:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .skill-category:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .skill-category:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 35px rgba(14, 165, 233, 0.2);
+        }
+
+        .skill-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .skill-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .skill-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .skill-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .skill-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .skill-item:hover {
+            background: rgba(14, 165, 233, 0.1);
+            transform: translateX(8px);
+        }
+
+        .skill-item-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .skill-item-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .skill-item-icon i {
+            font-size: 1.8rem;
+        }
+
+        .skill-item span {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        /* Certifications */
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .cert-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .cert-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.25);
+        }
+
+        .cert-preview {
+            width: 100%;
+            height: 200px;
+            background: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cert-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(14, 165, 233, 0.1), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .cert-card:hover .cert-preview::before {
+            transform: rotate(45deg);
+        }
+
+        .cert-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cert-view-icon {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .cert-card:hover .cert-view-icon {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .cert-info {
+            padding: 1.5rem;
+        }
+
+        .cert-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .cert-issuer {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .cert-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .cert-details {
+            color: var(--text);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Certificate Modal */
+        .cert-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .cert-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            max-width: 1000px;
+            max-height: 90vh;
+            position: relative;
+            animation: zoomIn 0.3s ease;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .contact-section:hover {
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .contact-left h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            color: var(--dark);
+        }
+
+        .contact-left .highlight {
+            color: var(--primary);
+        }
+
+        .contact-left p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .social-link:hover {
+            background: var(--primary-dark);
+            transform: translateY(-5px) rotate(5deg);
+            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+        }
+
+        .contact-methods {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .contact-method {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem;
+            background: var(--light-gray);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-method:hover {
+            background: rgba(14, 165, 233, 0.05);
+            transform: translateX(8px);
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: white;
+            font-size: 1.3rem;
+        }
+
+        .contact-details h4 {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+        }
+
+        .contact-details p,
+        .contact-details a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .contact-details a:hover {
+            color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2.5rem 0;
+            margin-top: 3rem;
+            color: var(--gray);
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 0.95rem;
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .scroll-top.show {
+            display: flex;
+        }
+
+        .scroll-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background-color: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(10px);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+                padding: 2rem 0;
+                gap: 1.5rem;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .hero-text {
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .profile-wrapper {
+                width: 350px;
+                height: 350px;
+            }
+
+            .profile-circle {
+                width: 300px;
+                height: 300px;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid.graphic-grid {
+                grid-template-columns: repeat(auto-fit, 300px);
+            }
+
+            .projects-grid.web-grid,
+            .projects-grid.uiux-grid {
+                grid-template-columns: repeat(auto-fit, 400px);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .hero {
+                padding: 100px 0 40px;
+            }
+
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .profile-wrapper {
+                width: 280px;
+                height: 280px;
+            }
+
+            .profile-circle {
+                width: 250px;
+                height: 250px;
+            }
+
+            .floating-badge {
+                padding: 0.8rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .timeline {
+                padding-left: 2rem;
+            }
+
+            .timeline-item {
+                padding: 1.5rem;
+            }
+
+            .timeline-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .contact-section {
+                padding: 2rem;
+            }
+
+            .contact-left h2 {
+                font-size: 2rem;
+            }
+
+            .projects-grid.graphic-grid {
+                grid-template-columns: repeat(auto-fit, 280px);
+            }
+
+            .projects-grid.web-grid,
+            .projects-grid.uiux-grid {
+                grid-template-columns: repeat(auto-fit, 320px);
+            }
+
+            .projects-wrapper {
+                margin: 0 -1rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">MK</div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#certifications">Certifications</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Hi, I'm <span class="name">Miftakhul Khasanah</span></h1>
+                    <div class="hero-subtitle">Information System Graduate</div>
+                    <p>Passionate about data management, system analysis, and web development. Currently participating
+                        in the Kemnaker
+                        internship program at PT IDSurvey (Persero) as an Officer ISPB, gaining hands-on experience and
+                        contributing to
+                        information system development.</p>
+                    <div class="hero-buttons">
+                        <a href="#projects" class="btn btn-primary">
+                            View Projects
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                        <a href="#contact" class="btn btn-secondary">Contact Me</a>
+                    </div>
+                </div>
+
+                <div class="profile-image">
+                    <div class="profile-wrapper">
+                        <!-- Decorative Circles -->
+                        <div class="decorative-circle circle-1"></div>
+                        <div class="decorative-circle circle-2"></div>
+                        <div class="decorative-circle circle-3"></div>
+
+                        <!-- Profile Circle -->
+                        <div class="profile-circle">
+                            <img src="Images/foto_profil.jpg" alt="Miftakhul Khasanah">
+                        </div>
+
+                        <!-- Floating Badge -->
+                        <div class="floating-badge badge-available">
+                            <div class="badge-icon">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                            <div class="badge-text">
+                                <strong>Available</strong>
+                                <span>for opportunities</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">About Me</span>
+                <h2>Personal Profile</h2>
+                <p>Background, education, and career objectives</p>
+            </div>
+
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Lulusan S1 Sistem Informasi dari Universitas Teknologi Yogyakarta dengan pengalaman di bidang
+                        manajemen data, analisis sistem, dan pengembangan aplikasi berbasis web.</p>
+                    <p>Terbiasa menyusun dokumentasi proses bisnis, melakukan pengujian sistem, dan mendukung kegiatan
+                        administrasi. Mampu bekerja mandiri maupun dalam tim, komunikatif, teliti, disiplin, dan
+                        adaptif.</p>
+                    <p>Saya mencari peluang karir untuk terus berkembang, berinovasi, dan berkolaborasi dalam
+                        menciptakan solusi inovatif untuk tantangan bisnis.</p>
+                </div>
+
+                <div class="education-card">
+                    <div class="education-header">
+                        <h3>PENDIDIKAN</h3>
+                        <div class="gpa-badge">IPK: 3.88</div>
+                    </div>
+                    <div class="education-details">
+                        <p><strong>Universitas Teknologi Yogyakarta</strong></p>
+                        <p>S1 Sistem Informasi</p>
+                        <p>2021 - 2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">My Journey</span>
+                <h2>Work Experience</h2>
+                <p>Professional experiences and contributions</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <div>
+                            <h3>Officer ISPB (Integrasi Sistem & Proses Bisnis)</h3>
+                            <div class="timeline-company">
+                                PT IDSurvey (Persero)
+                            </div>
+                        </div>
+                        <span class="timeline-badge">INTERNSHIP</span>
+                    </div>
+
+                    <div class="timeline-date">November 2024 – Mei 2026</div>
+
+                    <ul>
+                        <li>Membangun sistem Activity Record Divisi ISPB dari tahap perancangan hingga implementasi</li>
+                        <li>Menyusun manual book (user guide) sebagai panduan penggunaan sistem</li>
+                        <li>Melakukan pengujian fungsional sistem Activity Record</li>
+                        <li>Membantu pembuatan desain kegiatan pada Divisi ISPB</li>
+                        <li>Mengelola dan membantu pengarsipan dokumen pendukung divisi</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <div>
+                            <h3>Asisten Dosen Mata Kuliah</h3>
+                            <div class="timeline-company">Universitas Teknologi Yogyakarta</div>
+                        </div>
+                    </div>
+                    <div class="timeline-date">September 2024 - Januari 2025</div>
+                    <ul>
+                        <li>Mendampingi dosen dalam praktikum mata kuliah Pemrograman Berorientasi Objek.</li>
+                        <li>Mengelola dan menyiapkan dokumen administrasi untuk mendukung kegiatan kampus.</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-header">
+                        <div>
+                            <h3>Asisten Akreditasi Kampus</h3>
+                            <div class="timeline-company">Universitas Teknologi Yogyakarta</div>
+                        </div>
+                    </div>
+                    <div class="timeline-date">September 2024 - Januari 2025</div>
+                    <ul>
+                        <li>Mengumpulkan data mahasiswa dan memverifikasi bukti pendukung akreditasi kampus.</li>
+                        <li>Menyusun dan memastikan kelengkapan dokumen akreditasi.</li>
+                        <li>Berkoordinasi antarbagian untuk kelancaran proses akreditasi.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Portfolio</span>
+                <h2>Featured Projects</h2>
+                <p>A showcase of my work across different disciplines</p>
+            </div>
+
+            <div class="project-filters">
+                <button class="filter-btn active" onclick="showProjects('design')">
+                    <i class="bi bi-palette"></i> Graphic Design
+                </button>
+                <button class="filter-btn" onclick="showProjects('uiux')">
+                    <i class="bi bi-layout-text-window-reverse"></i> UI/UX Design
+                </button>
+                <button class="filter-btn" onclick="showProjects('web')">
+                    <i class="bi bi-code-slash"></i> Web Development
+                </button>
+            </div>
+
+            <!-- Graphic Design Projects -->
+            <div id="design" class="projects-container active">
+                <div class="projects-wrapper">
+                    <div class="projects-grid graphic-grid">
+
+                        <!-- 1. GREEN SAFE & HEALTH -->
+                        <div class="project-card">
+                            <div class="project-carousel square" data-carousel="0">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide">
+                                        <img src="Images/GSH1.png" alt="Green Safe & Health 1"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <img src="Images/GSH2.png" alt="Green Safe & Health 2"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                </div>
+                                <div class="carousel-arrows">
+                                    <button class="carousel-arrow" onclick="prevSlide(0)">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button class="carousel-arrow" onclick="nextSlide(0)">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="carousel-nav">
+                                    <span class="carousel-dot active" onclick="goToSlide(0,0)"></span>
+                                    <span class="carousel-dot" onclick="goToSlide(0,1)"></span>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <h3>Green Safe & Health</h3>
+                                <p>Infografis kampanye HSE & ESG: aman, sehat, dan berkelanjutan.</p>
+                                <div class="project-tags">
+                                    <span class="tag">Canva</span>
+                                    <span class="tag">Infographic</span>
+                                    <span class="tag">HSE</span>
+                                    <span class="tag">ESG</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Panduan Keselamatan Tim Kunjungan Kerja -->
+                        <div class="project-card">
+                            <div class="project-carousel square" data-carousel="1">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide">
+                                        <img src="Images/panduankeselamatan1.png" alt="Panduan Keselamatan 1"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <img src="Images/panduankeselamatan2.png" alt="Panduan Keselamatan 2"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                </div>
+                                <div class="carousel-arrows">
+                                    <button class="carousel-arrow" onclick="prevSlide(1)">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button class="carousel-arrow" onclick="nextSlide(1)">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="carousel-nav">
+                                    <span class="carousel-dot active" onclick="goToSlide(1,0)"></span>
+                                    <span class="carousel-dot" onclick="goToSlide(1,1)"></span>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <h3>Panduan Keselamatan Tim Kunjungan Kerja ke Lokasi Kebencanaan</h3>
+                                <p>Safety guideline untuk persiapan, pelaksanaan, dan pasca kunjungan kerja.</p>
+                                <div class="project-tags">
+                                    <span class="tag">Canva</span>
+                                    <span class="tag">Infographic</span>
+                                    <span class="tag">Safety</span>
+                                    <span class="tag">Disaster</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Safe Holiday Season -->
+                        <div class="project-card">
+                            <div class="project-carousel square" data-carousel="2">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide">
+                                        <img src="Images/safetyholidayseason1.png" alt="Safe Holiday Season 1"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <img src="Images/safetyholidayseason2.png" alt="Safe Holiday Season 2"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                </div>
+                                <div class="carousel-arrows">
+                                    <button class="carousel-arrow" onclick="prevSlide(2)">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button class="carousel-arrow" onclick="nextSlide(2)">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="carousel-nav">
+                                    <span class="carousel-dot active" onclick="goToSlide(2,0)"></span>
+                                    <span class="carousel-dot" onclick="goToSlide(2,1)"></span>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <h3>Safe Holiday Season</h3>
+                                <p>Kampanye keselamatan berkendara dan perjalanan saat libur akhir tahun.</p>
+                                <div class="project-tags">
+                                    <span class="tag">Canva</span>
+                                    <span class="tag">Campaign</span>
+                                    <span class="tag">Safety</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Panduan Perilaku HSE Golden Rules -->
+                        <div class="project-card">
+                            <div class="project-carousel square" data-carousel="3">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide">
+                                        <img src="Images/panduanhse1.png" alt="HSE Golden Rules 1"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <img src="Images/panduanhse2.png" alt="HSE Golden Rules 2"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                </div>
+                                <div class="carousel-arrows">
+                                    <button class="carousel-arrow" onclick="prevSlide(3)">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button class="carousel-arrow" onclick="nextSlide(3)">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="carousel-nav">
+                                    <span class="carousel-dot active" onclick="goToSlide(3,0)"></span>
+                                    <span class="carousel-dot" onclick="goToSlide(3,1)"></span>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <h3>Panduan Perilaku HSE Golden Rules</h3>
+                                <p>Visualisasi perilaku CARE (Commitment, Aware, Respect, Intervene).</p>
+                                <div class="project-tags">
+                                    <span class="tag">Canva</span>
+                                    <span class="tag">HSE</span>
+                                    <span class="tag">Infographic</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Bulan K3 Nasional -->
+                        <div class="project-card">
+                            <div class="project-carousel square" data-carousel="4">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide">
+                                        <img src="Images/BKN1.png" alt="Bulan K3 Nasional 1"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <img src="Images/BKN2.png" alt="Bulan K3 Nasional 2"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                </div>
+                                <div class="carousel-arrows">
+                                    <button class="carousel-arrow" onclick="prevSlide(4)">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button class="carousel-arrow" onclick="nextSlide(4)">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="carousel-nav">
+                                    <span class="carousel-dot active" onclick="goToSlide(4,0)"></span>
+                                    <span class="carousel-dot" onclick="goToSlide(4,1)"></span>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <h3>Bulan K3 Nasional</h3>
+                                <p>Kampanye Bulan K3 Nasional dengan tema safety leadership.</p>
+                                <div class="project-tags">
+                                    <span class="tag">Canva</span>
+                                    <span class="tag">Campaign</span>
+                                    <span class="tag">K3</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEMPLATE: Copy this block to add new Graphic Design projects -->
+                        <!--
+                        <div class="project-card">
+                            <div class="project-carousel square" data-carousel="5">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide">
+                                        <img src="Images/new-project1.png" alt="New Project 1" onclick="openImageModal(this.src)">
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <img src="Images/new-project2.png" alt="New Project 2" onclick="openImageModal(this.src)">
+                                    </div>
+                                </div>
+                                <div class="carousel-arrows">
+                                    <button class="carousel-arrow" onclick="prevSlide(5)">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button class="carousel-arrow" onclick="nextSlide(5)">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="carousel-nav">
+                                    <span class="carousel-dot active" onclick="goToSlide(5,0)"></span>
+                                    <span class="carousel-dot" onclick="goToSlide(5,1)"></span>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <h3>Project Title</h3>
+                                <p>Project description here.</p>
+                                <div class="project-tags">
+                                    <span class="tag">Tag1</span>
+                                    <span class="tag">Tag2</span>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- UI/UX Design Projects -->
+            <div id="uiux" class="projects-container">
+                <div class="projects-wrapper">
+                    <div class="projects-grid uiux-grid">
+
+                        <div class="project-card">
+                            <div class="project-carousel wide" data-carousel="100">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide">
+                                        <img src="Images/finalproject1.png" alt="Final Project"
+                                            onclick="openImageModal(this.src)">
+                                    </div>
+                                </div>
+                                <div class="carousel-nav">
+                                    <span class="carousel-dot active" onclick="goToSlide(100, 0)"></span>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <h3>Project UI/UX Design</h3>
+                                <p>Tambahkan deskripsi project UI/UX design Anda di sini.</p>
+                                <div class="project-tags">
+                                    <span class="tag">Figma</span>
+                                    <span class="tag">UI/UX</span>
+                                    <span class="tag">Design</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEMPLATE: Copy this block to add new UI/UX projects -->
+                        <!--
+                        <div class="project-card">
+                            <div class="project-carousel wide" data-carousel="101">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide">
+                                        <img src="Images/uiux-project1.png" alt="UI/UX Project" onclick="openImageModal(this.src)">
+                                    </div>
+                                </div>
+                                <div class="carousel-nav">
+                                    <span class="carousel-dot active" onclick="goToSlide(101, 0)"></span>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <h3>Project Title</h3>
+                                <p>Project description here.</p>
+                                <div class="project-tags">
+                                    <span class="tag">Figma</span>
+                                    <span class="tag">UI/UX</span>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Web Development Projects -->
+            <div id="web" class="projects-container">
+                <div class="projects-wrapper">
+                    <div class="projects-grid web-grid">
+
+                        <div class="project-card">
+                            <div class="project-carousel wide" data-carousel="200">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide">
+                                        <div
+                                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: var(--light-gray); color: var(--gray); font-weight: 600; gap: 1rem;">
+                                            <i class="bi bi-laptop" style="font-size: 3rem;"></i>
+                                            Dashboard Screenshot
+                                        </div>
+                                    </div>
+                                    <div class="carousel-slide">
+                                        <div
+                                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: var(--light-gray); color: var(--gray); font-weight: 600; gap: 1rem;">
+                                            <i class="bi bi-list-task" style="font-size: 3rem;"></i>
+                                            Features Screenshot
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="carousel-arrows">
+                                    <button class="carousel-arrow" onclick="prevSlide(200)">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button class="carousel-arrow" onclick="nextSlide(200)">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="carousel-nav">
+                                    <span class="carousel-dot active" onclick="goToSlide(200, 0)"></span>
+                                    <span class="carousel-dot" onclick="goToSlide(200, 1)"></span>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <h3>Activity Record System</h3>
+                                <p>Web-based activity tracking untuk ID Survey dengan Laravel, MySQL, dan dashboard
+                                    monitoring.</p>
+                                <div class="project-tags">
+                                    <span class="tag">Laravel</span>
+                                    <span class="tag">MySQL</span>
+                                    <span class="tag">Bootstrap</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TEMPLATE: Copy this block to add new Web projects -->
+                        <!--
+                        <div class="project-card">
+                            <div class="project-carousel wide" data-carousel="201">
+                                <div class="carousel-track">
+                                    <div class="carousel-slide">
+                                        <img src="Images/web-project1.png" alt="Web Project" onclick="openImageModal(this.src)">
+                                    </div>
+                                </div>
+                                <div class="carousel-nav">
+                                    <span class="carousel-dot active" onclick="goToSlide(201, 0)"></span>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <h3>Project Title</h3>
+                                <p>Project description here.</p>
+                                <div class="project-tags">
+                                    <span class="tag">Laravel</span>
+                                    <span class="tag">MySQL</span>
+                                </div>
+                            </div>
+                        </div>
+                        -->
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Expertise</span>
+                <h2>Skills & Technologies</h2>
+                <p>Tools and technologies I work with professionally</p>
+            </div>
+
+            <div class="skills-grid">
+
+                <!-- 1. Web & Database Development -->
+                <div class="skill-category">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <i class="bi bi-code-slash"></i>
+                        </div>
+                        <h3>Web & Database Development</h3>
+                    </div>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
+                                    alt="HTML">
+                            </div>
+                            <span>HTML</span>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+                                    alt="CSS">
+                            </div>
+                            <span>CSS</span>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg"
+                                    alt="Laravel">
+                            </div>
+                            <span>Laravel</span>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <i class="bi bi-database" style="color:var(--primary);"></i>
+                            </div>
+                            <span>SQL</span>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+                                    alt="MySQL">
+                            </div>
+                            <span>MySQL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Data Management & Office -->
+                <div class="skill-category">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <i class="bi bi-table"></i>
+                        </div>
+                        <h3>Data Management & Office</h3>
+                    </div>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <i class="bi bi-file-earmark-excel" style="color:#217346;"></i>
+                            </div>
+                            <span>Microsoft Excel</span>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <i class="bi bi-microsoft" style="color:#D83B01;"></i>
+                            </div>
+                            <span>Microsoft Office</span>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+                                    alt="Google">
+                            </div>
+                            <span>Google Workspace</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Design & System Modelling -->
+                <div class="skill-category">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <i class="bi bi-palette"></i>
+                        </div>
+                        <h3>Design & System Modelling</h3>
+                    </div>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg"
+                                    alt="Figma">
+                            </div>
+                            <span>Figma</span>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/canva/canva-original.svg"
+                                    alt="Canva">
+                            </div>
+                            <span>Canva</span>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <i class="bi bi-diagram-3" style="color:var(--primary);"></i>
+                            </div>
+                            <span>Draw.io</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Collaboration & Project Tools -->
+                <div class="skill-category">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <i class="bi bi-kanban"></i>
+                        </div>
+                        <h3>Collaboration & Project Tools</h3>
+                    </div>
+                    <div class="skill-items">
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+                                    alt="GitHub">
+                            </div>
+                            <span>GitHub</span>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-item-icon">
+                                <i class="bi bi-app-indicator" style="color:#000000;"></i>
+                            </div>
+                            <span>Notion</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications -->
+    <section id="certifications">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Learning</span>
+                <h2>Certifications</h2>
+                <p>Professional training and development</p>
+            </div>
+
+            <div class="cert-grid">
+                <!-- Certificate 1 -->
+                <div class="cert-card" onclick="openCert('cert1.jpg')">
+                    <div class="cert-preview">
+                        <!-- <img src="cert-1-preview.jpg" alt="Certificate"> -->
+                        <div class="cert-view-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="cert-info">
+                        <h3>Microsoft Excel Basic</h3>
+                        <div class="cert-issuer">MySkill</div>
+                        <div class="cert-date">November 2025</div>
+                        <div class="cert-details">Formula dasar, data cleansing, formatting, aggregate data, dan
+                            conditional if-else.</div>
+                    </div>
+                </div>
+
+                <!-- Certificate 2 -->
+                <div class="cert-card" onclick="openCert('cert2.jpg')">
+                    <div class="cert-preview">
+                        <!-- <img src="cert-2-preview.jpg" alt="Certificate"> -->
+                        <div class="cert-view-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="cert-info">
+                        <h3>Belajar Dasar Manajemen Proyek</h3>
+                        <div class="cert-issuer">Dicoding Indonesia</div>
+                        <div class="cert-date">Juli 2023 - Juli 2026</div>
+                        <div class="cert-details">Metodologi Waterfall, Agile, Lean, Six Sigma, dan peran PMO.</div>
+                    </div>
+                </div>
+
+                <!-- TEMPLATE: Copy this block to add new certificates -->
+                <!--
+                <div class="cert-card" onclick="openCert('cert3.jpg')">
+                    <div class="cert-preview">
+                        <div class="cert-view-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="cert-info">
+                        <h3>Certificate Title</h3>
+                        <div class="cert-issuer">Issuing Organization</div>
+                        <div class="cert-date">Month Year</div>
+                        <div class="cert-details">Certificate description here.</div>
+                    </div>
+                </div>
+                -->
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificate Modal -->
+    <div class="cert-modal" id="certModal" onclick="closeModal()">
+        <div class="modal-content">
+            <button class="modal-close">×</button>
+            <img id="certImage" src="" alt="Certificate">
+        </div>
+    </div>
+
+    <!-- Image Modal for Project Images -->
+    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+        <div class="modal-image-content">
+            <button class="modal-close">×</button>
+            <img id="modalImage" src="" alt="Project Image">
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Contact</span>
+                <h2>Get In Touch</h2>
+                <p>Feel free to reach out for collaboration or opportunities</p>
+            </div>
+
+            <div class="contact-section">
+                <div class="contact-grid">
+                    <div class="contact-left">
+                        <h2>Let's Work <span class="highlight">Together!</span></h2>
+                        <p>I'm always interested in hearing about new projects and opportunities. Whether you have a
+                            question or just want to say hi, feel free to reach out!</p>
+
+                        <div class="social-links">
+                            <a href="https://www.linkedin.com/in/miftakhulkhs" target="_blank" class="social-link"
+                                title="LinkedIn">
+                                <i class="bi bi-linkedin"></i>
+                            </a>
+                            <a href="mailto:Miftakhulkhasanah26@gmail.com" class="social-link" title="Email">
+                                <i class="bi bi-envelope"></i>
+                            </a>
+                            <a href="https://github.com/miftakhulkhs" target="_blank" class="social-link"
+                                title="GitHub">
+                                <i class="bi bi-github"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Email</h4>
+                                <p><a href="mailto:Miftakhulkhasanah26@gmail.com">Miftakhulkhasanah26@gmail.com</a></p>
+                            </div>
+                        </div>
+
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <i class="bi bi-telephone"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Phone</h4>
+                                <p>+62 816-4246-491</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-method">
+                            <div class="contact-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div class="contact-details">
+                                <h4>Location</h4>
+                                <p>Cilacap, Jawa Tengah</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Miftakhul Khasanah. Crafted with passion & innovation.</p>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-top" onclick="scrollToTop()">
+        <i class="bi bi-arrow-up"></i>
+    </div>
+
+    <script>
+        // Mobile Menu Toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Project Filters
+        function showProjects(category) {
+            document.querySelectorAll('.projects-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(category).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Carousel Management
+        const carousels = [];
+
+        function initCarousels() {
+            document.querySelectorAll('.project-carousel').forEach((carousel, index) => {
+                const carouselIndex = parseInt(carousel.getAttribute('data-carousel'));
+                const slides = carousel.querySelectorAll('.carousel-slide');
+                carousels[carouselIndex] = {
+                    current: 0,
+                    total: slides.length,
+                    track: carousel.querySelector('.carousel-track'),
+                    dots: carousel.querySelectorAll('.carousel-dot')
+                };
+                updateCarousel(carouselIndex);
+            });
+        }
+
+        function updateCarousel(index) {
+            const carousel = carousels[index];
+            if (!carousel) return;
+
+            carousel.track.style.transform = `translateX(-${carousel.current * 100}%)`;
+
+            carousel.dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === carousel.current);
+            });
+        }
+
+        function nextSlide(index) {
+            const carousel = carousels[index];
+            if (!carousel) return;
+
+            carousel.current = (carousel.current + 1) % carousel.total;
+            updateCarousel(index);
+        }
+
+        function prevSlide(index) {
+            const carousel = carousels[index];
+            if (!carousel) return;
+
+            carousel.current = (carousel.current - 1 + carousel.total) % carousel.total;
+            updateCarousel(index);
+        }
+
+        function goToSlide(carouselIndex, slideIndex) {
+            const carousel = carousels[carouselIndex];
+            if (!carousel || slideIndex < 0 || slideIndex >= carousel.total) return;
+
+            carousel.current = slideIndex;
+            updateCarousel(carouselIndex);
+        }
+
+        // Image Modal for Projects
+        function openImageModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            modalImage.src = imageSrc;
+            modal.classList.add('active');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+
+        // Certificate Modal
+        function openCert(imageSrc) {
+            const modal = document.getElementById('certModal');
+            const certImage = document.getElementById('certImage');
+            certImage.src = imageSrc;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('certModal').classList.remove('active');
+        }
+
+        // Scroll to Top
+        const scrollTopBtn = document.querySelector('.scroll-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Navigation Active State
+        document.addEventListener('DOMContentLoaded', function () {
+            initCarousels();
+
+            const navLinks = document.querySelectorAll('.nav-menu a');
+            const sections = document.querySelectorAll('section');
+
+            function updateActiveNav() {
+                let current = '';
+                const scrollPos = window.scrollY + 100;
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+
+                    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', updateActiveNav);
+
+            // Smooth Scroll
+            navLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 70,
+                            behavior: 'smooth'
+                        });
+
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        this.classList.add('active');
+                    }
+                });
+            });
+
+            updateActiveNav();
+        });
+    </script>
+</body>
+
+</html>
