@@ -671,7 +671,7 @@
             box-shadow: 0 5px 15px rgba(14, 165, 233, 0.2);
         }
 
-        /* Projects Container with Horizontal Scroll */
+        /* Projects Container */
         .projects-container {
             display: none;
             position: relative;
@@ -693,32 +693,9 @@
         }
 
         .projects-wrapper {
-            overflow-x: auto;
-            overflow-y: hidden;
+            position: relative;
+            overflow: hidden;
             padding: 1rem 0;
-            margin: 0 -2rem;
-            padding-left: 2rem;
-            padding-right: 2rem;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .projects-wrapper::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .projects-wrapper::-webkit-scrollbar-track {
-            background: var(--light-gray);
-            border-radius: 10px;
-        }
-
-        .projects-wrapper::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
-
-        .projects-wrapper::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
         }
 
         /* Projects Grid - 2 Rows Layout */
@@ -727,6 +704,7 @@
             grid-template-rows: repeat(2, 1fr);
             grid-auto-flow: column;
             gap: 2rem;
+            transition: transform 0.4s ease;
             width: max-content;
         }
 
@@ -739,6 +717,40 @@
         .projects-grid.web-grid,
         .projects-grid.uiux-grid {
             grid-template-columns: repeat(auto-fit, 500px);
+        }
+
+        /* Navigation Buttons for Projects */
+        .project-nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .project-nav-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .project-nav-btn:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: scale(1.1);
+        }
+
+        .project-nav-btn:disabled {
+            background: var(--gray);
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .project-card {
@@ -924,6 +936,7 @@
             align-items: center;
             justify-content: center;
             padding: 2rem;
+            overflow: auto;
         }
 
         .image-modal.active {
@@ -932,10 +945,24 @@
         }
 
         .modal-image-content {
-            max-width: 90vw;
-            max-height: 90vh;
+            max-width: 80vw;
+            max-height: 85vh;
             position: relative;
             animation: zoomIn 0.3s ease;
+            cursor: zoom-in;
+        }
+
+        .modal-image-content.zoomed {
+            max-width: none;
+            max-height: none;
+            cursor: zoom-out;
+        }
+
+        .modal-image-content.zoomed img {
+            width: auto;
+            height: auto;
+            max-width: none;
+            max-height: none;
         }
 
         @keyframes zoomIn {
@@ -951,10 +978,13 @@
         }
 
         .modal-image-content img {
-            width: 100%;
-            height: 100%;
+            max-width: 100%;
+            max-height: 85vh;
+            width: auto;
+            height: auto;
             object-fit: contain;
             border-radius: 8px;
+            display: block;
         }
 
         .modal-close {
@@ -1354,6 +1384,10 @@
             font-size: 0.95rem;
         }
 
+        footer .container {
+            max-width: 800px;
+        }
+
         /* Scroll to Top Button */
         .scroll-top {
             position: fixed;
@@ -1451,6 +1485,12 @@
             .projects-grid.uiux-grid {
                 grid-template-columns: repeat(auto-fit, 400px);
             }
+
+            .project-nav-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1rem;
+            }
         }
 
         @media (max-width: 640px) {
@@ -1533,6 +1573,12 @@
                 margin: 0 -1rem;
                 padding-left: 1rem;
                 padding-right: 1rem;
+            }
+
+            .project-nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -1732,7 +1778,7 @@
             <!-- Graphic Design Projects -->
             <div id="design" class="projects-container active">
                 <div class="projects-wrapper">
-                    <div class="projects-grid graphic-grid">
+                    <div class="projects-grid graphic-grid" id="design-grid">
 
                         <!-- 1. GREEN SAFE & HEALTH -->
                         <div class="project-card">
@@ -1959,12 +2005,20 @@
 
                     </div>
                 </div>
+                <div class="project-nav-buttons">
+                    <button class="project-nav-btn" id="design-prev" onclick="navigateProjects('design', -1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="project-nav-btn" id="design-next" onclick="navigateProjects('design', 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- UI/UX Design Projects -->
             <div id="uiux" class="projects-container">
                 <div class="projects-wrapper">
-                    <div class="projects-grid uiux-grid">
+                    <div class="projects-grid uiux-grid" id="uiux-grid">
 
                         <div class="project-card">
                             <div class="project-carousel wide" data-carousel="100">
@@ -2015,12 +2069,20 @@
 
                     </div>
                 </div>
+                <div class="project-nav-buttons">
+                    <button class="project-nav-btn" id="uiux-prev" onclick="navigateProjects('uiux', -1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="project-nav-btn" id="uiux-next" onclick="navigateProjects('uiux', 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- Web Development Projects -->
             <div id="web" class="projects-container">
                 <div class="projects-wrapper">
-                    <div class="projects-grid web-grid">
+                    <div class="projects-grid web-grid" id="web-grid">
 
                         <div class="project-card">
                             <div class="project-carousel wide" data-carousel="200">
@@ -2091,6 +2153,14 @@
 
                     </div>
                 </div>
+                <div class="project-nav-buttons">
+                    <button class="project-nav-btn" id="web-prev" onclick="navigateProjects('web', -1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <button class="project-nav-btn" id="web-next" onclick="navigateProjects('web', 1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
             </div>
 
         </div>
@@ -2118,34 +2188,34 @@
                     <div class="skill-items">
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"
                                     alt="HTML">
                             </div>
                             <span>HTML</span>
                         </div>
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"
                                     alt="CSS">
                             </div>
                             <span>CSS</span>
                         </div>
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg"
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg"
                                     alt="Laravel">
                             </div>
                             <span>Laravel</span>
                         </div>
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <i class="bi bi-database" style="color:var(--primary);"></i>
+                                <i class="bi bi-database-fill" style="color:#00758F;"></i>
                             </div>
                             <span>SQL</span>
                         </div>
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"
                                     alt="MySQL">
                             </div>
                             <span>MySQL</span>
@@ -2164,7 +2234,7 @@
                     <div class="skill-items">
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <i class="bi bi-file-earmark-excel" style="color:#217346;"></i>
+                                <i class="bi bi-file-earmark-excel-fill" style="color:#217346;"></i>
                             </div>
                             <span>Microsoft Excel</span>
                         </div>
@@ -2176,7 +2246,7 @@
                         </div>
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/google/google-original.svg"
                                     alt="Google">
                             </div>
                             <span>Google Workspace</span>
@@ -2195,21 +2265,21 @@
                     <div class="skill-items">
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg"
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg"
                                     alt="Figma">
                             </div>
                             <span>Figma</span>
                         </div>
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/canva/canva-original.svg"
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg"
                                     alt="Canva">
                             </div>
                             <span>Canva</span>
                         </div>
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <i class="bi bi-diagram-3" style="color:var(--primary);"></i>
+                                <i class="bi bi-diagram-3-fill" style="color:var(--primary);"></i>
                             </div>
                             <span>Draw.io</span>
                         </div>
@@ -2227,14 +2297,15 @@
                     <div class="skill-items">
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
                                     alt="GitHub">
                             </div>
                             <span>GitHub</span>
                         </div>
                         <div class="skill-item">
                             <div class="skill-item-icon">
-                                <i class="bi bi-app-indicator" style="color:#000000;"></i>
+                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/notion/notion-original.svg"
+                                    alt="Notion">
                             </div>
                             <span>Notion</span>
                         </div>
@@ -2357,7 +2428,8 @@
                                 title="LinkedIn">
                                 <i class="bi bi-linkedin"></i>
                             </a>
-                            <a href="mailto:Miftakhulkhasanah26@gmail.com" class="social-link" title="Email">
+                            <a href="/cdn-cgi/l/email-protection#561b3f3022373d3e233a3d3e37253738373e646016313b373f3a7835393b"
+                                class="social-link" title="Email">
                                 <i class="bi bi-envelope"></i>
                             </a>
                             <a href="https://github.com/miftakhulkhs" target="_blank" class="social-link"
@@ -2374,7 +2446,11 @@
                             </div>
                             <div class="contact-details">
                                 <h4>Email</h4>
-                                <p><a href="mailto:Miftakhulkhasanah26@gmail.com">Miftakhulkhasanah26@gmail.com</a></p>
+                                <p><a
+                                        href="/cdn-cgi/l/email-protection#f9b4909f8d9892918c959291988a98979891cbcfb99e94989095d79a9694"><span
+                                            class="__cf_email__"
+                                            data-cfemail="df92b6b9abbeb4b7aab3b4b7beacbeb1beb7ede99fb8b2beb6b3f1bcb0b2">[email&#160;protected]</span></a>
+                                </p>
                             </div>
                         </div>
 
@@ -2402,7 +2478,7 @@
             </div>
         </div>
     </section>
-
+    
     <!-- Footer -->
     <footer>
         <div class="container">
