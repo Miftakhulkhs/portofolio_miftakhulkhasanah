@@ -119,7 +119,6 @@
             font-weight: 600;
         }
 
-        /* Mobile Menu */
         .menu-toggle {
             display: none;
             flex-direction: column;
@@ -135,7 +134,6 @@
             transition: all 0.3s;
         }
 
-        /* Container */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -256,7 +254,6 @@
             transform: translateY(-2px);
         }
 
-        /* Profile Image with Decorative Background */
         .profile-image {
             display: flex;
             justify-content: center;
@@ -271,7 +268,6 @@
             height: 450px;
         }
 
-        /* Decorative Elements */
         .decorative-circle {
             position: absolute;
             border-radius: 50%;
@@ -318,7 +314,6 @@
             }
         }
 
-        /* Profile Circle Container */
         .profile-circle {
             width: 380px;
             height: 380px;
@@ -352,7 +347,6 @@
             border-radius: 50%;
         }
 
-        /* Floating Badge */
         .floating-badge {
             position: absolute;
             background: white;
@@ -411,7 +405,6 @@
             font-size: 0.85rem;
         }
 
-        /* Section Styling */
         section {
             padding: 5rem 0;
         }
@@ -690,7 +683,6 @@
             box-shadow: 0 5px 15px rgba(14, 165, 233, 0.2);
         }
 
-        /* Projects Container */
         .projects-container {
             display: none;
             position: relative;
@@ -717,7 +709,6 @@
             padding: 1rem 0;
         }
 
-        /* Projects Grid - 2 Rows Layout */
         .projects-grid {
             display: grid;
             grid-template-rows: repeat(2, 1fr);
@@ -727,18 +718,15 @@
             width: max-content;
         }
 
-        /* Graphic Design - Square Cards */
         .projects-grid.graphic-grid {
             grid-template-columns: repeat(auto-fit, 350px);
         }
 
-        /* UI/UX & Web - Wide Cards */
         .projects-grid.web-grid,
         .projects-grid.uiux-grid {
             grid-template-columns: repeat(auto-fit, 500px);
         }
 
-        /* Navigation Buttons for Projects */
         .project-nav-buttons {
             display: flex;
             justify-content: center;
@@ -788,7 +776,6 @@
             box-shadow: 0 15px 40px rgba(14, 165, 233, 0.2);
         }
 
-        /* Carousel - Square (1:1) for Graphic Design */
         .project-carousel.square {
             position: relative;
             width: 100%;
@@ -796,7 +783,6 @@
             overflow: hidden;
         }
 
-        /* Carousel - Wide (16:9) for Web/UI */
         .project-carousel.wide {
             position: relative;
             width: 100%;
@@ -828,10 +814,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        /* Image Zoom on Click */
-        .carousel-slide img {
             cursor: pointer;
         }
 
@@ -860,6 +842,7 @@
             border-radius: 5px;
         }
 
+        /* ====== FIXED CAROUSEL ARROWS ====== */
         .carousel-arrows {
             position: absolute;
             top: 50%;
@@ -867,19 +850,20 @@
             width: 100%;
             display: flex;
             justify-content: space-between;
-            padding: 0 15px;
+            padding: 0 10px;
             opacity: 0;
             transition: opacity 0.3s;
             z-index: 10;
+            pointer-events: none;
         }
 
-        .project-card:hover .carousel-arrows {
+        .project-carousel:hover .carousel-arrows {
             opacity: 1;
         }
 
         .carousel-arrow {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             background: white;
             border-radius: 50%;
             display: flex;
@@ -888,9 +872,10 @@
             cursor: pointer;
             transition: all 0.3s;
             border: none;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             color: var(--primary);
-            font-size: 1.2rem;
+            font-size: 1rem;
+            pointer-events: all;
         }
 
         .carousel-arrow:hover {
@@ -898,6 +883,8 @@
             color: white;
             transform: scale(1.1);
         }
+
+        /* ====================================== */
 
         .project-info {
             padding: 1.5rem;
@@ -1139,7 +1126,9 @@
             font-size: 0.95rem;
         }
 
-        /* Certifications */
+        /* ============================================
+           CERTIFICATIONS - REDESIGNED with carousel
+           ============================================ */
         .cert-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -1160,61 +1149,140 @@
             box-shadow: 0 15px 40px rgba(14, 165, 233, 0.25);
         }
 
-        .cert-preview {
+        /* Cert Carousel - uses same pattern as project carousel */
+        .cert-carousel {
+            position: relative;
             width: 100%;
-            height: 160px;
+            padding-bottom: 65%;
+            overflow: hidden;
             background: var(--light-gray);
+        }
+
+        .cert-carousel .carousel-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.4s ease-in-out;
+        }
+
+        .cert-carousel .carousel-slide {
+            min-width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--gray);
-            font-weight: 600;
-            position: relative;
+            background: var(--light-gray);
             overflow: hidden;
         }
 
-        .cert-preview::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(14, 165, 233, 0.1), transparent);
-            transition: all 0.5s ease;
-        }
-
-        .cert-card:hover .cert-preview::before {
-            transform: rotate(45deg);
-        }
-
-        .cert-preview img {
+        .cert-carousel .carousel-slide img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .cert-view-icon {
+        /* Cert carousel arrows - always slightly visible, brighter on hover */
+        .cert-carousel .carousel-arrows {
             position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-            width: 35px;
-            height: 35px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .cert-card:hover .cert-carousel .carousel-arrows {
+            opacity: 1;
+        }
+
+        .cert-carousel .carousel-arrow {
+            width: 32px;
+            height: 32px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            border: none;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            color: var(--gray);
+            color: var(--primary);
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            pointer-events: all;
         }
 
-        .cert-card:hover .cert-view-icon {
+        .cert-carousel .carousel-arrow:hover {
             background: var(--primary);
             color: white;
-            transform: scale(1.1);
+        }
+
+        /* Cert dots */
+        .cert-carousel .carousel-nav {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        .cert-carousel .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cert-carousel .carousel-dot.active {
+            background: white;
+            width: 20px;
+            border-radius: 4px;
+        }
+
+        /* Cert image count badge */
+        .cert-img-count {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.55);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            z-index: 5;
+            backdrop-filter: blur(4px);
+            display: none;
+        }
+
+        /* Only show count badge if more than 1 image */
+        .cert-carousel[data-total]:not([data-total="1"]) .cert-img-count {
+            display: block;
+        }
+
+        /* Fallback icon for certs without images */
+        .cert-icon-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            color: var(--primary);
+            font-size: 3rem;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.05), rgba(6, 182, 212, 0.1));
         }
 
         .cert-info {
@@ -1239,10 +1307,9 @@
         .cert-date {
             color: var(--gray);
             font-size: 0.85rem;
-            margin-bottom: 0rem;
         }
 
-        /* Certificate Modal */
+        /* Certificate Modal (fullscreen lightbox) */
         .cert-modal {
             display: none;
             position: fixed;
@@ -1250,7 +1317,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.92);
             z-index: 2000;
             align-items: center;
             justify-content: center;
@@ -1262,17 +1329,97 @@
             animation: fadeIn 0.3s ease;
         }
 
-        .modal-content {
-            max-width: 1000px;
-            max-height: 90vh;
+        .cert-modal-inner {
             position: relative;
+            max-width: 900px;
+            width: 100%;
             animation: zoomIn 0.3s ease;
         }
 
-        .modal-content img {
+        .cert-modal-img {
             width: 100%;
             height: auto;
             border-radius: 8px;
+            display: block;
+        }
+
+        /* Modal navigation arrows */
+        .cert-modal-arrows {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 -1rem;
+            pointer-events: none;
+        }
+
+        .cert-modal-arrow {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            color: var(--primary);
+            font-size: 1.3rem;
+            transition: all 0.3s;
+            pointer-events: all;
+            position: absolute;
+        }
+
+        .cert-modal-arrow.prev-arrow {
+            left: -60px;
+        }
+
+        .cert-modal-arrow.next-arrow {
+            right: -60px;
+        }
+
+        .cert-modal-arrow:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .cert-modal-counter {
+            position: absolute;
+            bottom: -2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .cert-modal-close {
+            position: absolute;
+            top: -3rem;
+            right: 0;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .cert-modal-close:hover {
+            background: var(--primary);
+            color: white;
+            transform: rotate(90deg);
         }
 
         /* Contact Section */
@@ -1391,7 +1538,6 @@
             color: var(--primary);
         }
 
-        /* Footer */
         footer {
             text-align: center;
             padding: 2.5rem 0;
@@ -1405,7 +1551,6 @@
             max-width: 600px;
         }
 
-        /* Scroll to Top Button */
         .scroll-top {
             position: fixed;
             bottom: 30px;
@@ -1434,7 +1579,7 @@
             box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
         }
 
-        /* Responsive Design */
+        /* Responsive */
         @media (max-width: 968px) {
             .nav-menu {
                 position: fixed;
@@ -1502,12 +1647,6 @@
             .projects-grid.uiux-grid {
                 grid-template-columns: repeat(auto-fit, 400px);
             }
-
-            .project-nav-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 1rem;
-            }
         }
 
         @media (max-width: 640px) {
@@ -1547,11 +1686,6 @@
                 height: 250px;
             }
 
-            .floating-badge {
-                padding: 0.8rem 1rem;
-                font-size: 0.85rem;
-            }
-
             .section-header h2 {
                 font-size: 2rem;
             }
@@ -1577,25 +1711,12 @@
                 font-size: 2rem;
             }
 
-            .projects-grid.graphic-grid {
-                grid-template-columns: repeat(auto-fit, 280px);
+            .cert-modal-arrow.prev-arrow {
+                left: -10px;
             }
 
-            .projects-grid.web-grid,
-            .projects-grid.uiux-grid {
-                grid-template-columns: repeat(auto-fit, 320px);
-            }
-
-            .projects-wrapper {
-                margin: 0 -1rem;
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-
-            .project-nav-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 0.9rem;
+            .cert-modal-arrow.next-arrow {
+                right: -10px;
             }
         }
     </style>
@@ -1616,9 +1737,7 @@
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <div class="menu-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </div>
         </div>
     </nav>
@@ -1631,40 +1750,25 @@
                     <h1>Hi, I'm <span class="name">Miftakhul Khasanah</span></h1>
                     <div class="hero-subtitle">Information System Graduate</div>
                     <p>Passionate about data management, system analysis, and web development. Currently participating
-                        in the Kemnaker
-                        internship program at PT IDSurvey (Persero) as an Officer ISPB, gaining hands-on experience and
-                        contributing to
-                        information system development.</p>
+                        in the Kemnaker internship program at PT IDSurvey (Persero) as an Officer ISPB, gaining hands-on
+                        experience and contributing to information system development.</p>
                     <div class="hero-buttons">
-                        <a href="#projects" class="btn btn-primary">
-                            View Projects
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
+                        <a href="#projects" class="btn btn-primary">View Projects <i class="bi bi-arrow-right"></i></a>
                         <a href="#contact" class="btn btn-secondary">Contact Me</a>
                     </div>
                 </div>
 
                 <div class="profile-image">
                     <div class="profile-wrapper">
-                        <!-- Decorative Circles -->
                         <div class="decorative-circle circle-1"></div>
                         <div class="decorative-circle circle-2"></div>
                         <div class="decorative-circle circle-3"></div>
-
-                        <!-- Profile Circle -->
                         <div class="profile-circle">
                             <img src="Images/foto_profil.jpg" alt="Miftakhul Khasanah">
                         </div>
-
-                        <!-- Floating Badge -->
                         <div class="floating-badge badge-available">
-                            <div class="badge-icon">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </div>
-                            <div class="badge-text">
-                                <strong>Available</strong>
-                                <span>for opportunities</span>
-                            </div>
+                            <div class="badge-icon"><i class="bi bi-check-circle-fill"></i></div>
+                            <div class="badge-text"><strong>Available</strong><span>for opportunities</span></div>
                         </div>
                     </div>
                 </div>
@@ -1680,7 +1784,6 @@
                 <h2>Personal Profile</h2>
                 <p>Background, education, and career objectives</p>
             </div>
-
             <div class="about-content">
                 <div class="about-text">
                     <p>Lulusan S1 Sistem Informasi dari Universitas Teknologi Yogyakarta dengan pengalaman di bidang
@@ -1691,7 +1794,6 @@
                     <p>Saya mencari peluang karir untuk terus berkembang, berinovasi, dan berkolaborasi dalam
                         menciptakan solusi inovatif untuk tantangan bisnis.</p>
                 </div>
-
                 <div class="education-card">
                     <div class="education-header">
                         <h3>PENDIDIKAN</h3>
@@ -1715,21 +1817,16 @@
                 <h2>Work Experience</h2>
                 <p>Professional experiences and contributions</p>
             </div>
-
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-header">
                         <div>
-                            <h3>Officer ISPB (Integrasi Sistem & Proses Bisnis)</h3>
-                            <div class="timeline-company">
-                                PT IDSurvey (Persero)
-                            </div>
+                            <h3>Officer ISPB (Integrasi Sistem &amp; Proses Bisnis)</h3>
+                            <div class="timeline-company">PT IDSurvey (Persero)</div>
                         </div>
                         <span class="timeline-badge">INTERNSHIP</span>
                     </div>
-
                     <div class="timeline-date">November 2024 – Mei 2026</div>
-
                     <ul>
                         <li>Membangun sistem Activity Record Divisi ISPB dari tahap perancangan hingga implementasi</li>
                         <li>Menyusun manual book (user guide) sebagai panduan penggunaan sistem</li>
@@ -1738,7 +1835,6 @@
                         <li>Mengelola dan membantu pengarsipan dokumen pendukung divisi</li>
                     </ul>
                 </div>
-
                 <div class="timeline-item">
                     <div class="timeline-header">
                         <div>
@@ -1752,7 +1848,6 @@
                         <li>Mengelola dan menyiapkan dokumen administrasi untuk mendukung kegiatan kampus.</li>
                     </ul>
                 </div>
-
                 <div class="timeline-item">
                     <div class="timeline-header">
                         <div>
@@ -1781,28 +1876,28 @@
             </div>
 
             <div class="project-filters">
-                <button class="filter-btn active" onclick="showProjects('design')">
+                <button class="filter-btn active" onclick="showProjects('design', event)">
                     <i class="bi bi-palette"></i> Graphic Design
                 </button>
-                <button class="filter-btn" onclick="showProjects('uiux')">
+                <button class="filter-btn" onclick="showProjects('uiux', event)">
                     <i class="bi bi-layout-text-window-reverse"></i> UI/UX Design
                 </button>
-                <button class="filter-btn" onclick="showProjects('web')">
+                <button class="filter-btn" onclick="showProjects('web', event)">
                     <i class="bi bi-code-slash"></i> Web Development
                 </button>
             </div>
 
-            <!-- Graphic Design Projects -->
+            <!-- ========== GRAPHIC DESIGN PROJECTS ========== -->
             <div id="design" class="projects-container active">
                 <div class="projects-wrapper">
                     <div class="projects-grid graphic-grid" id="design-grid">
 
-                        <!-- 1. GREEN SAFE & HEALTH -->
+                        <!-- 1. GREEN SAFE & HEALTH (1 gambar) -->
                         <div class="project-card">
                             <div class="project-carousel square" data-carousel="0">
                                 <div class="carousel-track">
                                     <div class="carousel-slide">
-                                        <img src="Images/GSH1.png" alt="Green Safe & Health 1"
+                                        <img src="Images/GSH2.png" alt="Green Safe & Health 1"
                                             onclick="openImageModal(this.src)">
                                     </div>
                                 </div>
@@ -1811,8 +1906,8 @@
                                 </div>
                             </div>
                             <div class="project-info">
-                                <h3>Green Safe & Health</h3>
-                                <p>Infografis kampanye HSE & ESG: aman, sehat, dan berkelanjutan.</p>
+                                <h3>Green Safe &amp; Health</h3>
+                                <p>Infografis kampanye HSE &amp; ESG: aman, sehat, dan berkelanjutan.</p>
                                 <div class="project-tags">
                                     <span class="tag">Canva</span>
                                     <span class="tag">Infographic</span>
@@ -1822,12 +1917,12 @@
                             </div>
                         </div>
 
-                        <!-- 2. Panduan Keselamatan Tim Kunjungan Kerja -->
+                        <!-- 2. Panduan Keselamatan (1 gambar) -->
                         <div class="project-card">
                             <div class="project-carousel square" data-carousel="1">
                                 <div class="carousel-track">
                                     <div class="carousel-slide">
-                                        <img src="Images/panduankeselamatan1.png" alt="Panduan Keselamatan 1"
+                                        <img src="Images/panduankeselamatan2.png" alt="Panduan Keselamatan 1"
                                             onclick="openImageModal(this.src)">
                                     </div>
                                 </div>
@@ -1847,12 +1942,12 @@
                             </div>
                         </div>
 
-                        <!-- 3. Safe Holiday Season -->
+                        <!-- 3. Safe Holiday Season (1 gambar) -->
                         <div class="project-card">
                             <div class="project-carousel square" data-carousel="2">
                                 <div class="carousel-track">
                                     <div class="carousel-slide">
-                                        <img src="Images/safetyholidayseason1.png" alt="Safe Holiday Season 1"
+                                        <img src="Images/safetyholidayseason2.png" alt="Safe Holiday Season 1"
                                             onclick="openImageModal(this.src)">
                                     </div>
                                 </div>
@@ -1871,12 +1966,12 @@
                             </div>
                         </div>
 
-                        <!-- 4. Panduan Perilaku HSE Golden Rules -->
+                        <!-- 4. HSE Golden Rules (1 gambar) -->
                         <div class="project-card">
                             <div class="project-carousel square" data-carousel="3">
                                 <div class="carousel-track">
                                     <div class="carousel-slide">
-                                        <img src="Images/panduanhse1.png" alt="HSE Golden Rules 1"
+                                        <img src="Images/panduanhse2.png" alt="HSE Golden Rules 1"
                                             onclick="openImageModal(this.src)">
                                     </div>
                                 </div>
@@ -1895,12 +1990,12 @@
                             </div>
                         </div>
 
-                        <!-- 5. Bulan K3 Nasional -->
+                        <!-- 5. Bulan K3 Nasional (1 gambar) -->
                         <div class="project-card">
                             <div class="project-carousel square" data-carousel="4">
                                 <div class="carousel-track">
                                     <div class="carousel-slide">
-                                        <img src="Images/BKN1.png" alt="Bulan K3 Nasional 1"
+                                        <img src="Images/BKN2.png" alt="Bulan K3 Nasional 1"
                                             onclick="openImageModal(this.src)">
                                     </div>
                                 </div>
@@ -1919,23 +2014,25 @@
                             </div>
                         </div>
 
-                        <!-- TEMPLATE: Copy this block to add new Graphic Design projects -->
                         <!--
+                        TEMPLATE untuk project baru dengan MULTIPLE GAMBAR:
+                        Ganti data-carousel="5" dengan angka unik, tambah slide & dot sesuai jumlah gambar
+
                         <div class="project-card">
                             <div class="project-carousel square" data-carousel="5">
                                 <div class="carousel-track">
                                     <div class="carousel-slide">
-                                        <img src="Images/new-project1.png" alt="New Project 1" onclick="openImageModal(this.src)">
+                                        <img src="Images/project-img1.png" alt="..." onclick="openImageModal(this.src)">
                                     </div>
                                     <div class="carousel-slide">
-                                        <img src="Images/new-project2.png" alt="New Project 2" onclick="openImageModal(this.src)">
+                                        <img src="Images/project-img2.png" alt="..." onclick="openImageModal(this.src)">
                                     </div>
                                 </div>
                                 <div class="carousel-arrows">
-                                    <button class="carousel-arrow" onclick="prevSlide(5)">
+                                    <button class="carousel-arrow" onclick="prevSlide(5); event.stopPropagation();">
                                         <i class="bi bi-chevron-left"></i>
                                     </button>
-                                    <button class="carousel-arrow" onclick="nextSlide(5)">
+                                    <button class="carousel-arrow" onclick="nextSlide(5); event.stopPropagation();">
                                         <i class="bi bi-chevron-right"></i>
                                     </button>
                                 </div>
@@ -1945,11 +2042,10 @@
                                 </div>
                             </div>
                             <div class="project-info">
-                                <h3>Project Title</h3>
-                                <p>Project description here.</p>
+                                <h3>Judul Project</h3>
+                                <p>Deskripsi project.</p>
                                 <div class="project-tags">
-                                    <span class="tag">Tag1</span>
-                                    <span class="tag">Tag2</span>
+                                    <span class="tag">Tag</span>
                                 </div>
                             </div>
                         </div>
@@ -1958,20 +2054,17 @@
                     </div>
                 </div>
                 <div class="project-nav-buttons">
-                    <button class="project-nav-btn" id="design-prev" onclick="navigateProjects('design', -1)">
-                        <i class="bi bi-chevron-left"></i>
-                    </button>
-                    <button class="project-nav-btn" id="design-next" onclick="navigateProjects('design', 1)">
-                        <i class="bi bi-chevron-right"></i>
-                    </button>
+                    <button class="project-nav-btn" id="design-prev" onclick="navigateProjects('design', -1)"><i
+                            class="bi bi-chevron-left"></i></button>
+                    <button class="project-nav-btn" id="design-next" onclick="navigateProjects('design', 1)"><i
+                            class="bi bi-chevron-right"></i></button>
                 </div>
             </div>
 
-            <!-- UI/UX Design Projects -->
+            <!-- ========== UI/UX DESIGN PROJECTS ========== -->
             <div id="uiux" class="projects-container">
                 <div class="projects-wrapper">
                     <div class="projects-grid uiux-grid" id="uiux-grid">
-
                         <div class="project-card">
                             <div class="project-carousel wide" data-carousel="100">
                                 <div class="carousel-track">
@@ -1994,73 +2087,43 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- TEMPLATE: Copy this block to add new UI/UX projects -->
-                        <!--
-                        <div class="project-card">
-                            <div class="project-carousel wide" data-carousel="101">
-                                <div class="carousel-track">
-                                    <div class="carousel-slide">
-                                        <img src="Images/uiux-project1.png" alt="UI/UX Project" onclick="openImageModal(this.src)">
-                                    </div>
-                                </div>
-                                <div class="carousel-nav">
-                                    <span class="carousel-dot active" onclick="goToSlide(101, 0)"></span>
-                                </div>
-                            </div>
-                            <div class="project-info">
-                                <h3>Project Title</h3>
-                                <p>Project description here.</p>
-                                <div class="project-tags">
-                                    <span class="tag">Figma</span>
-                                    <span class="tag">UI/UX</span>
-                                </div>
-                            </div>
-                        </div>
-                        -->
-
                     </div>
                 </div>
                 <div class="project-nav-buttons">
-                    <button class="project-nav-btn" id="uiux-prev" onclick="navigateProjects('uiux', -1)">
-                        <i class="bi bi-chevron-left"></i>
-                    </button>
-                    <button class="project-nav-btn" id="uiux-next" onclick="navigateProjects('uiux', 1)">
-                        <i class="bi bi-chevron-right"></i>
-                    </button>
+                    <button class="project-nav-btn" id="uiux-prev" onclick="navigateProjects('uiux', -1)"><i
+                            class="bi bi-chevron-left"></i></button>
+                    <button class="project-nav-btn" id="uiux-next" onclick="navigateProjects('uiux', 1)"><i
+                            class="bi bi-chevron-right"></i></button>
                 </div>
             </div>
 
-            <!-- Web Development Projects -->
+            <!-- ========== WEB DEVELOPMENT PROJECTS ========== -->
             <div id="web" class="projects-container">
                 <div class="projects-wrapper">
                     <div class="projects-grid web-grid" id="web-grid">
-
                         <div class="project-card">
                             <div class="project-carousel wide" data-carousel="200">
                                 <div class="carousel-track">
                                     <div class="carousel-slide">
                                         <div
-                                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: var(--light-gray); color: var(--gray); font-weight: 600; gap: 1rem;">
-                                            <i class="bi bi-laptop" style="font-size: 3rem;"></i>
+                                            style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;background:var(--light-gray);color:var(--gray);font-weight:600;gap:1rem;">
+                                            <i class="bi bi-laptop" style="font-size:3rem;"></i>
                                             Dashboard Screenshot
                                         </div>
                                     </div>
                                     <div class="carousel-slide">
                                         <div
-                                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; background: var(--light-gray); color: var(--gray); font-weight: 600; gap: 1rem;">
-                                            <i class="bi bi-list-task" style="font-size: 3rem;"></i>
+                                            style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;background:var(--light-gray);color:var(--gray);font-weight:600;gap:1rem;">
+                                            <i class="bi bi-list-task" style="font-size:3rem;"></i>
                                             Features Screenshot
                                         </div>
                                     </div>
                                 </div>
                                 <div class="carousel-arrows">
-                                    <button class="carousel-arrow" onclick="prevSlide(200)">
-                                        <i class="bi bi-chevron-left"></i>
-                                    </button>
-                                    <button class="carousel-arrow" onclick="nextSlide(200)">
-                                        <i class="bi bi-chevron-right"></i>
-                                    </button>
+                                    <button class="carousel-arrow" onclick="prevSlide(200); event.stopPropagation();"><i
+                                            class="bi bi-chevron-left"></i></button>
+                                    <button class="carousel-arrow" onclick="nextSlide(200); event.stopPropagation();"><i
+                                            class="bi bi-chevron-right"></i></button>
                                 </div>
                                 <div class="carousel-nav">
                                     <span class="carousel-dot active" onclick="goToSlide(200, 0)"></span>
@@ -2078,40 +2141,13 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- TEMPLATE: Copy this block to add new Web projects -->
-                        <!--
-                        <div class="project-card">
-                            <div class="project-carousel wide" data-carousel="201">
-                                <div class="carousel-track">
-                                    <div class="carousel-slide">
-                                        <img src="Images/web-project1.png" alt="Web Project" onclick="openImageModal(this.src)">
-                                    </div>
-                                </div>
-                                <div class="carousel-nav">
-                                    <span class="carousel-dot active" onclick="goToSlide(201, 0)"></span>
-                                </div>
-                            </div>
-                            <div class="project-info">
-                                <h3>Project Title</h3>
-                                <p>Project description here.</p>
-                                <div class="project-tags">
-                                    <span class="tag">Laravel</span>
-                                    <span class="tag">MySQL</span>
-                                </div>
-                            </div>
-                        </div>
-                        -->
-
                     </div>
                 </div>
                 <div class="project-nav-buttons">
-                    <button class="project-nav-btn" id="web-prev" onclick="navigateProjects('web', -1)">
-                        <i class="bi bi-chevron-left"></i>
-                    </button>
-                    <button class="project-nav-btn" id="web-next" onclick="navigateProjects('web', 1)">
-                        <i class="bi bi-chevron-right"></i>
-                    </button>
+                    <button class="project-nav-btn" id="web-prev" onclick="navigateProjects('web', -1)"><i
+                            class="bi bi-chevron-left"></i></button>
+                    <button class="project-nav-btn" id="web-next" onclick="navigateProjects('web', 1)"><i
+                            class="bi bi-chevron-right"></i></button>
                 </div>
             </div>
 
@@ -2123,125 +2159,91 @@
         <div class="container">
             <div class="section-header">
                 <span class="section-label">Expertise</span>
-                <h2>Skills & Technologies</h2>
+                <h2>Skills &amp; Technologies</h2>
                 <p>Tools and technologies I work with professionally</p>
             </div>
-
             <div class="skills-grid">
-
-                <!-- 1. Web & Database Development -->
                 <div class="skill-category">
                     <div class="skill-header">
-                        <div class="skill-icon">
-                            <i class="bi bi-code-slash"></i>
-                        </div>
-                        <h3>Web & Database Development</h3>
+                        <div class="skill-icon"><i class="bi bi-code-slash"></i></div>
+                        <h3>Web &amp; Database Development</h3>
                     </div>
                     <div class="skill-items">
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"
-                                    alt="HTML">
-                            </div>
-                            <span>HTML</span>
+                            <div class="skill-item-icon"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"
+                                    alt="HTML"></div><span>HTML</span>
                         </div>
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"
-                                    alt="CSS">
-                            </div>
-                            <span>CSS</span>
+                            <div class="skill-item-icon"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"
+                                    alt="CSS"></div><span>CSS</span>
                         </div>
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg"
-                                    alt="Laravel">
-                            </div>
-                            <span>Laravel</span>
+                            <div class="skill-item-icon"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg"
+                                    alt="Laravel"></div><span>Laravel</span>
                         </div>
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <i class="bi bi-database-fill" style="color:#00758F;"></i>
-                            </div>
-                            <span>SQL</span>
+                            <div class="skill-item-icon"><i class="bi bi-database-fill" style="color:#00758F;"></i>
+                            </div><span>SQL</span>
                         </div>
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"
-                                    alt="MySQL">
-                            </div>
-                            <span>MySQL</span>
+                            <div class="skill-item-icon"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"
+                                    alt="MySQL"></div><span>MySQL</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- 2. Data Management & Office -->
                 <div class="skill-category">
                     <div class="skill-header">
-                        <div class="skill-icon">
-                            <i class="bi bi-table"></i>
-                        </div>
-                        <h3>Data Management & Office</h3>
+                        <div class="skill-icon"><i class="bi bi-table"></i></div>
+                        <h3>Data Management &amp; Office</h3>
                     </div>
                     <div class="skill-items">
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <i class="bi bi-file-earmark-excel-fill" style="color:#217346;"></i>
-                            </div>
-                            <span>Microsoft Excel</span>
+                            <div class="skill-item-icon"><i class="bi bi-file-earmark-excel-fill"
+                                    style="color:#217346;"></i></div><span>Microsoft Excel</span>
                         </div>
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <svg viewBox="0 0 32 32" style="width:32px;height:32px;">
+                            <div class="skill-item-icon"><svg viewBox="0 0 32 32" style="width:32px;height:32px;">
                                     <path fill="#EA3E23"
                                         d="M29.3,14.6L17.4,2.7c-0.4-0.4-1-0.4-1.4,0L2.7,16.1c-0.4,0.4-0.4,1,0,1.4L14.6,29.3c0.4,0.4,1,0.4,1.4,0l13.3-13.3C29.7,15.6,29.7,15,29.3,14.6z" />
                                     <path fill="#FFFFFF" d="M20.5,16L16,11.5L11.5,16L16,20.5L20.5,16z" />
-                                </svg>
-                            </div>
-                            <span>Microsoft Office</span>
+                                </svg></div><span>Microsoft Office</span>
                         </div>
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <svg viewBox="0 0 32 32" style="width:32px;height:32px;">
+                            <div class="skill-item-icon"><svg viewBox="0 0 32 32" style="width:32px;height:32px;">
                                     <path fill="#4285F4"
                                         d="M16,2L6,6v6c0,6.2,4.3,12,10,13.4c5.7-1.4,10-7.2,10-13.4V6L16,2z" />
                                     <path fill="#34A853" d="M16,2v13.4L6,12V6L16,2z" />
                                     <path fill="#FBBC04" d="M16,15.4V2l10,4v6L16,15.4z" />
                                     <path fill="#EA4335"
                                         d="M6,12l10,3.4L26,12c0,6.2-4.3,12-10,13.4C10.3,24,6,18.2,6,12z" />
-                                </svg>
-                            </div>
-                            <span>Google Workspace</span>
+                                </svg></div><span>Google Workspace</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- 3. Design & System Modelling -->
                 <div class="skill-category">
                     <div class="skill-header">
-                        <div class="skill-icon">
-                            <i class="bi bi-palette"></i>
-                        </div>
-                        <h3>Design & System Modelling</h3>
+                        <div class="skill-icon"><i class="bi bi-palette"></i></div>
+                        <h3>Design &amp; System Modelling</h3>
                     </div>
                     <div class="skill-items">
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <svg viewBox="0 0 32 32" style="width:32px;height:32px;">
+                            <div class="skill-item-icon"><svg viewBox="0 0 32 32" style="width:32px;height:32px;">
                                     <path fill="#0ACF83"
                                         d="M12,26c2.2,0,4-1.8,4-4v-4h-4c-2.2,0-4,1.8-4,4S9.8,26,12,26z" />
                                     <path fill="#A259FF" d="M8,14c0-2.2,1.8-4,4-4h4v8h-4C9.8,18,8,16.2,8,14z" />
-                                    <path fill="#F24E1E" d="M8,6c0-2.2,1.8-4,4-4h4v8h-4C9.8,10,8,8.2,8,6z" />
+                                    <path fill="#F24E1E"
+                                        d="M8,6c0-2.2,1.8-4,4-4h4v8h-4C9.8,10,8,16.2,8,6z M8,6c0-2.2,1.8-4,4-4h4v8h-4C9.8,10,8,8.2,8,6z" />
                                     <path fill="#FF7262" d="M16,2h4c2.2,0,4,1.8,4,4s-1.8,4-4,4h-4V2z" />
                                     <path fill="#1ABCFE"
                                         d="M24,14c0,2.2-1.8,4-4,4s-4-1.8-4-4s1.8-4,4-4S24,11.8,24,14z" />
-                                </svg>
-                            </div>
-                            <span>Figma</span>
+                                </svg></div><span>Figma</span>
                         </div>
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <svg viewBox="0 0 32 32" style="width:32px;height:32px;">
+                            <div class="skill-item-icon"><svg viewBox="0 0 32 32" style="width:32px;height:32px;">
                                     <defs>
                                         <linearGradient id="canvaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                                             <stop offset="0%" style="stop-color:#00C4CC" />
@@ -2252,58 +2254,42 @@
                                         d="M6,4h20c1.1,0,2,0.9,2,2v20c0,1.1-0.9,2-2,2H6c-1.1,0-2-0.9-2-2V6C4,4.9,4.9,4,6,4z" />
                                     <path fill="#FFFFFF"
                                         d="M16,9c-3.9,0-7,3.1-7,7s3.1,7,7,7s7-3.1,7-7S19.9,9,16,9z M20.5,16c0,2.5-2,4.5-4.5,4.5s-4.5-2-4.5-4.5s2-4.5,4.5-4.5S20.5,13.5,20.5,16z" />
-                                </svg>
-                            </div>
-                            <span>Canva</span>
+                                </svg></div><span>Canva</span>
                         </div>
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <svg viewBox="0 0 32 32" style="width:32px;height:32px;">
+                            <div class="skill-item-icon"><svg viewBox="0 0 32 32" style="width:32px;height:32px;">
                                     <path fill="#F08705"
                                         d="M26,4H6C4.9,4,4,4.9,4,6v20c0,1.1,0.9,2,2,2h20c1.1,0,2-0.9,2-2V6C28,4.9,27.1,4,26,4z" />
                                     <rect x="8" y="10" width="16" height="2" fill="#FFFFFF" />
                                     <rect x="8" y="15" width="16" height="2" fill="#FFFFFF" />
                                     <rect x="8" y="20" width="10" height="2" fill="#FFFFFF" />
-                                    <path fill="#FFFFFF" d="M10,8c-0.6,0-1,0.4-1,1s0.4,1,1,1s1-0.4,1-1S10.6,8,10,8z" />
-                                    <path fill="#FFFFFF" d="M14,8c-0.6,0-1,0.4-1,1s0.4,1,1,1s1-0.4,1-1S14.6,8,14,8z" />
-                                </svg>
-                            </div>
-                            <span>Draw.io</span>
+                                </svg></div><span>Draw.io</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- 4. Collaboration & Project Tools -->
                 <div class="skill-category">
                     <div class="skill-header">
-                        <div class="skill-icon">
-                            <i class="bi bi-kanban"></i>
-                        </div>
-                        <h3>Collaboration & Project Tools</h3>
+                        <div class="skill-icon"><i class="bi bi-kanban"></i></div>
+                        <h3>Collaboration &amp; Project Tools</h3>
                     </div>
                     <div class="skill-items">
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
-                                    alt="GitHub">
-                            </div>
-                            <span>GitHub</span>
+                            <div class="skill-item-icon"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
+                                    alt="GitHub"></div><span>GitHub</span>
                         </div>
                         <div class="skill-item">
-                            <div class="skill-item-icon">
-                                <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/notion/notion-original.svg"
-                                    alt="Notion">
-                            </div>
-                            <span>Notion</span>
+                            <div class="skill-item-icon"><img
+                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/notion/notion-original.svg"
+                                    alt="Notion"></div><span>Notion</span>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </section>
 
-    <!-- Certifications -->
+    <!-- ========== CERTIFICATIONS ========== -->
     <section id="certifications">
         <div class="container">
             <div class="section-header">
@@ -2313,13 +2299,33 @@
             </div>
 
             <div class="cert-grid">
-                <!-- Certificate 1 - Microsoft Excel Basic -->
-                <div class="cert-card" onclick="openCert('Certificates/microsoft-excel.jpg')">
-                    <div class="cert-preview">
-                        <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: var(--primary);"></i>
-                        <div class="cert-view-icon">
-                            <i class="bi bi-eye"></i>
+
+                <!-- 1. Microsoft Excel Basic (4 gambar) -->
+                <div class="cert-card" onclick="openCertModal('microsoft-excel', 4)">
+                    <div class="cert-carousel" data-cert="microsoft-excel" data-total="4">
+                        <div class="carousel-track">
+                            <div class="carousel-slide"><img src="Certificates/microsoft-excel_1.jpg"
+                                    alt="Microsoft Excel Cert 1"></div>
+                            <div class="carousel-slide"><img src="Certificates/microsoft-excel_2.jpg"
+                                    alt="Microsoft Excel Cert 2"></div>
+                            <div class="carousel-slide"><img src="Certificates/microsoft-excel_3.jpg"
+                                    alt="Microsoft Excel Cert 3"></div>
+                            <div class="carousel-slide"><img src="Certificates/microsoft-excel_4.jpg"
+                                    alt="Microsoft Excel Cert 4"></div>
                         </div>
+                        <div class="carousel-arrows">
+                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
+                                    class="bi bi-chevron-left"></i></button>
+                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
+                                    class="bi bi-chevron-right"></i></button>
+                        </div>
+                        <div class="carousel-nav">
+                            <span class="carousel-dot active"></span>
+                            <span class="carousel-dot"></span>
+                            <span class="carousel-dot"></span>
+                            <span class="carousel-dot"></span>
+                        </div>
+                        <div class="cert-img-count">1 / 4</div>
                     </div>
                     <div class="cert-info">
                         <h3>Microsoft Excel Basic</h3>
@@ -2328,13 +2334,29 @@
                     </div>
                 </div>
 
-                <!-- Certificate 2 - Dasar Manajemen Proyek -->
-                <div class="cert-card" onclick="openCert('Certificates/dicoding-manajemenproyek.jpg')">
-                    <div class="cert-preview">
-                        <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: var(--primary);"></i>
-                        <div class="cert-view-icon">
-                            <i class="bi bi-eye"></i>
+                <!-- 2. Dasar Manajemen Proyek (3 gambar) -->
+                <div class="cert-card" onclick="openCertModal('dicoding-manajemenproyek', 3)">
+                    <div class="cert-carousel" data-cert="dicoding-manajemenproyek" data-total="3">
+                        <div class="carousel-track">
+                            <div class="carousel-slide"><img src="Certificates/dicoding-manajemenproyek_1.jpg"
+                                    alt="Manajemen Proyek 1"></div>
+                            <div class="carousel-slide"><img src="Certificates/dicoding-manajemenproyek_2.jpg"
+                                    alt="Manajemen Proyek 2"></div>
+                            <div class="carousel-slide"><img src="Certificates/dicoding-manajemenproyek_3.jpg"
+                                    alt="Manajemen Proyek 3"></div>
                         </div>
+                        <div class="carousel-arrows">
+                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
+                                    class="bi bi-chevron-left"></i></button>
+                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
+                                    class="bi bi-chevron-right"></i></button>
+                        </div>
+                        <div class="carousel-nav">
+                            <span class="carousel-dot active"></span>
+                            <span class="carousel-dot"></span>
+                            <span class="carousel-dot"></span>
+                        </div>
+                        <div class="cert-img-count">1 / 3</div>
                     </div>
                     <div class="cert-info">
                         <h3>Belajar Dasar Manajemen Proyek</h3>
@@ -2343,13 +2365,32 @@
                     </div>
                 </div>
 
-                <!-- Certificate 3 - Dasar Pemrograman -->
-                <div class="cert-card" onclick="openCert('Certificates/dicoding-dasarpemograman.jpg')">
-                    <div class="cert-preview">
-                        <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: var(--primary);"></i>
-                        <div class="cert-view-icon">
-                            <i class="bi bi-eye"></i>
+                <!-- 3. Dasar Pemrograman (4 gambar) -->
+                <div class="cert-card" onclick="openCertModal('dicoding-dasarpemograman', 4)">
+                    <div class="cert-carousel" data-cert="dicoding-dasarpemograman" data-total="4">
+                        <div class="carousel-track">
+                            <div class="carousel-slide"><img src="Certificates/dicoding-dasarpemograman_1.jpg"
+                                    alt="Dasar Pemrograman 1"></div>
+                            <div class="carousel-slide"><img src="Certificates/dicoding-dasarpemograman_2.jpg"
+                                    alt="Dasar Pemrograman 2"></div>
+                            <div class="carousel-slide"><img src="Certificates/dicoding-dasarpemograman_3.jpg"
+                                    alt="Dasar Pemrograman 3"></div>
+                            <div class="carousel-slide"><img src="Certificates/dicoding-dasarpemograman_4.jpg"
+                                    alt="Dasar Pemrograman 4"></div>
                         </div>
+                        <div class="carousel-arrows">
+                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
+                                    class="bi bi-chevron-left"></i></button>
+                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
+                                    class="bi bi-chevron-right"></i></button>
+                        </div>
+                        <div class="carousel-nav">
+                            <span class="carousel-dot active"></span>
+                            <span class="carousel-dot"></span>
+                            <span class="carousel-dot"></span>
+                            <span class="carousel-dot"></span>
+                        </div>
+                        <div class="cert-img-count">1 / 4</div>
                     </div>
                     <div class="cert-info">
                         <h3>Memulai Dasar Pemrograman untuk Menjadi Pengembang Software</h3>
@@ -2358,13 +2399,26 @@
                     </div>
                 </div>
 
-                <!-- Certificate 4 - SQL -->
-                <div class="cert-card" onclick="openCert('Certificates/dicoding-sql.jpg')">
-                    <div class="cert-preview">
-                        <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: var(--primary);"></i>
-                        <div class="cert-view-icon">
-                            <i class="bi bi-eye"></i>
+                <!-- 4. SQL (3 gambar) -->
+                <div class="cert-card" onclick="openCertModal('dicoding-sql', 3)">
+                    <div class="cert-carousel" data-cert="dicoding-sql" data-total="3">
+                        <div class="carousel-track">
+                            <div class="carousel-slide"><img src="Certificates/dicoding-sql_1.jpg" alt="SQL 1"></div>
+                            <div class="carousel-slide"><img src="Certificates/dicoding-sql_2.jpg" alt="SQL 2"></div>
+                            <div class="carousel-slide"><img src="Certificates/dicoding-sql_3.jpg" alt="SQL 3"></div>
                         </div>
+                        <div class="carousel-arrows">
+                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
+                                    class="bi bi-chevron-left"></i></button>
+                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
+                                    class="bi bi-chevron-right"></i></button>
+                        </div>
+                        <div class="carousel-nav">
+                            <span class="carousel-dot active"></span>
+                            <span class="carousel-dot"></span>
+                            <span class="carousel-dot"></span>
+                        </div>
+                        <div class="cert-img-count">1 / 3</div>
                     </div>
                     <div class="cert-info">
                         <h3>Belajar Dasar Structured Query Language (SQL)</h3>
@@ -2373,27 +2427,33 @@
                     </div>
                 </div>
 
-                <!-- Certificate 5 - Design Thinking -->
-                <div class="cert-card" onclick="openCert('Certificates/design-thinking.jpg')">
-                    <div class="cert-preview">
-                        <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: var(--primary);"></i>
-                        <div class="cert-view-icon">
-                            <i class="bi bi-eye"></i>
+                <!-- 5. Design Thinking (1 gambar) -->
+                <div class="cert-card" onclick="openCertModal('design-thinking', 1)">
+                    <div class="cert-carousel" data-cert="design-thinking" data-total="1">
+                        <div class="carousel-track">
+                            <div class="carousel-slide"><img src="Certificates/design-thinking.jpg"
+                                    alt="Design Thinking"></div>
+                        </div>
+                        <div class="carousel-nav">
+                            <span class="carousel-dot active"></span>
                         </div>
                     </div>
                     <div class="cert-info">
                         <h3>Design Thinking</h3>
-                        <div class="cert-issuer">GNIK & Kemenaker RI</div>
+                        <div class="cert-issuer">GNIK &amp; Kemenaker RI</div>
                         <div class="cert-date">Desember 2025</div>
                     </div>
                 </div>
 
-                <!-- Certificate 6 - Data Engineering Professional -->
-                <div class="cert-card" onclick="openCert('Certificates/data-engineering-professional.jpg')">
-                    <div class="cert-preview">
-                        <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: var(--primary);"></i>
-                        <div class="cert-view-icon">
-                            <i class="bi bi-eye"></i>
+                <!-- 6. Data Engineering Professional (1 gambar) -->
+                <div class="cert-card" onclick="openCertModal('data-engineering-professional', 1)">
+                    <div class="cert-carousel" data-cert="data-engineering-professional" data-total="1">
+                        <div class="carousel-track">
+                            <div class="carousel-slide"><img src="Certificates/data-engineering-professional.jpg"
+                                    alt="Data Engineering"></div>
+                        </div>
+                        <div class="carousel-nav">
+                            <span class="carousel-dot active"></span>
                         </div>
                     </div>
                     <div class="cert-info">
@@ -2403,12 +2463,15 @@
                     </div>
                 </div>
 
-                <!-- Certificate 7 - Machine Learning Professional -->
-                <div class="cert-card" onclick="openCert('Certificates/machine-learning-professional.jpg')">
-                    <div class="cert-preview">
-                        <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: var(--primary);"></i>
-                        <div class="cert-view-icon">
-                            <i class="bi bi-eye"></i>
+                <!-- 7. Machine Learning Professional (1 gambar) -->
+                <div class="cert-card" onclick="openCertModal('machine-learning-professional', 1)">
+                    <div class="cert-carousel" data-cert="machine-learning-professional" data-total="1">
+                        <div class="carousel-track">
+                            <div class="carousel-slide"><img src="Certificates/machine-learning-professional.jpg"
+                                    alt="Machine Learning"></div>
+                        </div>
+                        <div class="carousel-nav">
+                            <span class="carousel-dot active"></span>
                         </div>
                     </div>
                     <div class="cert-info">
@@ -2418,13 +2481,26 @@
                     </div>
                 </div>
 
-                <!-- Certificate 8 - Dasar Keamanan AI -->
-                <div class="cert-card" onclick="openCert('Certificates/digitalent-dasarkeamananai.jpg')">
-                    <div class="cert-preview">
-                        <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: var(--primary);"></i>
-                        <div class="cert-view-icon">
-                            <i class="bi bi-eye"></i>
+                <!-- 8. Dasar Keamanan AI (2 gambar) -->
+                <div class="cert-card" onclick="openCertModal('digitalent-dasarkeamananai', 2)">
+                    <div class="cert-carousel" data-cert="digitalent-dasarkeamananai" data-total="2">
+                        <div class="carousel-track">
+                            <div class="carousel-slide"><img src="Certificates/digitalent-dasarkeamananai_1.jpg"
+                                    alt="Keamanan AI 1"></div>
+                            <div class="carousel-slide"><img src="Certificates/digitalent-dasarkeamananai_2.jpg"
+                                    alt="Keamanan AI 2"></div>
                         </div>
+                        <div class="carousel-arrows">
+                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
+                                    class="bi bi-chevron-left"></i></button>
+                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
+                                    class="bi bi-chevron-right"></i></button>
+                        </div>
+                        <div class="carousel-nav">
+                            <span class="carousel-dot active"></span>
+                            <span class="carousel-dot"></span>
+                        </div>
+                        <div class="cert-img-count">1 / 2</div>
                     </div>
                     <div class="cert-info">
                         <h3>Dasar-dasar Keamanan AI</h3>
@@ -2433,13 +2509,26 @@
                     </div>
                 </div>
 
-                <!-- Certificate 9 - Keamanan Digital -->
-                <div class="cert-card" onclick="openCert('Certificates/digitalent-keamanandigital.jpg')">
-                    <div class="cert-preview">
-                        <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: var(--primary);"></i>
-                        <div class="cert-view-icon">
-                            <i class="bi bi-eye"></i>
+                <!-- 9. Keamanan Digital (2 gambar) -->
+                <div class="cert-card" onclick="openCertModal('digitalent-keamanandigital', 2)">
+                    <div class="cert-carousel" data-cert="digitalent-keamanandigital" data-total="2">
+                        <div class="carousel-track">
+                            <div class="carousel-slide"><img src="Certificates/digitalent-keamanandigital_1.jpg"
+                                    alt="Keamanan Digital 1"></div>
+                            <div class="carousel-slide"><img src="Certificates/digitalent-keamanandigital_2.jpg"
+                                    alt="Keamanan Digital 2"></div>
                         </div>
+                        <div class="carousel-arrows">
+                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
+                                    class="bi bi-chevron-left"></i></button>
+                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
+                                    class="bi bi-chevron-right"></i></button>
+                        </div>
+                        <div class="carousel-nav">
+                            <span class="carousel-dot active"></span>
+                            <span class="carousel-dot"></span>
+                        </div>
+                        <div class="cert-img-count">1 / 2</div>
                     </div>
                     <div class="cert-info">
                         <h3>Pentingnya Menjaga Keamanan Digital</h3>
@@ -2448,13 +2537,26 @@
                     </div>
                 </div>
 
-                <!-- Certificate 10 - Konsep Pemrograman -->
-                <div class="cert-card" onclick="openCert('Certificates/digitalent-konseppemograman.jpg')">
-                    <div class="cert-preview">
-                        <i class="bi bi-file-earmark-pdf" style="font-size: 3rem; color: var(--primary);"></i>
-                        <div class="cert-view-icon">
-                            <i class="bi bi-eye"></i>
+                <!-- 10. Konsep Pemrograman (2 gambar) -->
+                <div class="cert-card" onclick="openCertModal('digitalent-konseppemograman', 2)">
+                    <div class="cert-carousel" data-cert="digitalent-konseppemograman" data-total="2">
+                        <div class="carousel-track">
+                            <div class="carousel-slide"><img src="Certificates/digitalent-konseppemograman_1.jpg"
+                                    alt="Konsep Pemrograman 1"></div>
+                            <div class="carousel-slide"><img src="Certificates/digitalent-konseppemograman_2.jpg"
+                                    alt="Konsep Pemrograman 2"></div>
                         </div>
+                        <div class="carousel-arrows">
+                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
+                                    class="bi bi-chevron-left"></i></button>
+                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
+                                    class="bi bi-chevron-right"></i></button>
+                        </div>
+                        <div class="carousel-nav">
+                            <span class="carousel-dot active"></span>
+                            <span class="carousel-dot"></span>
+                        </div>
+                        <div class="cert-img-count">1 / 2</div>
                     </div>
                     <div class="cert-info">
                         <h3>Konsep Pemrograman</h3>
@@ -2467,11 +2569,20 @@
         </div>
     </section>
 
-    <!-- Certificate Modal -->
-    <div class="cert-modal" id="certModal" onclick="closeModal()">
-        <div class="modal-content">
-            <button class="modal-close">×</button>
-            <img id="certImage" src="" alt="Certificate">
+    <!-- ========== CERTIFICATE MODAL (fullscreen) ========== -->
+    <div class="cert-modal" id="certModal" onclick="closeCertModal(event)">
+        <div class="cert-modal-inner" onclick="event.stopPropagation()">
+            <button class="cert-modal-close" onclick="closeCertModal()">×</button>
+            <img class="cert-modal-img" id="certModalImg" src="" alt="Certificate">
+            <div class="cert-modal-arrows">
+                <button class="cert-modal-arrow prev-arrow" id="certModalPrev" onclick="certModalNav(-1)">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <button class="cert-modal-arrow next-arrow" id="certModalNext" onclick="certModalNav(1)">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+            </div>
+            <div class="cert-modal-counter" id="certModalCounter"></div>
         </div>
     </div>
 
@@ -2491,54 +2602,38 @@
                 <h2>Get In Touch</h2>
                 <p>Feel free to reach out for collaboration or opportunities</p>
             </div>
-
             <div class="contact-section">
                 <div class="contact-grid">
                     <div class="contact-left">
                         <h2>Let's Work <span class="highlight">Together!</span></h2>
                         <p>I'm always interested in hearing about new projects and opportunities. Whether you have a
                             question or just want to say hi, feel free to reach out!</p>
-
                         <div class="social-links">
                             <a href="https://www.linkedin.com/in/miftakhulkhs" target="_blank" class="social-link"
-                                title="LinkedIn">
-                                <i class="bi bi-linkedin"></i>
-                            </a>
-                            <a href="mailto:miftakhulkhasnaah26@gmail.com" class="social-link" title="Email">
-                                <i class="bi bi-envelope"></i>
-                            </a>
+                                title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                            <a href="mailto:miftakhulkhasnaah26@gmail.com" class="social-link" title="Email"><i
+                                    class="bi bi-envelope"></i></a>
                             <a href="https://github.com/miftakhulkhs" target="_blank" class="social-link"
-                                title="GitHub">
-                                <i class="bi bi-github"></i>
-                            </a>
+                                title="GitHub"><i class="bi bi-github"></i></a>
                         </div>
                     </div>
-
                     <div class="contact-methods">
                         <div class="contact-method">
-                            <div class="contact-icon">
-                                <i class="bi bi-envelope"></i>
-                            </div>
+                            <div class="contact-icon"><i class="bi bi-envelope"></i></div>
                             <div class="contact-details">
                                 <h4>Email</h4>
                                 <p><a href="mailto:miftakhulkhasnaah26@gmail.com">miftakhulkhasnaah26@gmail.com</a></p>
                             </div>
                         </div>
-
                         <div class="contact-method">
-                            <div class="contact-icon">
-                                <i class="bi bi-telephone"></i>
-                            </div>
+                            <div class="contact-icon"><i class="bi bi-telephone"></i></div>
                             <div class="contact-details">
                                 <h4>Phone</h4>
                                 <p>+62 816-4246-491</p>
                             </div>
                         </div>
-
                         <div class="contact-method">
-                            <div class="contact-icon">
-                                <i class="bi bi-geo-alt"></i>
-                            </div>
+                            <div class="contact-icon"><i class="bi bi-geo-alt"></i></div>
                             <div class="contact-details">
                                 <h4>Location</h4>
                                 <p>Cilacap, Jawa Tengah</p>
@@ -2553,229 +2648,266 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2026 Miftakhul Khasanah. Crafted with passion & innovation.</p>
+            <p>&copy; 2026 Miftakhul Khasanah. Crafted with passion &amp; innovation.</p>
         </div>
     </footer>
 
-    <!-- Scroll to Top Button -->
+    <!-- Scroll to Top -->
     <div class="scroll-top" onclick="scrollToTop()">
         <i class="bi bi-arrow-up"></i>
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
-        // Mobile Menu Toggle
+        // ============================================================
+        // MOBILE MENU
+        // ============================================================
         const menuToggle = document.querySelector('.menu-toggle');
         const navMenu = document.querySelector('.nav-menu');
 
-        menuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        // Close menu when clicking on a link
+        menuToggle.addEventListener('click', () => { navMenu.classList.toggle('active'); });
         document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
+            link.addEventListener('click', () => { navMenu.classList.remove('active'); });
         });
 
-        // Navbar scroll effect
+        // Navbar scroll
         window.addEventListener('scroll', () => {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
+            document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 50);
         });
 
-        // Project Filters
-        function showProjects(category) {
-            document.querySelectorAll('.projects-container').forEach(container => {
-                container.classList.remove('active');
-            });
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
+        // ============================================================
+        // PROJECT CATEGORY FILTER
+        // ============================================================
+        function showProjects(category, ev) {
+            document.querySelectorAll('.projects-container').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(category).classList.add('active');
-            event.target.classList.add('active');
-
-            // Reset position when switching categories
+            if (ev && ev.target) ev.target.closest('.filter-btn').classList.add('active');
             projectPositions[category] = 0;
             const grid = document.getElementById(`${category}-grid`);
-            if (grid) {
-                grid.style.transform = 'translateX(0)';
-                updateProjectButtons(category);
-            }
+            if (grid) { grid.style.transform = 'translateX(0)'; updateProjectButtons(category); }
         }
 
-        // Carousel Management
-        const carousels = [];
+        // ============================================================
+        // PROJECT CAROUSEL (for project cards)
+        // ============================================================
+        const carousels = {};
 
         function initCarousels() {
-            document.querySelectorAll('.project-carousel').forEach((carousel, index) => {
-                const carouselIndex = parseInt(carousel.getAttribute('data-carousel'));
+            document.querySelectorAll('.project-carousel').forEach(carousel => {
+                const idx = parseInt(carousel.getAttribute('data-carousel'));
                 const slides = carousel.querySelectorAll('.carousel-slide');
-                carousels[carouselIndex] = {
+                carousels[idx] = {
                     current: 0,
                     total: slides.length,
                     track: carousel.querySelector('.carousel-track'),
                     dots: carousel.querySelectorAll('.carousel-dot')
                 };
-                updateCarousel(carouselIndex);
+                updateCarousel(idx);
             });
         }
 
-        function updateCarousel(index) {
-            const carousel = carousels[index];
-            if (!carousel) return;
-
-            carousel.track.style.transform = `translateX(-${carousel.current * 100}%)`;
-
-            carousel.dots.forEach((dot, i) => {
-                dot.classList.toggle('active', i === carousel.current);
-            });
+        function updateCarousel(idx) {
+            const c = carousels[idx];
+            if (!c) return;
+            c.track.style.transform = `translateX(-${c.current * 100}%)`;
+            c.dots.forEach((d, i) => d.classList.toggle('active', i === c.current));
         }
 
-        function nextSlide(index) {
-            const carousel = carousels[index];
-            if (!carousel) return;
-
-            carousel.current = (carousel.current + 1) % carousel.total;
-            updateCarousel(index);
+        function nextSlide(idx) {
+            const c = carousels[idx];
+            if (!c) return;
+            c.current = (c.current + 1) % c.total;
+            updateCarousel(idx);
         }
 
-        function prevSlide(index) {
-            const carousel = carousels[index];
-            if (!carousel) return;
-
-            carousel.current = (carousel.current - 1 + carousel.total) % carousel.total;
-            updateCarousel(index);
+        function prevSlide(idx) {
+            const c = carousels[idx];
+            if (!c) return;
+            c.current = (c.current - 1 + c.total) % c.total;
+            updateCarousel(idx);
         }
 
-        function goToSlide(carouselIndex, slideIndex) {
-            const carousel = carousels[carouselIndex];
-            if (!carousel || slideIndex < 0 || slideIndex >= carousel.total) return;
-
-            carousel.current = slideIndex;
-            updateCarousel(carouselIndex);
+        function goToSlide(idx, slideIdx) {
+            const c = carousels[idx];
+            if (!c || slideIdx < 0 || slideIdx >= c.total) return;
+            c.current = slideIdx;
+            updateCarousel(idx);
         }
 
-        // Image Modal for Projects
-        function openImageModal(imageSrc) {
+        // ============================================================
+        // CERTIFICATION CARD CAROUSEL (mini carousel inside cert cards)
+        // ============================================================
+        function getCertCarousel(btn) {
+            return btn.closest('.cert-carousel');
+        }
+
+        function getCertState(carousel) {
+            if (!carousel._state) {
+                carousel._state = {
+                    current: 0,
+                    total: parseInt(carousel.getAttribute('data-total')) || 1
+                };
+            }
+            return carousel._state;
+        }
+
+        function updateCertCarousel(carousel) {
+            const state = getCertState(carousel);
+            const track = carousel.querySelector('.carousel-track');
+            const dots = carousel.querySelectorAll('.carousel-dot');
+            const counter = carousel.querySelector('.cert-img-count');
+
+            track.style.transform = `translateX(-${state.current * 100}%)`;
+            dots.forEach((d, i) => d.classList.toggle('active', i === state.current));
+            if (counter) counter.textContent = `${state.current + 1} / ${state.total}`;
+        }
+
+        function nextCertSlide(btn, ev) {
+            ev.stopPropagation();
+            const carousel = getCertCarousel(btn);
+            const state = getCertState(carousel);
+            state.current = (state.current + 1) % state.total;
+            updateCertCarousel(carousel);
+        }
+
+        function prevCertSlide(btn, ev) {
+            ev.stopPropagation();
+            const carousel = getCertCarousel(btn);
+            const state = getCertState(carousel);
+            state.current = (state.current - 1 + state.total) % state.total;
+            updateCertCarousel(carousel);
+        }
+
+        // ============================================================
+        // CERTIFICATE MODAL (fullscreen lightbox)
+        // ============================================================
+        let certModalState = { baseName: '', total: 1, current: 0 };
+
+        function openCertModal(baseName, total) {
+            certModalState = { baseName, total, current: 0 };
+            renderCertModal();
+            document.getElementById('certModal').classList.add('active');
+        }
+
+        function renderCertModal() {
+            const { baseName, total, current } = certModalState;
+            const img = document.getElementById('certModalImg');
+            const counter = document.getElementById('certModalCounter');
+            const prevBtn = document.getElementById('certModalPrev');
+            const nextBtn = document.getElementById('certModalNext');
+
+            // Build src: if total=1, use baseName.jpg; else baseName_N.jpg
+            const src = total === 1
+                ? `Certificates/${baseName}.jpg`
+                : `Certificates/${baseName}_${current + 1}.jpg`;
+
+            img.src = src;
+
+            // Counter
+            counter.textContent = total > 1 ? `${current + 1} / ${total}` : '';
+
+            // Show/hide arrows
+            prevBtn.style.display = total > 1 ? 'flex' : 'none';
+            nextBtn.style.display = total > 1 ? 'flex' : 'none';
+        }
+
+        function certModalNav(dir) {
+            certModalState.current = (certModalState.current + dir + certModalState.total) % certModalState.total;
+            renderCertModal();
+        }
+
+        function closeCertModal(ev) {
+            if (ev && ev.target !== document.getElementById('certModal')) return;
+            if (!ev) document.getElementById('certModal').classList.remove('active');
+            else document.getElementById('certModal').classList.remove('active');
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('certModal').classList.remove('active');
+                document.getElementById('imageModal').classList.remove('active');
+            }
+            if (e.key === 'ArrowRight' && document.getElementById('certModal').classList.contains('active')) certModalNav(1);
+            if (e.key === 'ArrowLeft' && document.getElementById('certModal').classList.contains('active')) certModalNav(-1);
+        });
+
+        // ============================================================
+        // IMAGE MODAL (for project images)
+        // ============================================================
+        function openImageModal(src) {
             const modal = document.getElementById('imageModal');
             const modalImage = document.getElementById('modalImage');
-            const modalContent = modal.querySelector('.modal-image-content');
-            modalImage.src = imageSrc;
+            const content = modal.querySelector('.modal-image-content');
+            modalImage.src = src;
             modal.classList.add('active');
-            modalContent.classList.remove('zoomed');
-
-            // Add click to zoom functionality
-            modalContent.onclick = function (e) {
+            content.classList.remove('zoomed');
+            content.onclick = function (e) {
                 e.stopPropagation();
                 this.classList.toggle('zoomed');
             };
         }
 
-        function closeImageModal() {
-            document.getElementById('imageModal').classList.remove('active');
-        }
+        function closeImageModal() { document.getElementById('imageModal').classList.remove('active'); }
 
-        // Certificate Modal
-        function openCert(imageSrc) {
-            const modal = document.getElementById('certModal');
-            const certImage = document.getElementById('certImage');
-            certImage.src = imageSrc;
-            modal.classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('certModal').classList.remove('active');
-        }
-
-        // Project Navigation System
-        const projectPositions = {
-            'design': 0,
-            'uiux': 0,
-            'web': 0
-        };
+        // ============================================================
+        // PROJECT NAVIGATION (slide grid left/right)
+        // ============================================================
+        const projectPositions = { design: 0, uiux: 0, web: 0 };
 
         function initProjectNavigation() {
-            updateProjectButtons('design');
-            updateProjectButtons('uiux');
-            updateProjectButtons('web');
+            ['design', 'uiux', 'web'].forEach(cat => updateProjectButtons(cat));
         }
 
         function navigateProjects(category, direction) {
             const grid = document.getElementById(`${category}-grid`);
             const wrapper = grid.parentElement;
             const cards = grid.querySelectorAll('.project-card');
-
             if (cards.length === 0) return;
 
-            // Get card width including gap
             const cardWidth = cards[0].offsetWidth;
-            const gap = 32; // 2rem = 32px
-            const moveDistance = (cardWidth + gap) * 2; // Move by 2 columns (1 full set of 2 rows)
-
-            // Calculate max position
+            const gap = 32;
+            const moveDistance = (cardWidth + gap) * 2;
             const totalWidth = grid.scrollWidth;
             const visibleWidth = wrapper.offsetWidth;
             const maxPosition = -(totalWidth - visibleWidth);
 
-            // Update position
             projectPositions[category] += direction * moveDistance;
+            if (projectPositions[category] > 0) projectPositions[category] = 0;
+            else if (projectPositions[category] < maxPosition) projectPositions[category] = maxPosition;
 
-            // Clamp position
-            if (projectPositions[category] > 0) {
-                projectPositions[category] = 0;
-            } else if (projectPositions[category] < maxPosition) {
-                projectPositions[category] = maxPosition;
-            }
-
-            // Apply transform
             grid.style.transform = `translateX(${projectPositions[category]}px)`;
-
-            // Update buttons
             updateProjectButtons(category);
         }
 
         function updateProjectButtons(category) {
             const grid = document.getElementById(`${category}-grid`);
-            const wrapper = grid.parentElement;
+            const wrapper = grid ? grid.parentElement : null;
             const prevBtn = document.getElementById(`${category}-prev`);
             const nextBtn = document.getElementById(`${category}-next`);
-
             if (!grid || !prevBtn || !nextBtn) return;
 
             const totalWidth = grid.scrollWidth;
             const visibleWidth = wrapper.offsetWidth;
             const maxPosition = -(totalWidth - visibleWidth);
 
-            // Disable/enable buttons based on position
             prevBtn.disabled = projectPositions[category] >= 0;
             nextBtn.disabled = projectPositions[category] <= maxPosition || totalWidth <= visibleWidth;
         }
 
-        // Scroll to Top
+        // ============================================================
+        // SCROLL TO TOP
+        // ============================================================
         const scrollTopBtn = document.querySelector('.scroll-top');
-
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                scrollTopBtn.classList.add('show');
-            } else {
-                scrollTopBtn.classList.remove('show');
-            }
+            scrollTopBtn.classList.toggle('show', window.scrollY > 300);
         });
 
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        }
+        function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-        // Navigation Active State
+        // ============================================================
+        // NAVIGATION ACTIVE STATE & SMOOTH SCROLL
+        // ============================================================
         document.addEventListener('DOMContentLoaded', function () {
             initCarousels();
             initProjectNavigation();
@@ -2786,39 +2918,25 @@
             function updateActiveNav() {
                 let current = '';
                 const scrollPos = window.scrollY + 100;
-
                 sections.forEach(section => {
-                    const sectionTop = section.offsetTop;
-                    const sectionHeight = section.clientHeight;
-
-                    if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    if (scrollPos >= section.offsetTop && scrollPos < section.offsetTop + section.clientHeight) {
                         current = section.getAttribute('id');
                     }
                 });
-
                 navLinks.forEach(link => {
                     link.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + current) {
-                        link.classList.add('active');
-                    }
+                    if (link.getAttribute('href') === '#' + current) link.classList.add('active');
                 });
             }
 
             window.addEventListener('scroll', updateActiveNav);
 
-            // Smooth Scroll
             navLinks.forEach(link => {
                 link.addEventListener('click', function (e) {
                     e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    const targetSection = document.querySelector(targetId);
-
-                    if (targetSection) {
-                        window.scrollTo({
-                            top: targetSection.offsetTop - 70,
-                            behavior: 'smooth'
-                        });
-
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        window.scrollTo({ top: target.offsetTop - 70, behavior: 'smooth' });
                         navLinks.forEach(l => l.classList.remove('active'));
                         this.classList.add('active');
                     }
