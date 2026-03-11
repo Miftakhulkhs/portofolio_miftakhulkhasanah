@@ -4,2771 +4,2439 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miftakhul Khasanah - Portfolio</title>
+    <title>Miftakhul Khasanah — Portfolio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        const firebaseConfig = {
+            apiKey: "AIzaSyDV6cJQZtsfJC5Gl6WL5ke--tns71wVYB0",
+            authDomain: "portofolio-mifta.firebaseapp.com",
+            projectId: "portofolio-mifta",
+            storageBucket: "portofolio-mifta.firebasestorage.app",
+            messagingSenderId: "729324423767",
+            appId: "1:729324423767:web:da97cd3a4894d62c79b112",
+            measurementId: "G-453SVD1D3R"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        async function loadFromFirebase() {
+            try {
+                const projSnap = await getDocs(collection(db, 'projects'));
+                if (!projSnap.empty) {
+                    const projects = {};
+                    projSnap.forEach(d => { projects[d.id] = d.data(); });
+                    window.PD = { ...window.PD, ...projects };
+                    renderProjects(projects);
+                }
+                const certSnap = await getDocs(query(collection(db, 'certifications'), orderBy('order', 'asc')));
+                if (!certSnap.empty) {
+                    const certs = [];
+                    certSnap.forEach(d => certs.push({ id: d.id, ...d.data() }));
+                    renderCertifications(certs);
+                }
+                const expSnap = await getDocs(query(collection(db, 'experience'), orderBy('order', 'asc')));
+                if (!expSnap.empty) {
+                    const exps = [];
+                    expSnap.forEach(d => exps.push({ id: d.id, ...d.data() }));
+                    renderExperience(exps);
+                }
+            } catch (e) { console.log('Firebase offline, using static data'); }
+        }
+        function renderProjects(projects) {
+            const dg = document.querySelector('#pp-design .dg');
+            if (!dg) return;
+            const dp = Object.entries(projects).filter(([k, v]) => v.category === 'design').sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+            if (!dp.length) return;
+            dg.innerHTML = dp.map(([id, p]) => `<div class="dc" onclick="openDet('${id}')"><div class="car" data-tot="${(p.imgs || []).length || 1}"><div class="ct">${(p.imgs || ['']).map(img => `<div class="cs"><img src="${img}" alt="" loading="lazy"></div>`).join('')}</div>${(p.imgs || []).length > 1 ? `<div class="ca"><button class="cb" onclick="cp(this,event)"><i class="bi bi-chevron-left"></i></button><button class="cb" onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div>` : ``}<div class="cdots">${(p.imgs || ['']).map((_, i) => `<span class="cd ${i === 0 ? 'on' : ''}"></span>`).join('')}</div></div><div class="di"><h3>${p.title}</h3><p>${p.shortDesc || ''}</p><div class="dm"><span>${p.yr || ''} · ${(p.tools || []).join(', ')}</span><span class="det-link">Detail <i class="bi bi-arrow-right"></i></span></div></div></div>`).join('');
+            initSeeMore('pp-design', '.dc', 3);
+        }
+        function renderCertifications(certs) {
+            const grid = document.querySelector('.cg');
+            if (!grid || !certs.length) return;
+            grid.innerHTML = certs.map(c => { const imgs = c.imgs || [c.img]; const tot = imgs.length; return `<div class="cert-card" onclick="openModal('${c.base || c.id}',${tot})"><div class="cth" data-tot="${tot}"><div class="ct">${imgs.map(im => `<div class="cs"><img src="${im}" alt="" loading="lazy"></div>`).join('')}</div>${tot > 1 ? `<div class="ca"><button class="cb" onclick="cp(this,event)"><i class="bi bi-chevron-left"></i></button><button class="cb" onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div><div class="ccnt">1 / ${tot}</div>` : ``}<div class="cdots">${imgs.map((_, j) => `<span class="cd ${j === 0 ? 'on' : ''}"></span>`).join('')}</div></div><div class="ci"><h3>${c.title}</h3><div class="iss">${c.issuer}</div><div class="cdt">${c.date || ''}</div></div></div>`; }).join('');
+            initSeeMore('certifications', '.cert-card', 4);
+            document.querySelectorAll('.cg .cert-card').forEach(el => obs.observe(el));
+        }
+        function renderExperience(exps) {
+            const container = document.querySelector('.tl-wrap');
+            if (!container || !exps.length) return;
+            container.innerHTML = exps.map((e, i) => `<div class="tl-row sr" style="transition-delay:${i * 0.1 + 0.1}s"><div class="tl-t"><div class="tl-d">${e.dateFrom || ''}<br>— ${e.dateTo || ''}</div></div><div class="tl-n"></div><div class="tl-c">${e.badge ? `<div class="tl-badge">${e.badge}</div>` : ''}<div class="tl-title">${e.title}</div><div class="tl-co">${e.company}</div><ul class="tl-ul">${(e.responsibilities || []).map(r => `<li>${r}</li>`).join('')}</ul>${e.tags && e.tags.length ? `<div class="m-row">${e.tags.map(t => `<span class="mt"><i class="bi bi-tag"></i> ${t}</span>`).join('')}</div>` : ''}</div></div>`).join('');
+            initSeeMore('experience', '.tl-row', 2);
+            document.querySelectorAll('.tl-wrap .sr').forEach(el => obs.observe(el));
+        }
+        window.addEventListener('DOMContentLoaded', () => setTimeout(loadFromFirebase, 150));
+    </script>
     <style>
-        * {
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            box-sizing: border-box
         }
 
         :root {
-            --primary: #0ea5e9;
-            --primary-dark: #0284c7;
-            --secondary: #06b6d4;
-            --dark: #1e293b;
-            --gray: #64748b;
-            --light-gray: #f1f5f9;
+            --bg: #f5f8ff;
+            --bg2: #edf2fb;
+            --bg3: #e4ecf7;
             --white: #ffffff;
-            --text: #334155;
+            --blue: #2563eb;
+            --blue2: #3b82f6;
+            --blue3: #93c5fd;
+            --navy: #1e3a5f;
+            --text: #1e293b;
+            --text2: #475569;
+            --text3: #94a3b8;
+            --border: rgba(37, 99, 235, 0.12);
+            --border2: rgba(37, 99, 235, 0.07);
+            --glow: rgba(37, 99, 235, 0.07);
+            --shadow: 0 1px 12px rgba(30, 58, 95, 0.07);
+            --shadow2: 0 4px 24px rgba(30, 58, 95, 0.11);
+            --r: 10px;
+        }
+
+        html {
+            scroll-behavior: smooth
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--light-gray);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
             color: var(--text);
-            line-height: 1.6;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased
         }
 
-        /* Navigation */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(ellipse 800px 500px at 0% 0%, rgba(147, 197, 253, 0.16) 0%, transparent 60%), radial-gradient(ellipse 600px 400px at 100% 100%, rgba(59, 130, 246, 0.07) 0%, transparent 60%)
+        }
+
         nav {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1.2rem 0;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        nav.scrolled {
-            padding: 0.8rem 0;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
+            height: 60px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            padding: 0 2.5rem;
+            justify-content: space-between;
+            background: rgba(245, 248, 255, 0.82);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border2);
+            transition: all .3s
+        }
+
+        nav.solid {
+            background: rgba(245, 248, 255, 0.97);
+            box-shadow: var(--shadow)
         }
 
         .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            transition: transform 0.3s ease;
-            letter-spacing: -1px;
-            position: relative;
-            padding: 0.3rem 0.8rem;
+            font-size: 1.12rem;
+            font-weight: 700;
+            color: var(--navy);
+            letter-spacing: -.3px;
+            text-decoration: none
         }
 
-        .logo::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            opacity: 0.1;
-            border-radius: 8px;
-            z-index: -1;
+        .logo em {
+            color: var(--blue);
+            font-style: normal
         }
 
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        .nav-menu {
+        .nav-links {
             display: flex;
             list-style: none;
-            gap: 1.8rem;
+            gap: .1rem
         }
 
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--text);
+        .nav-links a {
+            display: block;
+            padding: .35rem .72rem;
+            font-size: .8rem;
             font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 0.5rem 0;
-            cursor: pointer;
+            color: var(--text2);
+            text-decoration: none;
+            border-radius: 7px;
+            transition: all .2s
         }
 
-        .nav-menu a:hover {
-            color: var(--primary);
+        .nav-links a:hover,
+        .nav-links a.on {
+            color: var(--blue);
+            background: var(--glow)
         }
 
-        .nav-menu a.active {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .menu-toggle {
+        .burger {
             display: none;
             flex-direction: column;
             gap: 5px;
             cursor: pointer;
+            padding: 6px;
+            background: none;
+            border: none
         }
 
-        .menu-toggle span {
-            width: 25px;
-            height: 3px;
-            background: var(--primary);
+        .burger span {
+            display: block;
+            width: 20px;
+            height: 1.5px;
+            background: var(--text);
             border-radius: 2px;
-            transition: all 0.3s;
+            transition: all .3s
         }
 
-        .container {
-            max-width: 1200px;
+        .burger.x span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 4.5px)
+        }
+
+        .burger.x span:nth-child(2) {
+            opacity: 0
+        }
+
+        .burger.x span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -4.5px)
+        }
+
+        .mob-menu {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            background: rgba(245, 248, 255, 0.98);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem 1.5rem;
+            z-index: 999;
+            box-shadow: var(--shadow2)
+        }
+
+        .mob-menu.open {
+            display: block
+        }
+
+        .mob-menu a {
+            display: block;
+            padding: .65rem 0;
+            font-size: .93rem;
+            font-weight: 500;
+            color: var(--text2);
+            text-decoration: none;
+            border-bottom: 1px solid var(--border2)
+        }
+
+        .mob-menu a:last-child {
+            border-bottom: 0
+        }
+
+        .sr {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity .55s ease, transform .55s ease
+        }
+
+        .sl {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity .55s ease, transform .55s ease
+        }
+
+        .srr {
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity .55s ease, transform .55s ease
+        }
+
+        .sr.in,
+        .sl.in,
+        .srr.in {
+            opacity: 1;
+            transform: none
+        }
+
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 6.5rem 0 4.5rem
+        }
+
+        .wrap {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 2rem
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            font-size: .68rem;
+            font-weight: 600;
+            color: var(--blue);
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            margin-bottom: .6rem
+        }
+
+        .tag::before {
+            content: '';
+            width: 16px;
+            height: 1.5px;
+            background: var(--blue2);
+            border-radius: 2px
+        }
+
+        .sec-h {
+            font-size: clamp(1.7rem, 3.8vw, 2.8rem);
+            font-weight: 700;
+            color: var(--navy);
+            line-height: 1.1;
+            letter-spacing: -.4px;
+            margin-bottom: 2.5rem
+        }
+
+        .sec-h em {
+            color: var(--blue);
+            font-style: normal;
+            font-weight: 300
+        }
+
+        .divline {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.15), transparent);
+            margin: 0 2rem;
+            position: relative;
+            z-index: 1
+        }
+
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 60px;
+            overflow: hidden
+        }
+
+        .hero-g {
+            max-width: 1120px;
             margin: 0 auto;
             padding: 0 2rem;
-        }
-
-        /* Page Container - untuk sistem halaman */
-        .page {
-            display: none;
-            min-height: calc(100vh - 140px);
-            padding: 100px 0 60px;
-        }
-
-        .page.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: calc(100vh - 140px);
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 5rem;
+            gap: 4rem;
             align-items: center;
-            width: 100%;
+            width: 100%
         }
 
-        .hero-text {
-            animation: fadeInLeft 0.8s ease-out;
-        }
-
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .hero-text h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1rem;
-            color: var(--dark);
-        }
-
-        .hero-text h1 .name {
-            color: var(--primary);
-        }
-
-        .hero-subtitle {
-            font-size: 1.5rem;
+        .avail {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            padding: .32rem .9rem;
+            border-radius: 20px;
+            background: rgba(37, 99, 235, 0.07);
+            border: 1px solid var(--border);
+            font-size: .68rem;
             font-weight: 600;
-            color: var(--gray);
-            margin-bottom: 1.5rem;
+            color: var(--blue);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 1.4rem
         }
 
-        .hero-text p {
-            font-size: 1.1rem;
-            color: var(--gray);
-            line-height: 1.8;
-            margin-bottom: 2.5rem;
+        .adot {
+            width: 6px;
+            height: 6px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 7px #22c55e;
+            animation: blink 2s infinite
         }
 
-        .hero-buttons {
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .2
+            }
+        }
+
+        .hero-name {
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 700;
+            line-height: .96;
+            letter-spacing: -2px;
+            margin-bottom: .55rem
+        }
+
+        .hero-name .s {
+            color: var(--navy)
+        }
+
+        .hero-name .o {
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--blue)
+        }
+
+        .hero-sub {
+            font-size: .82rem;
+            font-weight: 600;
+            color: var(--text3);
+            margin-bottom: 1.1rem;
+            letter-spacing: .1em;
+            text-transform: uppercase
+        }
+
+        .hero-desc {
+            font-size: .95rem;
+            line-height: 1.85;
+            color: var(--text2);
+            max-width: 440px;
+            margin-bottom: 2.2rem;
+            padding-left: .85rem;
+            border-left: 2px solid var(--blue3)
+        }
+
+        .btns {
             display: flex;
-            gap: 1rem;
+            gap: .7rem;
+            flex-wrap: wrap
         }
 
         .btn {
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            border: none;
+            gap: .45rem;
+            padding: .7rem 1.4rem;
+            font-size: .83rem;
+            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
+            text-decoration: none;
+            border: none;
+            transition: all .22s;
+            font-family: 'Plus Jakarta Sans', sans-serif
         }
 
-        .btn-primary {
-            background: var(--primary);
-            color: white;
+        .btn-s {
+            background: var(--blue);
+            color: #fff;
+            box-shadow: 0 3px 14px rgba(37, 99, 235, 0.28)
         }
 
-        .btn-primary:hover {
-            background: var(--primary-dark);
+        .btn-s:hover {
+            background: #1d4ed8;
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
+            box-shadow: 0 7px 22px rgba(37, 99, 235, 0.36)
         }
 
-        .btn-secondary {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
+        .btn-g {
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            color: var(--navy);
+            box-shadow: var(--shadow)
         }
 
-        .btn-secondary:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
+        .btn-g:hover {
+            border-color: var(--blue2);
+            color: var(--blue);
+            transform: translateY(-2px)
         }
 
-        .profile-image {
+        .hero-nums {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            animation: fadeInRight 0.8s ease-out;
+            gap: 2.2rem;
+            margin-top: 2.2rem;
+            padding-top: 1.6rem;
+            border-top: 1px solid var(--border)
         }
 
-        .profile-wrapper {
-            position: relative;
-            width: 450px;
-            height: 450px;
-        }
-
-        .decorative-circle {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.1;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .circle-1 {
-            width: 200px;
-            height: 200px;
-            background: var(--primary);
-            top: -20px;
-            left: -20px;
-            animation-delay: 0s;
-        }
-
-        .circle-2 {
-            width: 150px;
-            height: 150px;
-            background: var(--secondary);
-            bottom: 20px;
-            right: -10px;
-            animation-delay: 1s;
-        }
-
-        .circle-3 {
-            width: 100px;
-            height: 100px;
-            background: var(--primary);
-            top: 50%;
-            right: -30px;
-            animation-delay: 2s;
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        .profile-circle {
-            width: 380px;
-            height: 380px;
-            border-radius: 50%;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
+        .num-v {
+            font-size: 2rem;
             font-weight: 700;
+            color: var(--navy);
+            line-height: 1
+        }
+
+        .num-v sup {
+            font-size: .95rem;
+            color: var(--blue)
+        }
+
+        .num-l {
+            font-size: .67rem;
+            color: var(--text3);
+            margin-top: .16rem;
+            letter-spacing: .06em;
+            text-transform: uppercase
+        }
+
+        .pw {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center
+        }
+
+        .pr1 {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 20px 60px rgba(14, 165, 233, 0.3);
-            border: 8px solid white;
+            width: 340px;
+            height: 340px;
+            border: 1px solid rgba(37, 99, 235, 0.14);
+            border-radius: 50%;
+            animation: sp 24s linear infinite
+        }
+
+        .pr1::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: calc(50% - 4px);
+            width: 8px;
+            height: 8px;
+            background: var(--blue2);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--blue2)
+        }
+
+        .pr2 {
+            position: absolute;
+            width: 285px;
+            height: 285px;
+            border: 1px dashed rgba(37, 99, 235, 0.07);
+            border-radius: 50%;
+            animation: sp 17s linear infinite reverse
+        }
+
+        @keyframes sp {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        .pimg {
+            width: 255px;
+            height: 255px;
+            border-radius: 50%;
             overflow: hidden;
-            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            border: 3px solid rgba(37, 99, 235, 0.16);
+            box-shadow: 0 0 40px rgba(37, 99, 235, 0.09), var(--shadow2)
         }
 
-        .profile-circle:hover {
-            transform: translate(-50%, -50%) scale(1.05);
-            box-shadow: 0 25px 70px rgba(14, 165, 233, 0.4);
-        }
-
-        .profile-circle img {
+        .pimg img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
+            object-fit: cover
         }
 
-        .floating-badge {
+        .chip {
             position: absolute;
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            bottom: 22px;
+            right: -6px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: .65rem .95rem;
             display: flex;
             align-items: center;
-            gap: 0.8rem;
-            z-index: 10;
-            animation: floatBadge 3s ease-in-out infinite;
+            gap: .6rem;
+            z-index: 3;
+            box-shadow: var(--shadow2);
+            animation: chf 3.5s ease-in-out infinite
         }
 
-        .badge-available {
-            top: 30px;
-            right: 0;
-        }
-
-        @keyframes floatBadge {
+        @keyframes chf {
 
             0%,
             100% {
-                transform: translateY(0);
+                transform: translateY(0)
             }
 
             50% {
-                transform: translateY(-10px);
+                transform: translateY(-6px)
             }
         }
 
-        .badge-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--primary);
-            border-radius: 8px;
+        .cdot-g {
+            width: 7px;
+            height: 7px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 7px #22c55e
+        }
+
+        .cinfo strong {
+            display: block;
+            font-size: .77rem;
+            font-weight: 700;
+            color: var(--navy)
+        }
+
+        .cinfo span {
+            font-size: .65rem;
+            color: var(--text3)
+        }
+
+        #about {
+            background: linear-gradient(180deg, var(--bg), var(--bg2))
+        }
+
+        .ab-g {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 3.5rem;
+            align-items: start
+        }
+
+        .ab-body p {
+            font-size: .95rem;
+            line-height: 1.85;
+            color: var(--text2);
+            margin-bottom: 1.1rem
+        }
+
+        .hl {
+            color: var(--blue);
+            font-weight: 600
+        }
+
+        .edu {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 1.8rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow)
+        }
+
+        .edu::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blue2), var(--blue))
+        }
+
+        .edu-uni {
+            font-size: 1.08rem;
+            font-weight: 700;
+            color: var(--navy);
+            line-height: 1.3;
+            margin-bottom: .3rem
+        }
+
+        .edu-deg {
+            font-size: .88rem;
+            color: var(--text2);
+            margin-bottom: .18rem
+        }
+
+        .edu-yr {
+            font-size: .78rem;
+            color: var(--text3);
+            margin-bottom: 1.2rem
+        }
+
+        .gpa {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            background: var(--blue);
+            color: #fff;
+            padding: .38rem .9rem;
+            border-radius: 6px;
+            font-size: .8rem;
+            font-weight: 700;
+            box-shadow: 0 3px 12px rgba(37, 99, 235, 0.28)
+        }
+
+        #experience {
+            background: var(--bg2)
+        }
+
+        .tl-wrap {
+            position: relative
+        }
+
+        .tl-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 2rem;
+            margin-bottom: 1.6rem;
+            position: relative
+        }
+
+        .tl-row::after {
+            content: '';
+            position: absolute;
+            left: 139px;
+            top: 2rem;
+            bottom: -1.6rem;
+            width: 1px;
+            background: linear-gradient(to bottom, rgba(37, 99, 235, 0.2), transparent)
+        }
+
+        .tl-row:last-of-type::after {
+            display: none
+        }
+
+        .tl-t {
+            padding-top: 1.4rem;
+            text-align: right;
+            padding-right: 1.8rem
+        }
+
+        .tl-d {
+            font-size: .68rem;
+            color: var(--text3);
+            line-height: 1.65;
+            letter-spacing: .02em
+        }
+
+        .tl-n {
+            position: absolute;
+            left: 133px;
+            top: 1.75rem;
+            width: 13px;
+            height: 13px;
+            background: var(--bg2);
+            border: 2px solid var(--blue);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(37, 99, 235, 0.26)
+        }
+
+        .tl-c {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 1.5rem;
+            transition: all .25s;
+            box-shadow: var(--shadow)
+        }
+
+        .tl-c:hover {
+            border-color: var(--blue2);
+            box-shadow: var(--shadow2);
+            transform: translateX(3px)
+        }
+
+        .tl-badge {
+            display: inline-block;
+            padding: .18rem .55rem;
+            font-size: .62rem;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            background: rgba(37, 99, 235, 0.07);
+            color: var(--blue);
+            border-radius: 4px;
+            margin-bottom: .75rem;
+            border: 1px solid var(--border)
+        }
+
+        .tl-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: .18rem
+        }
+
+        .tl-co {
+            font-size: .84rem;
+            color: var(--blue);
+            font-weight: 500;
+            margin-bottom: .8rem
+        }
+
+        .tl-ul {
+            list-style: none
+        }
+
+        .tl-ul li {
+            font-size: .85rem;
+            color: var(--text2);
+            padding-left: 1rem;
+            margin-bottom: .38rem;
+            position: relative;
+            line-height: 1.6
+        }
+
+        .tl-ul li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--blue);
+            font-size: .95rem;
+            font-weight: 700
+        }
+
+        .m-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .42rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border2)
+        }
+
+        .mt {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .25rem .6rem;
+            background: var(--bg);
+            border: 1px solid var(--border2);
+            border-radius: 5px;
+            font-size: .72rem;
+            color: var(--text2);
+            font-weight: 500
+        }
+
+        .mt i {
+            color: var(--blue);
+            font-size: .74rem
+        }
+
+        #skills {
+            background: linear-gradient(180deg, var(--bg2), var(--bg3))
+        }
+
+        .sk-g {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+            gap: .9rem
+        }
+
+        .sk {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 1.3rem;
+            transition: all .25s;
+            box-shadow: var(--shadow)
+        }
+
+        .sk:hover {
+            border-color: var(--blue2);
+            box-shadow: var(--shadow2);
+            transform: translateY(-2px)
+        }
+
+        .sk-h {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            margin-bottom: .9rem;
+            padding-bottom: .9rem;
+            border-bottom: 1px solid var(--border2)
+        }
+
+        .sk-i {
+            width: 32px;
+            height: 32px;
+            background: rgba(37, 99, 235, 0.07);
+            border: 1px solid var(--border);
+            border-radius: 7px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-size: 1.1rem;
+            color: var(--blue);
+            font-size: .9rem;
+            flex-shrink: 0
         }
 
-        .badge-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .badge-text strong {
-            color: var(--dark);
-            font-size: 1rem;
+        .sk-l {
+            font-size: .82rem;
             font-weight: 700;
+            color: var(--navy)
         }
 
-        .badge-text span {
-            color: var(--gray);
-            font-size: 0.85rem;
+        .pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .34rem
         }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 3rem;
-            animation: fadeInUp 0.6s ease-out;
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            padding: .3rem .6rem;
+            background: var(--bg2);
+            border: 1px solid var(--border2);
+            border-radius: 5px;
+            font-size: .74rem;
+            color: var(--text2);
+            font-weight: 500;
+            transition: all .2s
         }
 
-        @keyframes fadeInUp {
+        .pill:hover {
+            background: rgba(37, 99, 235, 0.07);
+            border-color: var(--border);
+            color: var(--blue)
+        }
+
+        .pill img {
+            width: 13px;
+            height: 13px;
+            object-fit: contain
+        }
+
+        #projects {
+            background: var(--bg3)
+        }
+
+        .p-tabs {
+            display: flex;
+            gap: .38rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem
+        }
+
+        .p-tab {
+            padding: .42rem 1rem;
+            font-size: .78rem;
+            font-weight: 600;
+            border: 1.5px solid var(--border);
+            border-radius: 7px;
+            cursor: pointer;
+            background: var(--white);
+            color: var(--text2);
+            transition: all .2s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            box-shadow: var(--shadow)
+        }
+
+        .p-tab.on,
+        .p-tab:hover {
+            background: var(--blue);
+            color: #fff;
+            border-color: var(--blue);
+            box-shadow: 0 3px 12px rgba(37, 99, 235, 0.24)
+        }
+
+        .pp {
+            display: none
+        }
+
+        .pp.on {
+            display: block;
+            animation: fu .28s ease
+        }
+
+        @keyframes fu {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(7px)
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: none
             }
         }
 
-        .section-label {
-            display: inline-block;
-            padding: 0.5rem 1.2rem;
-            background: rgba(14, 165, 233, 0.1);
-            color: var(--primary);
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-        }
-
-        .section-header h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: var(--dark);
-            margin-bottom: 1rem;
-        }
-
-        .section-header p {
-            color: var(--gray);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* About Section */
-        .about-content {
+        .dg {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 3rem;
-            background: white;
-            padding: 3rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
+            grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+            gap: .9rem
         }
 
-        .about-content:hover {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-            transform: translateY(-5px);
-        }
-
-        .about-text {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: var(--text);
-        }
-
-        .about-text p {
-            margin-bottom: 1.5rem;
-        }
-
-        .education-card {
-            background: var(--light-gray);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .education-card:hover {
-            background: rgba(14, 165, 233, 0.05);
-        }
-
-        .education-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--primary);
-        }
-
-        .education-header h3 {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: var(--dark);
-        }
-
-        .gpa-badge {
-            background: var(--primary);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 700;
-        }
-
-        .education-details p {
-            color: var(--gray);
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-        }
-
-        .education-details strong {
-            color: var(--primary);
-        }
-
-        /* Experience Timeline */
-        .timeline {
-            position: relative;
-            padding-left: 3rem;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: var(--primary);
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .timeline-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.15);
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -3.4rem;
-            top: 2rem;
-            width: 16px;
-            height: 16px;
-            background: var(--primary);
-            border-radius: 50%;
-            border: 4px solid white;
-            box-shadow: 0 0 0 3px var(--light-gray);
-        }
-
-        .timeline-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: start;
-            margin-bottom: 1rem;
-        }
-
-        .timeline-header h3 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 0.3rem;
-        }
-
-        .timeline-company {
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 1.05rem;
-        }
-
-        .timeline-badge {
-            background: var(--primary);
-            color: white;
-            padding: 0.4rem 1rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .timeline-date {
-            color: var(--gray);
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
-        }
-
-        .timeline-item ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .timeline-item li {
-            padding-left: 1.5rem;
-            margin-bottom: 0.5rem;
-            position: relative;
-            color: var(--text);
-        }
-
-        .timeline-item li::before {
-            content: '▸';
-            position: absolute;
-            left: 0;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        /* Skills Grid */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .skill-category {
-            background: white;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            transition: all 0.4s ease;
-        }
-
-        .skill-category:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 35px rgba(14, 165, 233, 0.2);
-        }
-
-        .skill-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid var(--light-gray);
-        }
-
-        .skill-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .skill-header h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--dark);
-        }
-
-        .skill-items {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .skill-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 0.8rem;
-            background: var(--light-gray);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .skill-item:hover {
-            background: rgba(14, 165, 233, 0.1);
-            transform: translateX(8px);
-        }
-
-        .skill-item-icon {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .skill-item-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .skill-item-icon i {
-            font-size: 1.8rem;
-        }
-
-        .skill-item span {
-            font-weight: 600;
-            color: var(--text);
-            font-size: 0.95rem;
-        }
-
-        /* Portfolio Grid */
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .portfolio-item {
-            background: white;
-            border-radius: 12px;
+        .dc {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: all .25s;
+            box-shadow: var(--shadow)
         }
 
-        .portfolio-item:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.25);
+        .dc:hover {
+            border-color: var(--blue2);
+            box-shadow: var(--shadow2);
+            transform: translateY(-3px)
         }
 
-        .portfolio-image {
+        .car {
             position: relative;
             width: 100%;
-            padding-bottom: 75%;
+            padding-bottom: 64%;
             overflow: hidden;
-            background: var(--light-gray);
+            background: var(--bg3)
         }
 
-        .portfolio-image img {
+        .ct {
             position: absolute;
-            top: 0;
-            left: 0;
+            inset: 0;
+            display: flex;
+            transition: transform .38s ease
+        }
+
+        .cs {
+            min-width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .cs img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
+            object-fit: cover
         }
 
-        .portfolio-item:hover .portfolio-image img {
-            transform: scale(1.1);
+        .ca {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 6px;
+            opacity: 0;
+            transition: opacity .25s;
+            pointer-events: none;
+            z-index: 5
         }
 
-        .portfolio-info {
-            padding: 1.2rem;
+        .dc:hover .ca,
+        .cert-card:hover .ca {
+            opacity: 1
         }
 
-        .portfolio-info h3 {
-            font-size: 1.1rem;
+        .cb {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, .92);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--blue);
+            font-size: .65rem;
+            pointer-events: all;
+            transition: all .2s
+        }
+
+        .cb:hover {
+            background: var(--blue);
+            color: #fff
+        }
+
+        .cdots {
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 4px;
+            z-index: 5
+        }
+
+        .cd {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .45);
+            transition: all .28s
+        }
+
+        .cd.on {
+            background: var(--blue);
+            width: 11px;
+            border-radius: 3px
+        }
+
+        .di {
+            padding: .85rem .95rem
+        }
+
+        .di h3 {
+            font-size: .86rem;
             font-weight: 700;
-            margin-bottom: 0.4rem;
-            color: var(--dark);
+            color: var(--navy);
+            margin-bottom: .18rem
         }
 
-        .portfolio-info p {
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+        .di p {
+            font-size: .75rem;
+            color: var(--text2);
             line-height: 1.5;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            margin-bottom: .4rem
         }
 
-        .portfolio-meta {
+        .dm {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 0.5rem;
-            color: var(--primary);
-            font-size: 0.85rem;
+            font-size: .7rem;
+            color: var(--text3)
+        }
+
+        .det-link {
+            color: var(--blue);
             font-weight: 600;
-        }
-
-        .portfolio-meta i {
-            font-size: 0.8rem;
-        }
-
-        /* Project Filters */
-        .project-filters {
             display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 0.8rem 1.5rem;
-            background: white;
-            border: 2px solid var(--primary);
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--primary);
-        }
-
-        .filter-btn.active {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .filter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(14, 165, 233, 0.2);
-        }
-
-        .projects-container {
-            display: none;
-        }
-
-        .projects-container.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        /* Project Detail Page */
-        .project-detail-page {
-            display: none;
-            min-height: calc(100vh - 140px);
-            padding: 100px 0 60px;
-            background: var(--light-gray);
-        }
-
-        .project-detail-page.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .project-detail-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .back-button {
-            display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            color: var(--primary);
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
+            gap: .22rem
         }
 
-        .back-button:hover {
-            transform: translateX(-5px);
-        }
-
-        .project-detail-content {
+        .wg {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            background: white;
-            border-radius: 16px;
-            padding: 2.5rem;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+            grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+            gap: .9rem
         }
 
-        .project-detail-left h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--dark);
-            margin-bottom: 1rem;
-            line-height: 1.2;
+        .wc {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            overflow: hidden;
+            transition: all .25s;
+            box-shadow: var(--shadow)
         }
 
-        .project-detail-left .project-company {
-            color: var(--primary);
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
+        .wc:hover {
+            border-color: var(--blue2);
+            box-shadow: var(--shadow2);
+            transform: translateY(-3px)
+        }
+
+        .wt {
+            width: 100%;
+            aspect-ratio: 16/10;
+            background: var(--bg3);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            overflow: hidden
         }
 
-        .project-detail-left .project-description {
-            color: var(--text);
-            line-height: 1.8;
-            margin-bottom: 2rem;
+        .wt img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
         }
 
-        .project-detail-left .project-section {
-            margin-bottom: 2rem;
+        .wph {
+            font-size: 2.2rem;
+            color: var(--text3)
         }
 
-        .project-detail-left .project-section h3 {
-            font-size: 1.2rem;
+        .wi {
+            padding: 1rem 1.05rem
+        }
+
+        .wi h3 {
+            font-size: .93rem;
             font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            color: var(--navy);
+            margin-bottom: .28rem
         }
 
-        .project-detail-left .project-section h3 i {
-            color: var(--primary);
+        .wi p {
+            font-size: .8rem;
+            color: var(--text2);
+            line-height: 1.6;
+            margin-bottom: .8rem
         }
 
-        .project-detail-left .project-list {
-            list-style: none;
-        }
-
-        .project-detail-left .project-list li {
-            padding-left: 1.5rem;
-            margin-bottom: 0.8rem;
-            position: relative;
-            color: var(--text);
-        }
-
-        .project-detail-left .project-list li::before {
-            content: '▸';
-            position: absolute;
-            left: 0;
-            color: var(--primary);
-            font-weight: bold;
-        }
-
-        .project-detail-left .project-tools {
+        .wtags {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.8rem;
+            gap: .28rem
         }
 
-        .project-detail-left .tool-tag {
-            padding: 0.5rem 1rem;
-            background: var(--light-gray);
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary);
-            transition: all 0.3s ease;
+        .wtag {
+            padding: .15rem .48rem;
+            background: rgba(37, 99, 235, 0.07);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: .66rem;
+            color: var(--blue);
+            font-weight: 600
         }
 
-        .project-detail-left .tool-tag:hover {
-            background: var(--primary);
-            color: white;
+        #certifications {
+            background: linear-gradient(180deg, var(--bg3), var(--bg2))
         }
 
-        .project-detail-right {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .project-detail-right .main-image {
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-        }
-
-        .project-detail-right .main-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.3s ease;
-        }
-
-        .project-detail-right .main-image img:hover {
-            transform: scale(1.02);
-        }
-
-        .project-detail-right .image-gallery {
+        .cg {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.8rem;
-        }
-
-        .project-detail-right .gallery-item {
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            aspect-ratio: 1;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .project-detail-right .gallery-item:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .project-detail-right .gallery-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Image Modal - Fix z-index lebih tinggi dari detail */
-        .image-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .image-modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-image-content {
-            max-width: 90vw;
-            max-height: 90vh;
-            position: relative;
-            animation: zoomIn 0.3s ease;
-        }
-
-        .modal-image-content img {
-            max-width: 100%;
-            max-height: 90vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 8px;
-            display: block;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: -3rem;
-            right: 0;
-            background: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 10000;
-        }
-
-        .modal-close:hover {
-            background: var(--primary);
-            color: white;
-            transform: rotate(90deg);
-        }
-
-        /* Certifications */
-        .cert-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: .9rem
         }
 
         .cert-card {
-            background: white;
-            border-radius: 12px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: all .25s;
+            box-shadow: var(--shadow)
         }
 
         .cert-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(14, 165, 233, 0.25);
+            border-color: var(--blue2);
+            box-shadow: var(--shadow2);
+            transform: translateY(-3px)
         }
 
-        .cert-carousel {
+        .cth {
             position: relative;
             width: 100%;
-            padding-bottom: 65%;
+            padding-bottom: 60%;
             overflow: hidden;
-            background: var(--light-gray);
+            background: var(--bg3)
         }
 
-        .cert-carousel .carousel-track {
+        .ccnt {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            transition: transform 0.4s ease-in-out;
-        }
-
-        .cert-carousel .carousel-slide {
-            min-width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--light-gray);
-            overflow: hidden;
-        }
-
-        .cert-carousel .carousel-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .cert-carousel .carousel-arrows {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 8px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        .cert-card:hover .cert-carousel .carousel-arrows {
-            opacity: 1;
-        }
-
-        .cert-carousel .carousel-arrow {
-            width: 32px;
-            height: 32px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            color: var(--primary);
-            font-size: 0.9rem;
-            transition: all 0.3s;
-            pointer-events: all;
-        }
-
-        .cert-carousel .carousel-arrow:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .cert-carousel .carousel-nav {
-            position: absolute;
-            bottom: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 6px;
-            z-index: 10;
-        }
-
-        .cert-carousel .carousel-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.6);
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .cert-carousel .carousel-dot.active {
-            background: white;
-            width: 20px;
-            border-radius: 4px;
-        }
-
-        .cert-img-count {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.55);
-            color: white;
-            font-size: 0.75rem;
+            top: 6px;
+            right: 6px;
+            background: rgba(255, 255, 255, .92);
+            color: var(--blue);
+            font-size: .6rem;
             font-weight: 600;
-            padding: 3px 8px;
+            padding: 2px 6px;
             border-radius: 20px;
             z-index: 5;
-            backdrop-filter: blur(4px);
             display: none;
+            border: 1px solid var(--border)
         }
 
-        .cert-carousel[data-total]:not([data-total="1"]) .cert-img-count {
-            display: block;
+        .cth[data-tot]:not([data-tot="1"]) .ccnt {
+            display: block
         }
 
-        .cert-info {
-            padding: 1.2rem;
+        .ci {
+            padding: .85rem .95rem
         }
 
-        .cert-info h3 {
-            font-size: 1.05rem;
+        .ci h3 {
+            font-size: .85rem;
             font-weight: 700;
-            margin-bottom: 0.4rem;
-            color: var(--dark);
-            line-height: 1.3;
+            color: var(--navy);
+            margin-bottom: .18rem;
+            line-height: 1.3
         }
 
-        .cert-issuer {
-            color: var(--primary);
+        .ci .iss {
+            font-size: .74rem;
+            color: var(--blue);
             font-weight: 600;
-            margin-bottom: 0.3rem;
-            font-size: 0.9rem;
+            margin-bottom: .13rem
         }
 
-        .cert-date {
-            color: var(--gray);
-            font-size: 0.85rem;
+        .ci .cdt {
+            font-size: .68rem;
+            color: var(--text3)
         }
 
-        /* Certificate Modal */
-        .cert-modal {
+        .see-more-wrap {
+            margin-top: .9rem
+        }
+
+        .see-more-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .38rem;
+            padding: .38rem .9rem;
+            font-size: .74rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text2);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all .2s
+        }
+
+        .see-more-btn:hover {
+            background: rgba(37, 99, 235, 0.07);
+            border-color: var(--blue2);
+            color: var(--blue)
+        }
+
+        .see-more-btn i {
+            font-size: .68rem;
+            transition: transform .22s
+        }
+
+        .see-more-btn.expanded i {
+            transform: rotate(180deg)
+        }
+
+        .hidden-item {
+            display: none !important
+        }
+
+        .hidden-item.visible {
+            display: flex !important
+        }
+
+        .hidden-item.visible.dc,
+        .hidden-item.visible.cert-card {
+            display: block !important
+        }
+
+        .hidden-item.visible.tl-row {
+            display: grid !important
+        }
+
+        .hidden-item.visible.wc {
+            display: block !important
+        }
+
+        #det {
             display: none;
             position: fixed;
-            top: 0;
+            inset: 0;
+            background: var(--bg);
+            z-index: 5000;
+            overflow-y: auto
+        }
+
+        #det.open {
+            display: block;
+            animation: pi .28s ease
+        }
+
+        @keyframes pi {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .det-in {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 4rem 2rem
+        }
+
+        .bk {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            font-size: .8rem;
+            font-weight: 600;
+            color: var(--text2);
+            cursor: pointer;
+            margin-bottom: 1.8rem;
+            background: none;
+            border: none;
+            transition: color .2s;
+            font-family: 'Plus Jakarta Sans', sans-serif
+        }
+
+        .bk:hover {
+            color: var(--blue)
+        }
+
+        .det-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem
+        }
+
+        .dh1 {
+            font-size: clamp(1.4rem, 2.8vw, 2.1rem);
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: .38rem;
+            line-height: 1.15
+        }
+
+        .dco {
+            font-size: .85rem;
+            color: var(--blue);
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: .38rem
+        }
+
+        .ddesc {
+            font-size: .9rem;
+            color: var(--text2);
+            line-height: 1.82;
+            margin-bottom: 1.3rem
+        }
+
+        .dsec {
+            margin-bottom: 1.3rem
+        }
+
+        .dsec h3 {
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            color: var(--text3);
+            margin-bottom: .6rem
+        }
+
+        .dul {
+            list-style: none
+        }
+
+        .dul li {
+            font-size: .85rem;
+            color: var(--text2);
+            padding-left: 1rem;
+            margin-bottom: .38rem;
+            position: relative;
+            line-height: 1.62
+        }
+
+        .dul li::before {
+            content: '›';
+            position: absolute;
             left: 0;
+            color: var(--blue);
+            font-weight: 700
+        }
+
+        .trow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .38rem
+        }
+
+        .tool {
+            padding: .24rem .6rem;
+            background: rgba(37, 99, 235, 0.07);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: .73rem;
+            font-weight: 600;
+            color: var(--blue)
+        }
+
+        .dmain {
+            width: 100%;
+            border-radius: var(--r);
+            overflow: hidden;
+            margin-bottom: .55rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow)
+        }
+
+        .dmain img {
+            width: 100%;
+            display: block
+        }
+
+        .dthumbs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .38rem
+        }
+
+        .dth {
+            aspect-ratio: 1;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color .2s
+        }
+
+        .dth.on,
+        .dth:hover {
+            border-color: var(--blue)
+        }
+
+        .dth img {
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.92);
-            z-index: 9999;
+            object-fit: cover
+        }
+
+        .mbg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.93);
+            z-index: 9000;
             align-items: center;
             justify-content: center;
             padding: 2rem;
+            backdrop-filter: blur(14px)
         }
 
-        .cert-modal.active {
+        .mbg.open {
             display: flex;
-            animation: fadeIn 0.3s ease;
+            animation: pi .2s ease
         }
 
-        .cert-modal-inner {
+        .mbox {
             position: relative;
-            max-width: 900px;
+            max-width: 880px;
             width: 100%;
-            animation: zoomIn 0.3s ease;
+            animation: zi .2s ease
         }
 
-        .cert-modal-img {
+        @keyframes zi {
+            from {
+                transform: scale(.95);
+                opacity: 0
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1
+            }
+        }
+
+        .mx {
+            position: absolute;
+            top: -42px;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .18);
+            border-radius: 50%;
+            cursor: pointer;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .95rem;
+            transition: all .2s
+        }
+
+        .mx:hover {
+            background: var(--blue);
+            border-color: var(--blue)
+        }
+
+        .mimg {
             width: 100%;
             height: auto;
-            border-radius: 8px;
+            border-radius: 9px;
             display: block;
+            border: 1px solid rgba(255, 255, 255, .08)
         }
 
-        .cert-modal-arrows {
+        .mnav {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 -1rem;
-            pointer-events: none;
-        }
-
-        .cert-modal-arrow {
-            width: 48px;
-            height: 48px;
-            background: white;
+            width: 38px;
+            height: 38px;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid rgba(255, 255, 255, .18);
             border-radius: 50%;
+            cursor: pointer;
+            color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            color: var(--primary);
-            font-size: 1.3rem;
-            transition: all 0.3s;
-            pointer-events: all;
-            position: absolute;
+            font-size: .9rem;
+            transition: all .2s
         }
 
-        .cert-modal-arrow.prev-arrow {
-            left: -60px;
+        .mnav:hover {
+            background: var(--blue);
+            border-color: var(--blue)
         }
 
-        .cert-modal-arrow.next-arrow {
-            right: -60px;
+        .mnav.prev {
+            left: -50px
         }
 
-        .cert-modal-arrow:hover {
-            background: var(--primary);
-            color: white;
-            transform: scale(1.1);
+        .mnav.next {
+            right: -50px
         }
 
-        .cert-modal-counter {
-            position: absolute;
-            bottom: -2.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-            font-weight: 500;
-            white-space: nowrap;
+        .mcnt {
+            text-align: center;
+            margin-top: .8rem;
+            font-size: .68rem;
+            color: rgba(255, 255, 255, .4)
         }
 
-        .cert-modal-close {
-            position: absolute;
-            top: -3rem;
-            right: 0;
-            background: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 10000;
+        #contact {
+            background: linear-gradient(180deg, var(--bg2), var(--bg))
         }
 
-        .cert-modal-close:hover {
-            background: var(--primary);
-            color: white;
-            transform: rotate(90deg);
-        }
-
-        /* Contact Section */
-        .contact-section {
-            background: white;
-            border-radius: 16px;
-            padding: 3rem;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .contact-section:hover {
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .contact-grid {
+        .cont-g {
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 3rem;
-            align-items: start;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            padding-bottom: 2rem
         }
 
-        .contact-left h2 {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-            color: var(--dark);
+        .cont-h {
+            font-size: clamp(1.7rem, 3.2vw, 2.7rem);
+            font-weight: 700;
+            color: var(--navy);
+            line-height: 1.1;
+            margin-bottom: .8rem
         }
 
-        .contact-left .highlight {
-            color: var(--primary);
+        .cont-h em {
+            color: var(--blue);
+            font-style: normal;
+            font-weight: 300
         }
 
-        .contact-left p {
-            color: var(--gray);
-            font-size: 1.1rem;
+        .cont-sub {
+            font-size: .92rem;
+            color: var(--text2);
             line-height: 1.8;
-            margin-bottom: 2rem;
+            margin-bottom: 1.6rem
         }
 
-        .social-links {
+        .soc-row {
             display: flex;
-            gap: 1rem;
+            gap: .55rem
         }
 
-        .social-link {
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            border-radius: 10px;
+        .sb {
+            width: 38px;
+            height: 38px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            transition: all 0.3s ease;
-            color: white;
-            font-size: 1.3rem;
+            color: var(--text2);
+            font-size: .98rem;
+            transition: all .22s;
+            box-shadow: var(--shadow)
         }
 
-        .social-link:hover {
-            background: var(--primary-dark);
-            transform: translateY(-5px) rotate(5deg);
-            box-shadow: 0 8px 20px rgba(14, 165, 233, 0.3);
+        .sb:hover {
+            background: var(--blue);
+            color: #fff;
+            border-color: var(--blue);
+            transform: translateY(-2px)
         }
 
-        .contact-methods {
-            display: grid;
-            gap: 1rem;
+        .cc-list {
+            display: flex;
+            flex-direction: column;
+            gap: .55rem
         }
 
-        .contact-method {
+        .cc {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1.2rem;
-            background: var(--light-gray);
-            border-radius: 12px;
-            transition: all 0.3s ease;
+            gap: .8rem;
+            padding: .95rem 1.05rem;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            transition: all .2s;
+            box-shadow: var(--shadow)
         }
 
-        .contact-method:hover {
-            background: rgba(14, 165, 233, 0.05);
-            transform: translateX(8px);
+        .cc:hover {
+            border-color: var(--blue2);
+            transform: translateX(3px);
+            box-shadow: var(--shadow2)
         }
 
-        .contact-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .cci {
+            width: 36px;
+            height: 36px;
             flex-shrink: 0;
-            color: white;
-            font-size: 1.3rem;
+            background: rgba(37, 99, 235, 0.07);
+            border: 1px solid var(--border);
+            color: var(--blue);
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .88rem
         }
 
-        .contact-details h4 {
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 0.3rem;
-            font-size: 1rem;
+        .cc h4 {
+            font-size: .62rem;
+            font-weight: 700;
+            color: var(--text3);
+            margin-bottom: .1rem;
+            text-transform: uppercase;
+            letter-spacing: .07em
         }
 
-        .contact-details p,
-        .contact-details a {
-            color: var(--gray);
+        .cc p,
+        .cc a {
+            font-size: .84rem;
+            color: var(--navy);
             text-decoration: none;
-            font-size: 0.95rem;
-            transition: color 0.3s ease;
+            font-weight: 500
         }
 
-        .contact-details a:hover {
-            color: var(--primary);
+        .cc a:hover {
+            color: var(--blue)
         }
 
         footer {
+            position: relative;
+            z-index: 1;
+            background: var(--bg);
+            border-top: 1px solid var(--border2);
             text-align: center;
-            padding: 2 rem 0;
-            color: var(--gray);
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            font-size: 0.9rem;
-            background: white;
+            padding: 1.8rem;
+            font-size: .72rem;
+            color: var(--text3);
+            letter-spacing: .06em
         }
 
-        footer .container {
-            max-width: 600px;
+        footer b {
+            color: var(--blue);
+            font-weight: 600
         }
 
-        .scroll-top {
+        .topb {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            color: white;
+            bottom: 20px;
+            right: 20px;
+            width: 38px;
+            height: 38px;
+            background: var(--white);
+            color: var(--blue);
+            border: 1px solid var(--border);
             border-radius: 50%;
+            cursor: pointer;
             display: none;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 999;
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+            font-size: .88rem;
+            z-index: 900;
+            transition: all .22s;
+            box-shadow: var(--shadow2)
         }
 
-        .scroll-top.show {
-            display: flex;
+        .topb.show {
+            display: flex
         }
 
-        .scroll-top:hover {
-            background: var(--primary-dark);
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4);
+        .topb:hover {
+            background: var(--blue);
+            color: #fff;
+            transform: translateY(-2px)
         }
 
-        /* Responsive */
-        @media (max-width: 968px) {
-            .nav-menu {
-                position: fixed;
-                left: -100%;
-                top: 70px;
-                flex-direction: column;
-                background-color: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(10px);
-                width: 100%;
+        @media(max-width:900px) {
+            .nav-links {
+                display: none
+            }
+
+            .burger {
+                display: flex
+            }
+
+            .hero-g {
+                grid-template-columns: 1fr;
                 text-align: center;
-                transition: 0.3s;
-                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
-                padding: 2rem 0;
-                gap: 1.5rem;
+                gap: 2.2rem;
+                padding-top: 2.5rem
             }
 
-            .nav-menu.active {
-                left: 0;
+            .hero-desc {
+                margin: 0 auto 2.2rem
             }
 
-            .menu-toggle {
-                display: flex;
+            .btns {
+                justify-content: center
             }
 
-            .hero-content {
+            .hero-nums {
+                justify-content: center
+            }
+
+            .pw {
+                order: -1
+            }
+
+            .pr1 {
+                width: 225px;
+                height: 225px
+            }
+
+            .pr2 {
+                width: 188px;
+                height: 188px
+            }
+
+            .pimg {
+                width: 175px;
+                height: 175px
+            }
+
+            .chip {
+                bottom: -4px;
+                right: -8px
+            }
+
+            .ab-g {
+                grid-template-columns: 1fr
+            }
+
+            .tl-row {
                 grid-template-columns: 1fr;
-                gap: 3rem;
+                gap: .6rem
             }
 
-            .hero-text {
-                text-align: center;
+            .tl-row::after,
+            .tl-n {
+                display: none
             }
 
-            .hero-text h1 {
-                font-size: 2.5rem;
+            .tl-t {
+                text-align: left;
+                padding-right: 0;
+                padding-top: 0
             }
 
-            .hero-buttons {
-                justify-content: center;
+            .det-grid {
+                grid-template-columns: 1fr
             }
 
-            .profile-wrapper {
-                width: 350px;
-                height: 350px;
-            }
-
-            .profile-circle {
-                width: 300px;
-                height: 300px;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-            }
-
-            .contact-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .project-detail-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .portfolio-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            }
-
-            .cert-modal-arrow.prev-arrow {
-                left: -10px;
-            }
-
-            .cert-modal-arrow.next-arrow {
-                right: -10px;
+            .cont-g {
+                grid-template-columns: 1fr
             }
         }
 
-        @media (max-width: 640px) {
-            .container {
-                padding: 0 1rem;
+        @media(max-width:540px) {
+            .wrap {
+                padding: 0 1rem
             }
 
-            .hero-text h1 {
-                font-size: 2rem;
+            nav {
+                padding: 0 1rem
             }
 
-            .hero-subtitle {
-                font-size: 1.2rem;
+            .hero-g {
+                padding: 0 1rem
             }
 
-            .hero-buttons {
-                flex-direction: column;
-                width: 100%;
+            .hero-name {
+                font-size: 2.6rem
             }
 
-            .btn {
-                width: 100%;
-                justify-content: center;
+            .mnav.prev {
+                left: -4px
             }
 
-            .profile-wrapper {
-                width: 280px;
-                height: 280px;
-            }
-
-            .profile-circle {
-                width: 250px;
-                height: 250px;
-            }
-
-            .section-header h2 {
-                font-size: 2rem;
-            }
-
-            .timeline {
-                padding-left: 2rem;
-            }
-
-            .timeline-item {
-                padding: 1.5rem;
-            }
-
-            .timeline-header {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .contact-section {
-                padding: 2rem;
-            }
-
-            .contact-left h2 {
-                font-size: 2rem;
-            }
-
-            .project-detail-right .image-gallery {
-                grid-template-columns: repeat(2, 1fr);
+            .mnav.next {
+                right: -4px
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-container">
-            <div class="logo">MK</div>
-            <ul class="nav-menu">
-                <li><a onclick="showPage('home')" class="active">Home</a></li>
-                <li><a onclick="showPage('about')">About</a></li>
-                <li><a onclick="showPage('experience')">Experience</a></li>
-                <li><a onclick="showPage('skills')">Skills</a></li>
-                <li><a onclick="showPage('projects')">Projects</a></li>
-                <li><a onclick="showPage('certifications')">Certifications</a></li>
-                <li><a onclick="showPage('contact')">Contact</a></li>
-            </ul>
-            <div class="menu-toggle">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
+    <nav id="nav">
+        <a class="logo" href="#hero">MK<em>.</em></a>
+        <ul class="nav-links">
+            <li><a href="#hero" class="on">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#certifications">Certifications</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="burger" id="burg" onclick="toggleBurger()"><span></span><span></span><span></span></button>
     </nav>
+    <div class="mob-menu" id="mob">
+        <a href="#hero" onclick="cm()">Home</a><a href="#about" onclick="cm()">About</a>
+        <a href="#experience" onclick="cm()">Experience</a><a href="#skills" onclick="cm()">Skills</a>
+        <a href="#projects" onclick="cm()">Projects</a><a href="#certifications" onclick="cm()">Certifications</a>
+        <a href="#contact" onclick="cm()">Contact</a>
+    </div>
 
-    <!-- HOME PAGE -->
-    <div id="home-page" class="page active">
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <div class="hero-text">
-                        <h1>Hi, I'm <span class="name">Miftakhul Khasanah</span></h1>
-                        <div class="hero-subtitle">Information System Graduate</div>
-                        <p>Passionate about data management, system analysis, and web development. Currently
-                            participating
-                            in the Kemnaker internship program at PT IDSurvey (Persero) as an Officer ISPB, gaining
-                            hands-on
-                            experience and contributing to information system development.</p>
-                        <div class="hero-buttons">
-                            <a onclick="showPage('projects')" class="btn btn-primary">View Projects <i
-                                    class="bi bi-arrow-right"></i></a>
-                            <a onclick="showPage('contact')" class="btn btn-secondary">Contact Me</a>
-                        </div>
+    <section id="hero">
+        <div class="hero-g">
+            <div>
+                <div class="avail sr">
+                    <div class="adot"></div>Available for opportunities
+                </div>
+                <h1 class="hero-name sr" style="transition-delay:.1s"><span class="s">Miftakhul</span><br><span
+                        class="o">Khasanah</span></h1>
+                <div class="hero-sub sr" style="transition-delay:.17s">Information System Graduate</div>
+                <p class="hero-desc sr" style="transition-delay:.24s">Passionate about data management, system analysis,
+                    and web development. Currently at PT IDSurvey (Persero) as Officer ISPB — building systems,
+                    designing HSE campaigns, and contributing to business process improvement.</p>
+                <div class="btns sr" style="transition-delay:.31s">
+                    <a href="#projects" class="btn btn-s">View Projects <i class="bi bi-arrow-right"></i></a>
+                    <a href="#contact" class="btn btn-g">Contact Me</a>
+                </div>
+                <div class="hero-nums sr" style="transition-delay:.38s">
+                    <div>
+                        <div class="num-v">3.88</div>
+                        <div class="num-l">GPA</div>
                     </div>
-
-                    <div class="profile-image">
-                        <div class="profile-wrapper">
-                            <div class="decorative-circle circle-1"></div>
-                            <div class="decorative-circle circle-2"></div>
-                            <div class="decorative-circle circle-3"></div>
-                            <div class="profile-circle">
-                                <img src="Images/foto_profil.jpg" alt="Miftakhul Khasanah">
-                            </div>
-                            <div class="floating-badge badge-available">
-                                <div class="badge-icon"><i class="bi bi-check-circle-fill"></i></div>
-                                <div class="badge-text"><strong>Available</strong><span>for opportunities</span></div>
-                            </div>
-                        </div>
+                    <div>
+                        <div class="num-v">3<sup>+</sup></div>
+                        <div class="num-l">Years Study</div>
+                    </div>
+                    <div>
+                        <div class="num-v">10<sup>+</sup></div>
+                        <div class="num-l">Projects</div>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
-
-    <!-- ABOUT PAGE -->
-    <div id="about-page" class="page">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">About Me</span>
-                <h2>Personal Profile</h2>
-                <p>Background, education, and career objectives</p>
+            <div class="pw srr" style="transition-delay:.18s">
+                <div class="pr1"></div>
+                <div class="pr2"></div>
+                <div class="pimg"><img src="Images/foto_profil.jpg" alt="Miftakhul Khasanah"></div>
+                <div class="chip">
+                    <div class="cdot-g"></div>
+                    <div class="cinfo"><strong>Open to Work</strong><span>Jakarta, Indonesia</span></div>
+                </div>
             </div>
-            <div class="about-content">
-                <div class="about-text">
+        </div>
+    </section>
+    <div class="divline"></div>
+
+    <section id="about">
+        <div class="wrap">
+            <div class="tag sr">About</div>
+            <h2 class="sec-h sr" style="transition-delay:.1s">Personal <em>Profile</em></h2>
+            <div class="ab-g">
+                <div class="ab-body sl">
                     <p>Lulusan S1 Sistem Informasi dari Universitas Teknologi Yogyakarta dengan pengalaman di bidang
                         manajemen data, analisis sistem, dan pengembangan aplikasi berbasis web.</p>
-                    <p>Terbiasa menyusun dokumentasi proses bisnis, melakukan pengujian sistem, dan mendukung kegiatan
-                        administrasi. Mampu bekerja mandiri maupun dalam tim, komunikatif, teliti, disiplin, dan
-                        adaptif.</p>
+                    <p>Terbiasa menyusun <span class="hl">dokumentasi proses bisnis</span>, melakukan pengujian sistem,
+                        dan mendukung kegiatan administrasi. Mampu bekerja mandiri maupun dalam tim, komunikatif,
+                        teliti, disiplin, dan adaptif.</p>
                     <p>Saya mencari peluang karir untuk terus berkembang, berinovasi, dan berkolaborasi dalam
-                        menciptakan solusi inovatif untuk tantangan bisnis.</p>
+                        menciptakan solusi inovatif untuk tantangan bisnis yang nyata.</p>
                 </div>
-                <div class="education-card">
-                    <div class="education-header">
-                        <h3>PENDIDIKAN</h3>
-                        <div class="gpa-badge">IPK: 3.88</div>
-                    </div>
-                    <div class="education-details">
-                        <p><strong>Universitas Teknologi Yogyakarta</strong></p>
-                        <p>S1 Sistem Informasi</p>
-                        <p>2021 - 2025</p>
-                    </div>
+                <div class="edu srr">
+                    <div class="edu-uni">Universitas Teknologi Yogyakarta</div>
+                    <div class="edu-deg">S1 Sistem Informasi</div>
+                    <div class="edu-yr">2021 – 2025</div>
+                    <div class="gpa"><i class="bi bi-award-fill"></i> IPK 3.88</div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    <div class="divline"></div>
 
-    <!-- EXPERIENCE PAGE -->
-    <div id="experience-page" class="page">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">My Journey</span>
-                <h2>Work Experience</h2>
-                <p>Professional experiences and contributions</p>
-            </div>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-header">
-                        <div>
-                            <h3>Officer ISPB (Integrasi Sistem &amp; Proses Bisnis)</h3>
-                            <div class="timeline-company">PT IDSurvey (Persero)</div>
-                        </div>
-                        <span class="timeline-badge">INTERNSHIP - KEMNAKER</span>
+    <section id="experience">
+        <div class="wrap">
+            <div class="tag sr">Journey</div>
+            <h2 class="sec-h sr" style="transition-delay:.1s">Work <em>Experience</em></h2>
+            <div class="tl-wrap">
+                <div class="tl-row sr" style="transition-delay:.1s">
+                    <div class="tl-t">
+                        <div class="tl-d">Nov 2024<br>— Mei 2026</div>
                     </div>
-                    <div class="timeline-date">November 2024 – Mei 2026</div>
-                    <ul>
-                        <li>Membangun sistem Activity Record Divisi ISPB dari tahap perancangan hingga implementasi</li>
-                        <li>Menyusun manual book (user guide) sebagai panduan penggunaan sistem</li>
-                        <li>Melakukan pengujian fungsional sistem Activity Record</li>
-                        <li>Membantu pembuatan desain grafis untuk kebutuhan divisi (infografis, panduan, kampanye HSE)
-                        </li>
-                        <li>Mengelola dan membantu pengarsipan dokumen pendukung divisi</li>
-                    </ul>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-header">
-                        <div>
-                            <h3>Asisten Dosen Mata Kuliah</h3>
-                            <div class="timeline-company">Universitas Teknologi Yogyakarta</div>
-                        </div>
-                    </div>
-                    <div class="timeline-date">September 2024 - Januari 2025</div>
-                    <ul>
-                        <li>Mendampingi dosen dalam praktikum mata kuliah Pemrograman Berorientasi Objek.</li>
-                        <li>Mengelola dan menyiapkan dokumen administrasi untuk mendukung kegiatan kampus.</li>
-                    </ul>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-header">
-                        <div>
-                            <h3>Asisten Akreditasi Kampus</h3>
-                            <div class="timeline-company">Universitas Teknologi Yogyakarta</div>
-                        </div>
-                    </div>
-                    <div class="timeline-date">September 2024 - Januari 2025</div>
-                    <ul>
-                        <li>Mengumpulkan data mahasiswa dan memverifikasi bukti pendukung akreditasi kampus.</li>
-                        <li>Menyusun dan memastikan kelengkapan dokumen akreditasi.</li>
-                        <li>Berkoordinasi antarbagian untuk kelancaran proses akreditasi.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SKILLS PAGE -->
-    <div id="skills-page" class="page">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">Expertise</span>
-                <h2>Skills &amp; Technologies</h2>
-                <p>Tools and technologies I work with professionally</p>
-            </div>
-            <div class="skills-grid">
-                <!-- Web & Database Development -->
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <div class="skill-icon"><i class="bi bi-code-slash"></i></div>
-                        <h3>Web &amp; Database Development</h3>
-                    </div>
-                    <div class="skill-items">
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><img
-                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"
-                                    alt="HTML"></div>
-                            <span>HTML</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><img
-                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"
-                                    alt="CSS"></div>
-                            <span>CSS</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><img
-                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg"
-                                    alt="Laravel"></div>
-                            <span>Laravel</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><img
-                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"
-                                    alt="MySQL"></div>
-                            <span>MySQL</span>
+                    <div class="tl-n"></div>
+                    <div class="tl-c">
+                        <div class="tl-badge">Internship — Kemnaker</div>
+                        <div class="tl-title">Officer ISPB</div>
+                        <div class="tl-co">PT IDSurvey (Persero)</div>
+                        <ul class="tl-ul">
+                            <li>Membangun sistem Activity Record Divisi ISPB dari tahap perancangan hingga implementasi
+                            </li>
+                            <li>Menyusun manual book (user guide) sebagai panduan penggunaan sistem</li>
+                            <li>Melakukan pengujian fungsional sistem Activity Record</li>
+                            <li>Membantu pembuatan desain grafis untuk kebutuhan divisi</li>
+                            <li>Mengelola dan membantu pengarsipan dokumen pendukung divisi</li>
+                            <li>Menjadi panitia teknis Acara Puncak Bulan K3 Nasional IDSurvey Group</li>
+                        </ul>
+                        <div class="m-row">
+                            <span class="mt"><i class="bi bi-play-circle-fill"></i> Bumper Video Bulan K3
+                                Nasional</span>
+                            <span class="mt"><i class="bi bi-camera-video-fill"></i> Dokumentasi Acara Puncak</span>
+                            <span class="mt"><i class="bi bi-display"></i> Media Event Teknis</span>
                         </div>
                     </div>
                 </div>
-
-                <!-- Data Management & Office -->
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <div class="skill-icon"><i class="bi bi-table"></i></div>
-                        <h3>Data Management &amp; Office</h3>
+                <div class="tl-row sr" style="transition-delay:.2s">
+                    <div class="tl-t">
+                        <div class="tl-d">Sep 2024<br>— Jan 2025</div>
                     </div>
-                    <div class="skill-items">
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><i class="bi bi-file-earmark-excel-fill"
-                                    style="color:#217346;"></i></div>
-                            <span>Microsoft Excel</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><i class="bi bi-file-earmark-word-fill"
-                                    style="color:#2B579A;"></i></div>
-                            <span>Microsoft Word</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><i class="bi bi-file-earmark-ppt-fill"
-                                    style="color:#D24726;"></i></div>
-                            <span>PowerPoint</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><i class="bi bi-google" style="color:#4285F4;"></i></div>
-                            <span>Google Workspace</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Design & System Modelling -->
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <div class="skill-icon"><i class="bi bi-palette"></i></div>
-                        <h3>Design &amp; System Modelling</h3>
-                    </div>
-                    <div class="skill-items">
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><i class="bi bi-figma" style="color:#F24E1E;"></i></div>
-                            <span>Figma</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><i class="bi bi-brush" style="color:#00C4CC;"></i></div>
-                            <span>Canva</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><i class="bi bi-diagram-3" style="color:#F08705;"></i></div>
-                            <span>Draw.io</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Collaboration & Project Tools -->
-                <div class="skill-category">
-                    <div class="skill-header">
-                        <div class="skill-icon"><i class="bi bi-kanban"></i></div>
-                        <h3>Collaboration &amp; Project Tools</h3>
-                    </div>
-                    <div class="skill-items">
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><img
-                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
-                                    alt="GitHub"></div>
-                            <span>GitHub</span>
-                        </div>
-                        <div class="skill-item">
-                            <div class="skill-item-icon"><img
-                                    src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/notion/notion-original.svg"
-                                    alt="Notion"></div>
-                            <span>Notion</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PROJECTS PAGE -->
-    <div id="projects-page" class="page">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">Portfolio</span>
-                <h2>Featured Projects</h2>
-                <p></p>
-            </div>
-
-            <div class="project-filters">
-                <button class="filter-btn active" onclick="showProjects('design', event)">
-                    <i class="bi bi-palette"></i> Graphic Design
-                </button>
-                <button class="filter-btn" onclick="showProjects('uiux', event)">
-                    <i class="bi bi-layout-text-window-reverse"></i> UI/UX Design
-                </button>
-                <button class="filter-btn" onclick="showProjects('web', event)">
-                    <i class="bi bi-code-slash"></i> Web Development
-                </button>
-            </div>
-
-            <!-- GRAPHIC DESIGN PROJECTS -->
-            <div id="design" class="projects-container active">
-                <div class="portfolio-grid">
-                    <!-- Green Safe & Health -->
-                    <div class="portfolio-item" onclick="openProjectDetail('gsh')">
-                        <div class="portfolio-image">
-                            <img src="Images/GSH2.png" alt="Green Safe & Health">
-                        </div>
-                        <div class="portfolio-info">
-                            <h3>Green Safe & Health</h3>
-                            <p>Infografis kampanye HSE & ESG - Dibuat untuk PT IDSurvey</p>
-                            <div class="portfolio-meta">
-                                <span><i class="bi bi-calendar3"></i> 2025</span>
-                                <span>View Details <i class="bi bi-arrow-right"></i></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Panduan Keselamatan -->
-                    <div class="portfolio-item" onclick="openProjectDetail('safety')">
-                        <div class="portfolio-image">
-                            <img src="Images/panduankeselamatan2.png" alt="Panduan Keselamatan">
-                        </div>
-                        <div class="portfolio-info">
-                            <h3>Panduan Keselamatan Tim Kunjungan</h3>
-                            <p>Safety guideline untuk kunjungan kerja ke lokasi kebencanaan</p>
-                            <div class="portfolio-meta">
-                                <span><i class="bi bi-calendar3"></i> 2025</span>
-                                <span>View Details <i class="bi bi-arrow-right"></i></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Safe Holiday Season -->
-                    <div class="portfolio-item" onclick="openProjectDetail('holiday')">
-                        <div class="portfolio-image">
-                            <img src="Images/safetyholidayseason2.png" alt="Safe Holiday Season">
-                        </div>
-                        <div class="portfolio-info">
-                            <h3>Safe Holiday Season</h3>
-                            <p>Kampanye keselamatan berkendara saat libur akhir tahun</p>
-                            <div class="portfolio-meta">
-                                <span><i class="bi bi-calendar3"></i> 2025</span>
-                                <span>View Details <i class="bi bi-arrow-right"></i></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- HSE Golden Rules -->
-                    <div class="portfolio-item" onclick="openProjectDetail('hse')">
-                        <div class="portfolio-image">
-                            <img src="Images/panduanhse2.png" alt="HSE Golden Rules">
-                        </div>
-                        <div class="portfolio-info">
-                            <h3>Panduan Perilaku HSE Golden Rules</h3>
-                            <p>Visualisasi perilaku CARE untuk budaya keselamatan kerja</p>
-                            <div class="portfolio-meta">
-                                <span><i class="bi bi-calendar3"></i> 2025</span>
-                                <span>View Details <i class="bi bi-arrow-right"></i></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Bulan K3 Nasional -->
-                    <div class="portfolio-item" onclick="openProjectDetail('k3')">
-                        <div class="portfolio-image">
-                            <img src="Images/BKN2.png" alt="Bulan K3 Nasional">
-                        </div>
-                        <div class="portfolio-info">
-                            <h3>Bulan K3 Nasional</h3>
-                            <p>Kampanye Bulan K3 Nasional dengan tema safety leadership</p>
-                            <div class="portfolio-meta">
-                                <span><i class="bi bi-calendar3"></i> 2025</span>
-                                <span>View Details <i class="bi bi-arrow-right"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- UI/UX DESIGN PROJECTS -->
-            <div id="uiux" class="projects-container">
-                <div class="portfolio-grid">
-                    <div class="portfolio-item" onclick="openProjectDetail('uiux1')">
-                        <div class="portfolio-image">
-                            <img src="Images/finalproject1.png" alt="UI/UX Project">
-                        </div>
-                        <div class="portfolio-info">
-                            <h3>UI/UX Design Project</h3>
-                            <p>Desain antarmuka untuk aplikasi internal</p>
-                            <div class="portfolio-meta">
-                                <span><i class="bi bi-calendar3"></i> 2025</span>
-                                <span>View Details <i class="bi bi-arrow-right"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- WEB DEVELOPMENT PROJECTS -->
-            <div id="web" class="projects-container">
-                <div class="portfolio-grid">
-                    <div class="portfolio-item" onclick="openProjectDetail('web1')">
-                        <div class="portfolio-image">
-                            <div
-                                style="background: var(--light-gray); width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-                                <i class="bi bi-laptop" style="font-size:3rem; color:var(--gray);"></i>
-                            </div>
-                        </div>
-                        <div class="portfolio-info">
-                            <h3>Activity Record System</h3>
-                            <p>Sistem pencatatan aktivitas untuk Divisi ISPB</p>
-                            <div class="portfolio-meta">
-                                <span><i class="bi bi-calendar3"></i> 2025</span>
-                                <span>View Details <i class="bi bi-arrow-right"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PROJECT DETAIL PAGE - Halaman khusus detail project -->
-    <div id="project-detail-page" class="project-detail-page">
-        <div class="project-detail-container">
-            <div class="back-button" onclick="closeProjectDetail()">
-                <i class="bi bi-arrow-left"></i> Back to Projects
-            </div>
-
-            <div class="project-detail-content" id="projectDetailContent">
-                <!-- Content will be populated by JavaScript -->
-            </div>
-        </div>
-    </div>
-
-    <!-- CERTIFICATIONS PAGE -->
-    <div id="certifications-page" class="page">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">Learning</span>
-                <h2>Certifications</h2>
-                <p>Professional training and development</p>
-            </div>
-
-            <div class="cert-grid">
-                <!-- Microsoft Excel Basic -->
-                <div class="cert-card" onclick="openCertModal('microsoft-excel', 4)">
-                    <div class="cert-carousel" data-cert="microsoft-excel" data-total="4">
-                        <div class="carousel-track">
-                            <div class="carousel-slide"><img src="Certificates/microsoft-excel_1.jpg"
-                                    alt="Microsoft Excel Cert 1"></div>
-                            <div class="carousel-slide"><img src="Certificates/microsoft-excel_2.jpg"
-                                    alt="Microsoft Excel Cert 2"></div>
-                            <div class="carousel-slide"><img src="Certificates/microsoft-excel_3.jpg"
-                                    alt="Microsoft Excel Cert 3"></div>
-                            <div class="carousel-slide"><img src="Certificates/microsoft-excel_4.jpg"
-                                    alt="Microsoft Excel Cert 4"></div>
-                        </div>
-                        <div class="carousel-arrows">
-                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
-                                    class="bi bi-chevron-left"></i></button>
-                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
-                                    class="bi bi-chevron-right"></i></button>
-                        </div>
-                        <div class="carousel-nav">
-                            <span class="carousel-dot active"></span>
-                            <span class="carousel-dot"></span>
-                            <span class="carousel-dot"></span>
-                            <span class="carousel-dot"></span>
-                        </div>
-                        <div class="cert-img-count">1 / 4</div>
-                    </div>
-                    <div class="cert-info">
-                        <h3>Microsoft Excel Basic</h3>
-                        <div class="cert-issuer">MySkill</div>
-                        <div class="cert-date">November 2025</div>
-                    </div>
-                </div>
-
-                <!-- Dasar Manajemen Proyek -->
-                <div class="cert-card" onclick="openCertModal('dicoding-manajemenproyek', 3)">
-                    <div class="cert-carousel" data-cert="dicoding-manajemenproyek" data-total="3">
-                        <div class="carousel-track">
-                            <div class="carousel-slide"><img src="Certificates/dicoding-manajemenproyek_1.jpg"
-                                    alt="Manajemen Proyek 1"></div>
-                            <div class="carousel-slide"><img src="Certificates/dicoding-manajemenproyek_2.jpg"
-                                    alt="Manajemen Proyek 2"></div>
-                            <div class="carousel-slide"><img src="Certificates/dicoding-manajemenproyek_3.jpg"
-                                    alt="Manajemen Proyek 3"></div>
-                        </div>
-                        <div class="carousel-arrows">
-                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
-                                    class="bi bi-chevron-left"></i></button>
-                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
-                                    class="bi bi-chevron-right"></i></button>
-                        </div>
-                        <div class="carousel-nav">
-                            <span class="carousel-dot active"></span>
-                            <span class="carousel-dot"></span>
-                            <span class="carousel-dot"></span>
-                        </div>
-                        <div class="cert-img-count">1 / 3</div>
-                    </div>
-                    <div class="cert-info">
-                        <h3>Belajar Dasar Manajemen Proyek</h3>
-                        <div class="cert-issuer">Dicoding Indonesia</div>
-                        <div class="cert-date">Juli 2023 - Juli 2026</div>
-                    </div>
-                </div>
-
-                <!-- Dasar Pemrograman -->
-                <div class="cert-card" onclick="openCertModal('dicoding-dasarpemograman', 4)">
-                    <div class="cert-carousel" data-cert="dicoding-dasarpemograman" data-total="4">
-                        <div class="carousel-track">
-                            <div class="carousel-slide"><img src="Certificates/dicoding-dasarpemograman_1.jpg"
-                                    alt="Dasar Pemrograman 1"></div>
-                            <div class="carousel-slide"><img src="Certificates/dicoding-dasarpemograman_2.jpg"
-                                    alt="Dasar Pemrograman 2"></div>
-                            <div class="carousel-slide"><img src="Certificates/dicoding-dasarpemograman_3.jpg"
-                                    alt="Dasar Pemrograman 3"></div>
-                            <div class="carousel-slide"><img src="Certificates/dicoding-dasarpemograman_4.jpg"
-                                    alt="Dasar Pemrograman 4"></div>
-                        </div>
-                        <div class="carousel-arrows">
-                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
-                                    class="bi bi-chevron-left"></i></button>
-                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
-                                    class="bi bi-chevron-right"></i></button>
-                        </div>
-                        <div class="carousel-nav">
-                            <span class="carousel-dot active"></span>
-                            <span class="carousel-dot"></span>
-                            <span class="carousel-dot"></span>
-                            <span class="carousel-dot"></span>
-                        </div>
-                        <div class="cert-img-count">1 / 4</div>
-                    </div>
-                    <div class="cert-info">
-                        <h3>Memulai Dasar Pemrograman</h3>
-                        <div class="cert-issuer">Dicoding Indonesia</div>
-                        <div class="cert-date">Juli 2023 - Juli 2026</div>
-                    </div>
-                </div>
-
-                <!-- SQL -->
-                <div class="cert-card" onclick="openCertModal('dicoding-sql', 3)">
-                    <div class="cert-carousel" data-cert="dicoding-sql" data-total="3">
-                        <div class="carousel-track">
-                            <div class="carousel-slide"><img src="Certificates/dicoding-sql_1.jpg" alt="SQL 1"></div>
-                            <div class="carousel-slide"><img src="Certificates/dicoding-sql_2.jpg" alt="SQL 2"></div>
-                            <div class="carousel-slide"><img src="Certificates/dicoding-sql_3.jpg" alt="SQL 3"></div>
-                        </div>
-                        <div class="carousel-arrows">
-                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
-                                    class="bi bi-chevron-left"></i></button>
-                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
-                                    class="bi bi-chevron-right"></i></button>
-                        </div>
-                        <div class="carousel-nav">
-                            <span class="carousel-dot active"></span>
-                            <span class="carousel-dot"></span>
-                            <span class="carousel-dot"></span>
-                        </div>
-                        <div class="cert-img-count">1 / 3</div>
-                    </div>
-                    <div class="cert-info">
-                        <h3>Belajar Dasar SQL</h3>
-                        <div class="cert-issuer">Dicoding Indonesia</div>
-                        <div class="cert-date">September 2023 - September 2026</div>
-                    </div>
-                </div>
-
-                <!-- Design Thinking -->
-                <div class="cert-card" onclick="openCertModal('design-thinking', 1)">
-                    <div class="cert-carousel" data-cert="design-thinking" data-total="1">
-                        <div class="carousel-track">
-                            <div class="carousel-slide"><img src="Certificates/design-thinking.jpg"
-                                    alt="Design Thinking"></div>
-                        </div>
-                        <div class="carousel-nav">
-                            <span class="carousel-dot active"></span>
-                        </div>
-                    </div>
-                    <div class="cert-info">
-                        <h3>Design Thinking</h3>
-                        <div class="cert-issuer">GNIK & Kemenaker RI</div>
-                        <div class="cert-date">Desember 2025</div>
-                    </div>
-                </div>
-
-                <!-- Dasar Keamanan AI -->
-                <div class="cert-card" onclick="openCertModal('digitalent-dasarkeamananai', 2)">
-                    <div class="cert-carousel" data-cert="digitalent-dasarkeamananai" data-total="2">
-                        <div class="carousel-track">
-                            <div class="carousel-slide"><img src="Certificates/digitalent-dasarkeamananai_1.jpg"
-                                    alt="Keamanan AI 1"></div>
-                            <div class="carousel-slide"><img src="Certificates/digitalent-dasarkeamananai_2.jpg"
-                                    alt="Keamanan AI 2"></div>
-                        </div>
-                        <div class="carousel-arrows">
-                            <button class="carousel-arrow" onclick="prevCertSlide(this, event)"><i
-                                    class="bi bi-chevron-left"></i></button>
-                            <button class="carousel-arrow" onclick="nextCertSlide(this, event)"><i
-                                    class="bi bi-chevron-right"></i></button>
-                        </div>
-                        <div class="carousel-nav">
-                            <span class="carousel-dot active"></span>
-                            <span class="carousel-dot"></span>
-                        </div>
-                        <div class="cert-img-count">1 / 2</div>
-                    </div>
-                    <div class="cert-info">
-                        <h3>Dasar-dasar Keamanan AI</h3>
-                        <div class="cert-issuer">Digital Talent Scholarship</div>
-                        <div class="cert-date">Oktober 2025</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- CONTACT PAGE -->
-    <div id="contact-page" class="page">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">Contact</span>
-                <h2>Get In Touch</h2>
-                <p>Feel free to reach out for collaboration or opportunities</p>
-            </div>
-            <div class="contact-section">
-                <div class="contact-grid">
-                    <div class="contact-left">
-                        <h2>Let's Work <span class="highlight">Together!</span></h2>
-                        <p>I'm always interested in hearing about new projects and opportunities. Whether you have a
-                            question or just want to say hi, feel free to reach out!</p>
-                        <div class="social-links">
-                            <a href="https://www.linkedin.com/in/miftakhulkhs" target="_blank" class="social-link"
-                                title="LinkedIn"><i class="bi bi-linkedin"></i></a>
-                            <a href="mailto:miftakhulkhasnaah26@gmail.com" class="social-link" title="Email"><i
-                                    class="bi bi-envelope"></i></a>
-                            <a href="https://github.com/miftakhulkhs" target="_blank" class="social-link"
-                                title="GitHub"><i class="bi bi-github"></i></a>
-                        </div>
-                    </div>
-                    <div class="contact-methods">
-                        <div class="contact-method">
-                            <div class="contact-icon"><i class="bi bi-envelope"></i></div>
-                            <div class="contact-details">
-                                <h4>Email</h4>
-                                <p><a href="mailto:miftakhulkhasnaah26@gmail.com">miftakhulkhasnaah26@gmail.com</a></p>
-                            </div>
-                        </div>
-                        <div class="contact-method">
-                            <div class="contact-icon"><i class="bi bi-telephone"></i></div>
-                            <div class="contact-details">
-                                <h4>Phone</h4>
-                                <p>+62 816-4246-491</p>
-                            </div>
-                        </div>
-                        <div class="contact-method">
-                            <div class="contact-icon"><i class="bi bi-geo-alt"></i></div>
-                            <div class="contact-details">
-                                <h4>Location</h4>
-                                <p>Cilacap, Jawa Tengah</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Certificate Modal -->
-    <div class="cert-modal" id="certModal" onclick="closeCertModal(event)">
-        <div class="cert-modal-inner" onclick="event.stopPropagation()">
-            <button class="cert-modal-close" onclick="closeCertModal()">×</button>
-            <img class="cert-modal-img" id="certModalImg" src="" alt="Certificate">
-            <div class="cert-modal-arrows">
-                <button class="cert-modal-arrow prev-arrow" id="certModalPrev" onclick="certModalNav(-1)">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-                <button class="cert-modal-arrow next-arrow" id="certModalNext" onclick="certModalNav(1)">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-            </div>
-            <div class="cert-modal-counter" id="certModalCounter"></div>
-        </div>
-    </div>
-
-    <!-- Image Modal -->
-    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
-        <div class="modal-image-content" onclick="event.stopPropagation()">
-            <button class="modal-close" onclick="closeImageModal()">×</button>
-            <img id="modalImage" src="" alt="Project Image">
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2026 Miftakhul Khasanah</p>
-        </div>
-    </footer>
-
-    <!-- Scroll to Top -->
-    <div class="scroll-top" onclick="scrollToTop()">
-        <i class="bi bi-arrow-up"></i>
-    </div>
-
-    <script>
-        // ============================================================
-        // PAGE NAVIGATION
-        // ============================================================
-        function showPage(pageName) {
-            // Sembunyikan semua page
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-
-            // Sembunyikan project detail jika terbuka
-            document.getElementById('project-detail-page').classList.remove('active');
-
-            // Tampilkan page yang dipilih
-            document.getElementById(pageName + '-page').classList.add('active');
-
-            // Update active menu
-            document.querySelectorAll('.nav-menu a').forEach(link => {
-                link.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Scroll ke atas
-            window.scrollTo(0, 0);
-        }
-
-        // ============================================================
-        // MOBILE MENU
-        // ============================================================
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navMenu = document.querySelector('.nav-menu');
-
-        menuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
-
-        // Navbar scroll
-        window.addEventListener('scroll', () => {
-            document.querySelector('nav').classList.toggle('scrolled', window.scrollY > 50);
-        });
-
-        // ============================================================
-        // PROJECT CATEGORY FILTER
-        // ============================================================
-        function showProjects(category, ev) {
-            document.querySelectorAll('.projects-container').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(category).classList.add('active');
-            if (ev && ev.target) ev.target.closest('.filter-btn').classList.add('active');
-            ev.stopPropagation();
-        }
-
-        // ============================================================
-        // PROJECT DETAIL - Data dengan tools Canva untuk semua project graphic design
-        // ============================================================
-        const projectData = {
-            // Graphic Design Projects - Semua pakai Canva
-            gsh: {
-                title: 'Green Safe & Health',
-                company: 'PT IDSurvey (Persero)',
-                description: 'Infografis kampanye HSE & ESG yang dibuat untuk Divisi ISPB PT IDSurvey. Menyoroti pentingnya keselamatan, kesehatan, dan keberlanjutan di lingkungan kerja. Dirancang dengan visual yang menarik dan pesan yang jelas untuk meningkatkan kesadaran karyawan tentang budaya keselamatan.',
-                responsibilities: [
-                    'Mendesain infografis kampanye HSE menggunakan Canva',
-                    'Menyusun konten dan visual yang sesuai dengan branding perusahaan',
-                    'Berkoordinasi dengan tim ISPB untuk memastikan pesan tersampaikan dengan baik',
-                    'Membuat beberapa alternatif desain untuk dipilih oleh tim'
-                ],
-                tools: ['Canva'],
-                images: ['Images/GSH2.png'],
-                year: '2025'
-            },
-            safety: {
-                title: 'Panduan Keselamatan Tim Kunjungan Kerja ke Lokasi Kebencanaan',
-                company: 'PT IDSurvey (Persero)',
-                description: 'Panduan keselamatan komprehensif untuk tim yang melakukan kunjungan kerja ke lokasi kebencanaan. Mencakup persiapan sebelum keberangkatan, prosedur selama di lapangan, dan evaluasi pasca kunjungan. Dokumen ini digunakan sebagai referensi utama bagi tim yang bertugas di area berisiko tinggi.',
-                responsibilities: [
-                    'Mendesain layout panduan keselamatan yang mudah dibaca dan dipahami',
-                    'Mengilustrasikan prosedur keselamatan dengan visual yang jelas',
-                    'Menyusun konten berdasarkan input dari tim HSE',
-                    'Memastikan semua informasi penting tercakup dalam panduan'
-                ],
-                tools: ['Canva'],
-                images: ['Images/panduankeselamatan2.png'],
-                year: '2025'
-            },
-            holiday: {
-                title: 'Safe Holiday Season',
-                company: 'PT IDSurvey (Persero)',
-                description: 'Kampanye keselamatan menjelang libur akhir tahun yang berfokus pada keselamatan berkendara dan perjalanan. Dirancang untuk mengingatkan karyawan tentang pentingnya persiapan sebelum melakukan perjalanan jarak jauh, termasuk pengecekan kendaraan, istirahat cukup, dan kewaspadaan di jalan.',
-                responsibilities: [
-                    'Membuat desain kampanye safety untuk libur akhir tahun',
-                    'Menyusun pesan-pesan keselamatan yang mudah diingat',
-                    'Mendesain visual yang menarik perhatian',
-                    'Mempersiapkan materi untuk distribusi internal perusahaan'
-                ],
-                tools: ['Canva'],
-                images: ['Images/safetyholidayseason2.png'],
-                year: '2025'
-            },
-            hse: {
-                title: 'Panduan Perilaku HSE Golden Rules',
-                company: 'PT IDSurvey (Persero)',
-                description: 'Visualisasi perilaku CARE (Commitment, Aware, Respect, Intervene) sebagai panduan perilaku keselamatan di tempat kerja. Dirancang untuk memudahkan pemahaman dan implementasi budaya keselamatan di seluruh level organisasi. Setiap poin dilengkapi dengan ilustrasi dan contoh perilaku nyata.',
-                responsibilities: [
-                    'Menerjemahkan konsep HSE Golden Rules ke dalam visual infografis',
-                    'Membuat ilustrasi untuk setiap poin CARE menggunakan Canva',
-                    'Memastikan desain sesuai dengan standar perusahaan',
-                    'Berkolaborasi dengan tim HSE untuk validasi konten'
-                ],
-                tools: ['Canva'],
-                images: ['Images/panduanhse2.png'],
-                year: '2025'
-            },
-            k3: {
-                title: 'Bulan K3 Nasional',
-                company: 'PT IDSurvey (Persero)',
-                description: 'Kampanye Bulan K3 Nasional dengan tema safety leadership. Dirancang untuk mempromosikan pentingnya kepemimpinan dalam keselamatan dan kesehatan kerja di seluruh level organisasi. Materi kampanye mencakup poster, banner digital, dan materi presentasi untuk acara internal.',
-                responsibilities: [
-                    'Mendesain materi kampanye untuk Bulan K3 Nasional menggunakan Canva',
-                    'Membuat poster dan banner digital dengan tema safety leadership',
-                    'Menyusun materi presentasi untuk sosialisasi K3',
-                    'Mendukung tim dalam persiapan acara Bulan K3'
-                ],
-                tools: ['Canva'],
-                images: ['Images/BKN2.png'],
-                year: '2025'
-            },
-            uiux1: {
-                title: 'UI/UX Design Project',
-                company: 'PT IDSurvey (Persero)',
-                description: 'Desain antarmuka untuk aplikasi internal PT IDSurvey. Fokus pada kemudahan penggunaan dan efisiensi alur kerja. Proyek ini merupakan bagian dari pengembangan sistem Activity Record yang sedang dibangun.',
-                responsibilities: [
-                    'Membuat wireframe dan mockup untuk aplikasi internal',
-                    'Merancang user flow yang intuitif',
-                    'Berkolaborasi dengan tim developer untuk implementasi desain',
-                    'Melakukan user testing untuk memastikan kemudahan penggunaan'
-                ],
-                tools: ['Figma', 'Draw.io'],
-                images: ['Images/finalproject1.png'],
-                year: '2025'
-            },
-            web1: {
-                title: 'Activity Record System',
-                company: 'PT IDSurvey (Persero)',
-                description: 'Sistem pencatatan aktivitas berbasis web yang dikembangkan untuk Divisi ISPB PT IDSurvey. Memungkinkan tracking aktivitas harian, monitoring progres, dan pembuatan laporan otomatis. Dibangun menggunakan Laravel dan MySQL.',
-                responsibilities: [
-                    'Membangun sistem dari tahap perancangan hingga implementasi',
-                    'Menyusun manual book (user guide) sebagai panduan penggunaan sistem',
-                    'Melakukan pengujian fungsional sistem',
-                    'Mengelola database dan memastikan keamanan data'
-                ],
-                tools: ['Laravel', 'MySQL', 'Bootstrap', 'JavaScript'],
-                images: [],
-                year: '2025'
-            }
-        };
-
-        function openProjectDetail(id) {
-            const data = projectData[id];
-            if (!data) return;
-
-            // Sembunyikan semua page, tampilkan project detail
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById('project-detail-page').classList.add('active');
-
-            const content = document.getElementById('projectDetailContent');
-
-            // Build gallery HTML
-            let galleryHTML = '';
-            if (data.images && data.images.length > 0) {
-                galleryHTML = `
-                    <div class="main-image" onclick="openImageModal('${data.images[0]}')">
-                        <img src="${data.images[0]}" alt="${data.title}">
-                    </div>
-                    ${data.images.length > 1 ? `
-                    <div class="image-gallery">
-                        ${data.images.map((img, idx) => `
-                            <div class="gallery-item" onclick="openImageModal('${img}')">
-                                <img src="${img}" alt="${data.title} ${idx + 1}">
-                            </div>
-                        `).join('')}
-                    </div>
-                    ` : ''}
-                `;
-            } else {
-                galleryHTML = `
-                    <div class="main-image">
-                        <div style="background: var(--light-gray); padding: 3rem; text-align: center; border-radius: 12px;">
-                            <i class="bi bi-laptop" style="font-size: 4rem; color: var(--gray);"></i>
-                            <p style="margin-top: 1rem; color: var(--gray);">Preview image not available</p>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Build responsibilities list
-            const responsibilitiesList = data.responsibilities.map(item =>
-                `<li>${item}</li>`
-            ).join('');
-
-            // Build tools tags
-            const toolsTags = data.tools.map(tool =>
-                `<span class="tool-tag">${tool}</span>`
-            ).join('');
-
-            content.innerHTML = `
-                <div class="project-detail-left">
-                    <h1>${data.title}</h1>
-                    <div class="project-company">
-                        <i class="bi bi-building"></i> ${data.company}
-                    </div>
-                    <p class="project-description">${data.description}</p>
-                    
-                    <div class="project-section">
-                        <h3><i class="bi bi-check-circle"></i> Responsibilities</h3>
-                        <ul class="project-list">
-                            ${responsibilitiesList}
+                    <div class="tl-n"></div>
+                    <div class="tl-c">
+                        <div class="tl-title">Asisten Dosen Mata Kuliah</div>
+                        <div class="tl-co">Universitas Teknologi Yogyakarta</div>
+                        <ul class="tl-ul">
+                            <li>Mendampingi dosen dalam praktikum mata kuliah Pemrograman Berorientasi Objek</li>
+                            <li>Mengelola dan menyiapkan dokumen administrasi untuk mendukung kegiatan kampus</li>
                         </ul>
                     </div>
-                    
-                    <div class="project-section">
-                        <h3><i class="bi bi-tools"></i> Tools Used</h3>
-                        <div class="project-tools">
-                            ${toolsTags}
+                </div>
+                <div class="tl-row sr" style="transition-delay:.3s">
+                    <div class="tl-t">
+                        <div class="tl-d">Sep 2024<br>— Jan 2025</div>
+                    </div>
+                    <div class="tl-n"></div>
+                    <div class="tl-c">
+                        <div class="tl-title">Asisten Akreditasi Kampus</div>
+                        <div class="tl-co">Universitas Teknologi Yogyakarta</div>
+                        <ul class="tl-ul">
+                            <li>Mengumpulkan data mahasiswa dan memverifikasi bukti pendukung akreditasi kampus</li>
+                            <li>Menyusun dan memastikan kelengkapan dokumen akreditasi</li>
+                            <li>Berkoordinasi antarbagian untuk kelancaran proses akreditasi</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="divline"></div>
+
+    <section id="skills">
+        <div class="wrap">
+            <div class="tag sr">Expertise</div>
+            <h2 class="sec-h sr" style="transition-delay:.1s">Skills & <em>Technologies</em></h2>
+            <div class="sk-g">
+                <div class="sk sr" style="transition-delay:.1s">
+                    <div class="sk-h">
+                        <div class="sk-i"><i class="bi bi-code-slash"></i></div>
+                        <div class="sk-l">Web & Database</div>
+                    </div>
+                    <div class="pills">
+                        <span class="pill"><img
+                                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg"
+                                alt="">HTML</span>
+                        <span class="pill"><img
+                                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg"
+                                alt="">CSS</span>
+                        <span class="pill"><img
+                                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/laravel/laravel-original.svg"
+                                alt="">Laravel</span>
+                        <span class="pill"><img
+                                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg"
+                                alt="">MySQL</span>
+                    </div>
+                </div>
+                <div class="sk sr" style="transition-delay:.2s">
+                    <div class="sk-h">
+                        <div class="sk-i"><i class="bi bi-table"></i></div>
+                        <div class="sk-l">Data & Office</div>
+                    </div>
+                    <div class="pills">
+                        <span class="pill"><i class="bi bi-file-earmark-excel-fill"
+                                style="color:#217346"></i>Excel</span>
+                        <span class="pill"><i class="bi bi-file-earmark-word-fill" style="color:#2B579A"></i>Word</span>
+                        <span class="pill"><i class="bi bi-file-earmark-ppt-fill"
+                                style="color:#D24726"></i>PowerPoint</span>
+                        <span class="pill"><i class="bi bi-google" style="color:#4285F4"></i>Google Workspace</span>
+                    </div>
+                </div>
+                <div class="sk sr" style="transition-delay:.3s">
+                    <div class="sk-h">
+                        <div class="sk-i"><i class="bi bi-palette"></i></div>
+                        <div class="sk-l">Design & Modelling</div>
+                    </div>
+                    <div class="pills">
+                        <span class="pill"><i class="bi bi-figma" style="color:#F24E1E"></i>Figma</span>
+                        <span class="pill"><i class="bi bi-brush" style="color:#00C4CC"></i>Canva</span>
+                        <span class="pill"><i class="bi bi-diagram-3" style="color:#F08705"></i>Draw.io</span>
+                    </div>
+                </div>
+                <div class="sk sr" style="transition-delay:.4s">
+                    <div class="sk-h">
+                        <div class="sk-i"><i class="bi bi-kanban"></i></div>
+                        <div class="sk-l">Collaboration</div>
+                    </div>
+                    <div class="pills">
+                        <span class="pill"><img
+                                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg"
+                                alt="">GitHub</span>
+                        <span class="pill"><img
+                                src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/notion/notion-original.svg"
+                                alt="">Notion</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="divline"></div>
+
+    <section id="projects">
+        <div class="wrap">
+            <div class="tag sr">Portfolio</div>
+            <h2 class="sec-h sr" style="transition-delay:.1s">Featured <em>Projects</em></h2>
+            <div class="p-tabs sr" style="transition-delay:.18s">
+                <button class="p-tab on" onclick="tab('design',this)"><i class="bi bi-palette"></i> Graphic
+                    Design</button>
+                <button class="p-tab" onclick="tab('uiux',this)"><i class="bi bi-layout-text-window-reverse"></i> UI/UX
+                    Design</button>
+                <button class="p-tab" onclick="tab('web',this)"><i class="bi bi-code-slash"></i> Web
+                    Development</button>
+            </div>
+            <div id="pp-design" class="pp on">
+                <div class="dg">
+                    <div class="dc" onclick="openDet('gsh')">
+                        <div class="car" data-tot="1">
+                            <div class="ct">
+                                <div class="cs"><img src="Images/GSH2.png" alt="" loading="lazy"></div>
+                            </div>
+                            <div class="cdots"><span class="cd on"></span></div>
+                        </div>
+                        <div class="di">
+                            <h3>Green Safe & Health</h3>
+                            <p>Infografis kampanye HSE & ESG untuk PT IDSurvey</p>
+                            <div class="dm"><span>2025 · Canva</span><span class="det-link">Detail <i
+                                        class="bi bi-arrow-right"></i></span></div>
                         </div>
                     </div>
-                    
-                    <div class="project-section">
-                        <h3><i class="bi bi-calendar"></i> Year</h3>
-                        <p>${data.year}</p>
+                    <div class="dc" onclick="openDet('safety')">
+                        <div class="car" data-tot="1">
+                            <div class="ct">
+                                <div class="cs"><img src="Images/panduankeselamatan2.png" alt="" loading="lazy"></div>
+                            </div>
+                            <div class="cdots"><span class="cd on"></span></div>
+                        </div>
+                        <div class="di">
+                            <h3>Panduan Keselamatan Tim Kunjungan</h3>
+                            <p>Safety guideline kunjungan ke lokasi kebencanaan</p>
+                            <div class="dm"><span>2025 · Canva</span><span class="det-link">Detail <i
+                                        class="bi bi-arrow-right"></i></span></div>
+                        </div>
+                    </div>
+                    <div class="dc" onclick="openDet('holiday')">
+                        <div class="car" data-tot="1">
+                            <div class="ct">
+                                <div class="cs"><img src="Images/safetyholidayseason2.png" alt="" loading="lazy"></div>
+                            </div>
+                            <div class="cdots"><span class="cd on"></span></div>
+                        </div>
+                        <div class="di">
+                            <h3>Safe Holiday Season</h3>
+                            <p>Kampanye keselamatan berkendara saat libur akhir tahun</p>
+                            <div class="dm"><span>2025 · Canva</span><span class="det-link">Detail <i
+                                        class="bi bi-arrow-right"></i></span></div>
+                        </div>
+                    </div>
+                    <div class="dc" onclick="openDet('hse')">
+                        <div class="car" data-tot="1">
+                            <div class="ct">
+                                <div class="cs"><img src="Images/panduanhse2.png" alt="" loading="lazy"></div>
+                            </div>
+                            <div class="cdots"><span class="cd on"></span></div>
+                        </div>
+                        <div class="di">
+                            <h3>Panduan Perilaku HSE Golden Rules</h3>
+                            <p>Visualisasi perilaku CARE untuk budaya keselamatan kerja</p>
+                            <div class="dm"><span>2025 · Canva</span><span class="det-link">Detail <i
+                                        class="bi bi-arrow-right"></i></span></div>
+                        </div>
+                    </div>
+                    <div class="dc" onclick="openDet('k3')">
+                        <div class="car" data-tot="1">
+                            <div class="ct">
+                                <div class="cs"><img src="Images/BKN2.png" alt="" loading="lazy"></div>
+                            </div>
+                            <div class="cdots"><span class="cd on"></span></div>
+                        </div>
+                        <div class="di">
+                            <h3>Bulan K3 Nasional</h3>
+                            <p>Kampanye Bulan K3 Nasional — tema safety leadership</p>
+                            <div class="dm"><span>2025 · Canva</span><span class="det-link">Detail <i
+                                        class="bi bi-arrow-right"></i></span></div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="project-detail-right">
-                    ${galleryHTML}
+            </div>
+            <div id="pp-uiux" class="pp">
+                <div class="wg">
+                    <div class="wc">
+                        <div class="wt"><img src="Images/finalproject1.png" alt="" loading="lazy"></div>
+                        <div class="wi">
+                            <h3>UI/UX Design Project</h3>
+                            <p>Desain antarmuka untuk aplikasi internal PT IDSurvey — fokus kemudahan penggunaan dan
+                                efisiensi alur kerja.</p>
+                            <div class="wtags"><span class="wtag">Figma</span><span class="wtag">Draw.io</span><span
+                                    class="wtag">Wireframe</span><span class="wtag">User Flow</span></div>
+                        </div>
+                    </div>
                 </div>
-            `;
+            </div>
+            <div id="pp-web" class="pp">
+                <div class="wg">
+                    <div class="wc">
+                        <div class="wt">
+                            <div class="wph"><i class="bi bi-laptop"></i></div>
+                        </div>
+                        <div class="wi">
+                            <h3>Activity Record System</h3>
+                            <p>Sistem pencatatan aktivitas berbasis web untuk Divisi ISPB — tracking harian, monitoring
+                                progres, dan laporan otomatis.</p>
+                            <div class="wtags"><span class="wtag">Laravel</span><span class="wtag">MySQL</span><span
+                                    class="wtag">Bootstrap</span><span class="wtag">JavaScript</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="divline"></div>
 
-            // Scroll ke atas
-            window.scrollTo(0, 0);
-        }
+    <section id="certifications">
+        <div class="wrap">
+            <div class="tag sr">Learning</div>
+            <h2 class="sec-h sr" style="transition-delay:.1s"><em>Certifications</em></h2>
+            <div class="cg">
+                <div class="cert-card sr" style="transition-delay:.1s" onclick="openModal('microsoft-excel',4)">
+                    <div class="cth" data-tot="4">
+                        <div class="ct">
+                            <div class="cs"><img src="Certificates/microsoft-excel_1.jpg" alt="" loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/microsoft-excel_2.jpg" alt="" loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/microsoft-excel_3.jpg" alt="" loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/microsoft-excel_4.jpg" alt="" loading="lazy"></div>
+                        </div>
+                        <div class="ca"><button class="cb" onclick="cp(this,event)"><i
+                                    class="bi bi-chevron-left"></i></button><button class="cb"
+                                onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div>
+                        <div class="cdots"><span class="cd on"></span><span class="cd"></span><span
+                                class="cd"></span><span class="cd"></span></div>
+                        <div class="ccnt">1 / 4</div>
+                    </div>
+                    <div class="ci">
+                        <h3>Microsoft Excel Basic</h3>
+                        <div class="iss">MySkill</div>
+                        <div class="cdt">November 2025</div>
+                    </div>
+                </div>
+                <div class="cert-card sr" style="transition-delay:.15s"
+                    onclick="openModal('dicoding-manajemenproyek',3)">
+                    <div class="cth" data-tot="3">
+                        <div class="ct">
+                            <div class="cs"><img src="Certificates/dicoding-manajemenproyek_1.jpg" alt=""
+                                    loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/dicoding-manajemenproyek_2.jpg" alt=""
+                                    loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/dicoding-manajemenproyek_3.jpg" alt=""
+                                    loading="lazy"></div>
+                        </div>
+                        <div class="ca"><button class="cb" onclick="cp(this,event)"><i
+                                    class="bi bi-chevron-left"></i></button><button class="cb"
+                                onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div>
+                        <div class="cdots"><span class="cd on"></span><span class="cd"></span><span class="cd"></span>
+                        </div>
+                        <div class="ccnt">1 / 3</div>
+                    </div>
+                    <div class="ci">
+                        <h3>Belajar Dasar Manajemen Proyek</h3>
+                        <div class="iss">Dicoding Indonesia</div>
+                        <div class="cdt">Juli 2023 – Juli 2026</div>
+                    </div>
+                </div>
+                <div class="cert-card sr" style="transition-delay:.2s"
+                    onclick="openModal('dicoding-dasarpemograman',4)">
+                    <div class="cth" data-tot="4">
+                        <div class="ct">
+                            <div class="cs"><img src="Certificates/dicoding-dasarpemograman_1.jpg" alt=""
+                                    loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/dicoding-dasarpemograman_2.jpg" alt=""
+                                    loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/dicoding-dasarpemograman_3.jpg" alt=""
+                                    loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/dicoding-dasarpemograman_4.jpg" alt=""
+                                    loading="lazy"></div>
+                        </div>
+                        <div class="ca"><button class="cb" onclick="cp(this,event)"><i
+                                    class="bi bi-chevron-left"></i></button><button class="cb"
+                                onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div>
+                        <div class="cdots"><span class="cd on"></span><span class="cd"></span><span
+                                class="cd"></span><span class="cd"></span></div>
+                        <div class="ccnt">1 / 4</div>
+                    </div>
+                    <div class="ci">
+                        <h3>Memulai Dasar Pemrograman</h3>
+                        <div class="iss">Dicoding Indonesia</div>
+                        <div class="cdt">Juli 2023 – Juli 2026</div>
+                    </div>
+                </div>
+                <div class="cert-card sr" style="transition-delay:.25s" onclick="openModal('dicoding-sql',3)">
+                    <div class="cth" data-tot="3">
+                        <div class="ct">
+                            <div class="cs"><img src="Certificates/dicoding-sql_1.jpg" alt="" loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/dicoding-sql_2.jpg" alt="" loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/dicoding-sql_3.jpg" alt="" loading="lazy"></div>
+                        </div>
+                        <div class="ca"><button class="cb" onclick="cp(this,event)"><i
+                                    class="bi bi-chevron-left"></i></button><button class="cb"
+                                onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div>
+                        <div class="cdots"><span class="cd on"></span><span class="cd"></span><span class="cd"></span>
+                        </div>
+                        <div class="ccnt">1 / 3</div>
+                    </div>
+                    <div class="ci">
+                        <h3>Belajar Dasar SQL</h3>
+                        <div class="iss">Dicoding Indonesia</div>
+                        <div class="cdt">September 2023 – September 2026</div>
+                    </div>
+                </div>
+                <div class="cert-card sr" style="transition-delay:.3s" onclick="openModal('design-thinking',1)">
+                    <div class="cth" data-tot="1">
+                        <div class="ct">
+                            <div class="cs"><img src="Certificates/design-thinking.jpg" alt="" loading="lazy"></div>
+                        </div>
+                        <div class="cdots"><span class="cd on"></span></div>
+                    </div>
+                    <div class="ci">
+                        <h3>Design Thinking</h3>
+                        <div class="iss">GNIK & Kemenaker RI</div>
+                        <div class="cdt">Desember 2025</div>
+                    </div>
+                </div>
+                <div class="cert-card sr" style="transition-delay:.35s"
+                    onclick="openModal('digitalent-dasarkeamananai',2)">
+                    <div class="cth" data-tot="2">
+                        <div class="ct">
+                            <div class="cs"><img src="Certificates/digitalent-dasarkeamananai_1.jpg" alt=""
+                                    loading="lazy"></div>
+                            <div class="cs"><img src="Certificates/digitalent-dasarkeamananai_2.jpg" alt=""
+                                    loading="lazy"></div>
+                        </div>
+                        <div class="ca"><button class="cb" onclick="cp(this,event)"><i
+                                    class="bi bi-chevron-left"></i></button><button class="cb"
+                                onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div>
+                        <div class="cdots"><span class="cd on"></span><span class="cd"></span></div>
+                        <div class="ccnt">1 / 2</div>
+                    </div>
+                    <div class="ci">
+                        <h3>Dasar-dasar Keamanan AI</h3>
+                        <div class="iss">Digital Talent Scholarship</div>
+                        <div class="cdt">Oktober 2025</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="divline"></div>
 
-        function closeProjectDetail() {
-            document.getElementById('project-detail-page').classList.remove('active');
-            document.getElementById('projects-page').classList.add('active');
+    <section id="contact">
+        <div class="wrap">
+            <div class="tag sr">Contact</div>
+            <h2 class="sec-h sr" style="transition-delay:.1s">Get In <em>Touch</em></h2>
+            <div class="cont-g">
+                <div class="sl">
+                    <h2 class="cont-h">Let's Work <em>Together!</em></h2>
+                    <p class="cont-sub">Selalu terbuka untuk mendengar tentang proyek baru dan peluang kolaborasi.
+                        Jangan ragu untuk menghubungi saya!</p>
+                    <div class="soc-row">
+                        <a href="https://www.linkedin.com/in/miftakhulkhs" target="_blank" class="sb"><i
+                                class="bi bi-linkedin"></i></a>
+                        <a href="mailto:miftakhulkhs@gmail.com" class="sb"><i class="bi bi-envelope"></i></a>
+                        <a href="https://github.com/miftakhulkhs" target="_blank" class="sb"><i
+                                class="bi bi-github"></i></a>
+                    </div>
+                </div>
+                <div class="cc-list srr">
+                    <div class="cc">
+                        <div class="cci"><i class="bi bi-envelope"></i></div>
+                        <div>
+                            <h4>Email</h4><a href="mailto:miftakhulkhs@gmail.com">miftakhulkhs@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="cc">
+                        <div class="cci"><i class="bi bi-telephone"></i></div>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+62 816-4246-491</p>
+                        </div>
+                    </div>
+                    <div class="cc">
+                        <div class="cci"><i class="bi bi-geo-alt"></i></div>
+                        <div>
+                            <h4>Location</h4>
+                            <p>Cilacap, Jawa Tengah</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            // Update active menu
-            document.querySelectorAll('.nav-menu a').forEach(link => {
-                link.classList.remove('active');
-            });
-            document.querySelectorAll('.nav-menu a')[4].classList.add('active'); // Projects menu index 4
+    <div id="det">
+        <div class="det-in">
+            <button class="bk" onclick="closeDet()"><i class="bi bi-arrow-left"></i> Kembali ke Projects</button>
+            <div class="det-grid" id="det-content"></div>
+        </div>
+    </div>
+    <div class="mbg" id="modal" onclick="closeModal(event)">
+        <div class="mbox" onclick="event.stopPropagation()">
+            <button class="mx" onclick="closeModal()">×</button>
+            <img class="mimg" id="mimg" src="" alt="">
+            <div><button class="mnav prev" id="mprev" onclick="mNav(-1)"><i
+                        class="bi bi-chevron-left"></i></button><button class="mnav next" id="mnext"
+                    onclick="mNav(1)"><i class="bi bi-chevron-right"></i></button></div>
+            <div class="mcnt" id="mcnt"></div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2026 <b>Miftakhul Khasanah</b> — Built with passion</p>
+    </footer>
+    <button class="topb" id="topb" onclick="scrollTo({top:0,behavior:'smooth'})"><i class="bi bi-arrow-up"></i></button>
 
-            window.scrollTo(0, 0);
-        }
-
-        // ============================================================
-        // CERTIFICATION CAROUSEL
-        // ============================================================
-        function getCertCarousel(btn) {
-            return btn.closest('.cert-carousel');
-        }
-
-        function getCertState(carousel) {
-            if (!carousel._state) {
-                carousel._state = {
-                    current: 0,
-                    total: parseInt(carousel.getAttribute('data-total')) || 1
-                };
-            }
-            return carousel._state;
-        }
-
-        function updateCertCarousel(carousel) {
-            const state = getCertState(carousel);
-            const track = carousel.querySelector('.carousel-track');
-            const dots = carousel.querySelectorAll('.carousel-dot');
-            const counter = carousel.querySelector('.cert-img-count');
-
-            track.style.transform = `translateX(-${state.current * 100}%)`;
-            dots.forEach((d, i) => d.classList.toggle('active', i === state.current));
-            if (counter) counter.textContent = `${state.current + 1} / ${state.total}`;
-        }
-
-        function nextCertSlide(btn, ev) {
-            ev.stopPropagation();
-            const carousel = getCertCarousel(btn);
-            const state = getCertState(carousel);
-            state.current = (state.current + 1) % state.total;
-            updateCertCarousel(carousel);
-        }
-
-        function prevCertSlide(btn, ev) {
-            ev.stopPropagation();
-            const carousel = getCertCarousel(btn);
-            const state = getCertState(carousel);
-            state.current = (state.current - 1 + state.total) % state.total;
-            updateCertCarousel(carousel);
-        }
-
-        // ============================================================
-        // CERTIFICATE MODAL
-        // ============================================================
-        let certModalState = { baseName: '', total: 1, current: 0 };
-
-        function openCertModal(baseName, total) {
-            certModalState = { baseName, total, current: 0 };
-            renderCertModal();
-            document.getElementById('certModal').classList.add('active');
-        }
-
-        function renderCertModal() {
-            const { baseName, total, current } = certModalState;
-            const img = document.getElementById('certModalImg');
-            const counter = document.getElementById('certModalCounter');
-            const prevBtn = document.getElementById('certModalPrev');
-            const nextBtn = document.getElementById('certModalNext');
-
-            const src = total === 1
-                ? `Certificates/${baseName}.jpg`
-                : `Certificates/${baseName}_${current + 1}.jpg`;
-
-            img.src = src;
-            counter.textContent = total > 1 ? `${current + 1} / ${total}` : '';
-            prevBtn.style.display = total > 1 ? 'flex' : 'none';
-            nextBtn.style.display = total > 1 ? 'flex' : 'none';
-        }
-
-        function certModalNav(dir) {
-            certModalState.current = (certModalState.current + dir + certModalState.total) % certModalState.total;
-            renderCertModal();
-        }
-
-        function closeCertModal(ev) {
-            if (ev && ev.target !== document.getElementById('certModal')) return;
-            document.getElementById('certModal').classList.remove('active');
-        }
-
-        // ============================================================
-        // IMAGE MODAL - FIX: muncul di depan detail
-        // ============================================================
-        function openImageModal(src) {
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-            modalImage.src = src;
-            modal.classList.add('active');
-        }
-
-        function closeImageModal() {
-            document.getElementById('imageModal').classList.remove('active');
-        }
-
-        // ============================================================
-        // SCROLL TO TOP
-        // ============================================================
-        const scrollTopBtn = document.querySelector('.scroll-top');
-        window.addEventListener('scroll', () => {
-            scrollTopBtn.classList.toggle('show', window.scrollY > 300);
-        });
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // ============================================================
-        // INITIALIZATION
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize cert carousels
-            document.querySelectorAll('.cert-carousel').forEach(carousel => {
-                getCertState(carousel);
-                updateCertCarousel(carousel);
-            });
-
-            // Set home page active
-            showPage('home');
-        });
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (document.getElementById('project-detail-page').classList.contains('active')) {
-                    closeProjectDetail();
-                }
-                document.getElementById('certModal').classList.remove('active');
-                document.getElementById('imageModal').classList.remove('active');
-            }
-            if (e.key === 'ArrowRight' && document.getElementById('certModal').classList.contains('active')) certModalNav(1);
-            if (e.key === 'ArrowLeft' && document.getElementById('certModal').classList.contains('active')) certModalNav(-1);
-        });
+    <script>
+        const navEl = document.getElementById('nav'), topb = document.getElementById('topb');
+        const sects = [...document.querySelectorAll('section[id]')];
+        window.addEventListener('scroll', () => { navEl.classList.toggle('solid', scrollY > 40); topb.classList.toggle('show', scrollY > 400); let cur = ''; sects.forEach(s => { if (scrollY >= s.offsetTop - 100) cur = s.id }); document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur)) });
+        function toggleBurger() { document.getElementById('burg').classList.toggle('x'); document.getElementById('mob').classList.toggle('open') }
+        function cm() { document.getElementById('burg').classList.remove('x'); document.getElementById('mob').classList.remove('open') }
+        const obs = new IntersectionObserver(en => { en.forEach(e => { if (e.isIntersecting) e.target.classList.add('in') }) }, { threshold: .07, rootMargin: '0px 0px -20px 0px' });
+        document.querySelectorAll('.sr,.sl,.srr').forEach(el => obs.observe(el));
+        addEventListener('load', () => document.querySelectorAll('#hero .sr,#hero .srr').forEach(el => setTimeout(() => el.classList.add('in'), 60)));
+        function tab(id, btn) { document.querySelectorAll('.pp').forEach(p => p.classList.remove('on')); document.querySelectorAll('.p-tab').forEach(b => b.classList.remove('on')); document.getElementById('pp-' + id).classList.add('on'); btn.classList.add('on'); if (id === 'design') initSeeMore('pp-design', '.dc', 3); if (id === 'uiux') initSeeMore('pp-uiux', '.wc', 3); if (id === 'web') initSeeMore('pp-web', '.wc', 3) }
+        function initSeeMore(sectionId, itemSel, showCount) { const section = document.getElementById(sectionId) || document.querySelector('#' + sectionId); if (!section) return; const items = [...section.querySelectorAll(itemSel)]; const old = section.querySelector('.see-more-wrap'); if (old) old.remove(); if (items.length <= showCount) { items.forEach(i => i.classList.remove('hidden-item', 'visible')); return } items.forEach((item, i) => { item.classList.remove('hidden-item', 'visible'); if (i >= showCount) item.classList.add('hidden-item') }); const wrap = document.createElement('div'); wrap.className = 'see-more-wrap'; const btn = document.createElement('button'); btn.className = 'see-more-btn'; let expanded = false; const update = () => { btn.innerHTML = expanded ? `Sembunyikan <i class="bi bi-chevron-up"></i>` : `Lihat semua ${items.length} item <i class="bi bi-chevron-down"></i>`; btn.classList.toggle('expanded', expanded) }; update(); btn.onclick = () => { expanded = !expanded; items.forEach((item, i) => { if (i >= showCount) { if (expanded) { item.classList.remove('hidden-item'); item.classList.add('visible'); obs.observe(item) } else { item.classList.remove('visible'); item.classList.add('hidden-item') } } }); update() }; wrap.appendChild(btn); section.appendChild(wrap) }
+        window.addEventListener('DOMContentLoaded', () => { initSeeMore('pp-design', '.dc', 3); initSeeMore('certifications', '.cert-card', 4); initSeeMore('experience', '.tl-row', 2) });
+        window.PD = { gsh: { title: 'Green Safe & Health', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Infografis kampanye HSE & ESG yang dibuat untuk Divisi ISPB PT IDSurvey.', resp: ['Mendesain infografis kampanye HSE menggunakan Canva', 'Menyusun konten dan visual sesuai branding perusahaan', 'Berkoordinasi dengan tim ISPB untuk memastikan pesan tersampaikan', 'Membuat beberapa alternatif desain untuk review tim'], tools: ['Canva'], imgs: ['Images/GSH2.png'] }, safety: { title: 'Panduan Keselamatan Tim Kunjungan Kerja', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Panduan keselamatan komprehensif untuk tim yang melakukan kunjungan kerja ke lokasi kebencanaan.', resp: ['Mendesain layout panduan keselamatan yang mudah dibaca', 'Mengilustrasikan prosedur keselamatan dengan visual yang jelas', 'Menyusun konten berdasarkan input dari tim HSE', 'Memastikan semua informasi penting tercakup'], tools: ['Canva'], imgs: ['Images/panduankeselamatan2.png'] }, holiday: { title: 'Safe Holiday Season', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Kampanye keselamatan menjelang libur akhir tahun yang berfokus pada keselamatan berkendara.', resp: ['Membuat desain kampanye safety untuk libur akhir tahun', 'Menyusun pesan keselamatan yang mudah diingat', 'Mendesain visual yang menarik perhatian', 'Mempersiapkan materi untuk distribusi internal'], tools: ['Canva'], imgs: ['Images/safetyholidayseason2.png'] }, hse: { title: 'Panduan Perilaku HSE Golden Rules', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Visualisasi perilaku CARE (Commitment, Aware, Respect, Intervene) sebagai panduan keselamatan kerja.', resp: ['Menerjemahkan konsep HSE Golden Rules ke dalam visual infografis', 'Membuat ilustrasi untuk setiap poin CARE', 'Memastikan desain sesuai standar perusahaan', 'Berkolaborasi dengan tim HSE untuk validasi konten'], tools: ['Canva'], imgs: ['Images/panduanhse2.png'] }, k3: { title: 'Bulan K3 Nasional', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Kampanye Bulan K3 Nasional dengan tema safety leadership.', resp: ['Mendesain materi kampanye Bulan K3 Nasional', 'Menjadi panitia teknis Acara Puncak IDSurvey Group', 'Mengelola video bumper dan seluruh media acara', 'Membuat poster dan banner digital tema safety leadership'], tools: ['Canva'], imgs: ['Images/BKN2.png'] } };
+        function openDet(id) { const d = PD[id]; if (!d) return; const imgs = d.imgs || []; let gal = imgs.length ? `<div class="dmain"><img src="${imgs[0]}" alt="" id="dmi"></div>${imgs.length > 1 ? `<div class="dthumbs">${imgs.map((s, i) => `<div class="dth ${i === 0 ? 'on' : ''}" onclick="swDet('${s}',this)"><img src="${s}" alt=""></div>`).join('')}</div>` : ''}` : `<div style="background:var(--bg3);border-radius:var(--r);padding:4rem;text-align:center;color:var(--text3)"><i class="bi bi-laptop" style="font-size:2.5rem"></i><p style="margin-top:1rem;font-size:.85rem">Preview tidak tersedia</p></div>`; document.getElementById('det-content').innerHTML = `<div><div class="dh1">${d.title}</div><div class="dco"><i class="bi bi-building"></i> ${d.co} · ${d.yr}</div><p class="ddesc">${d.desc}</p><div class="dsec"><h3>Responsibilities</h3><ul class="dul">${d.resp.map(r => `<li>${r}</li>`).join('')}</ul></div><div class="dsec"><h3>Tools Used</h3><div class="trow">${d.tools.map(t => `<span class="tool">${t}</span>`).join('')}</div></div></div><div>${gal}</div>`; document.getElementById('det').classList.add('open'); document.body.style.overflow = 'hidden'; document.getElementById('det').scrollTop = 0 }
+        function swDet(src, el) { document.getElementById('dmi').src = src; document.querySelectorAll('.dth').forEach(t => t.classList.remove('on')); el.classList.add('on') }
+        function closeDet() { document.getElementById('det').classList.remove('open'); document.body.style.overflow = '' }
+        function getC(btn) { const t = btn.closest('.cth,.car'); if (!t._s) t._s = { cur: 0, tot: parseInt(t.dataset.tot) || 1 }; return t }
+        function upC(t) { t.querySelector('.ct').style.transform = `translateX(-${t._s.cur * 100}%)`; t.querySelectorAll('.cd').forEach((d, i) => d.classList.toggle('on', i === t._s.cur)); const cc = t.querySelector('.ccnt'); if (cc) cc.textContent = `${t._s.cur + 1} / ${t._s.tot}` }
+        function cp(btn, ev) { ev.stopPropagation(); const t = getC(btn); t._s.cur = (t._s.cur - 1 + t._s.tot) % t._s.tot; upC(t) }
+        function cn(btn, ev) { ev.stopPropagation(); const t = getC(btn); t._s.cur = (t._s.cur + 1) % t._s.tot; upC(t) }
+        let CM = { base: '', tot: 1, cur: 0 };
+        function openModal(base, tot) { CM = { base, tot, cur: 0 }; rM(); document.getElementById('modal').classList.add('open'); document.body.style.overflow = 'hidden' }
+        function rM() { const src = CM.tot === 1 ? `Certificates/${CM.base}.jpg` : `Certificates/${CM.base}_${CM.cur + 1}.jpg`; document.getElementById('mimg').src = src; document.getElementById('mcnt').textContent = CM.tot > 1 ? `${CM.cur + 1} / ${CM.tot}` : ''; document.getElementById('mprev').style.display = CM.tot > 1 ? 'flex' : 'none'; document.getElementById('mnext').style.display = CM.tot > 1 ? 'flex' : 'none' }
+        function mNav(d) { CM.cur = (CM.cur + d + CM.tot) % CM.tot; rM() }
+        function closeModal(ev) { if (ev && ev.target !== document.getElementById('modal')) return; document.getElementById('modal').classList.remove('open'); document.body.style.overflow = '' }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { document.getElementById('modal').classList.remove('open'); document.body.style.overflow = ''; closeDet() } if (document.getElementById('modal').classList.contains('open')) { if (e.key === 'ArrowLeft') mNav(-1); if (e.key === 'ArrowRight') mNav(1) } });
     </script>
 </body>
 
