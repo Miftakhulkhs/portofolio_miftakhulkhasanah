@@ -67,7 +67,7 @@
             const container = document.querySelector('.tl-wrap');
             if (!container || !exps.length) return;
             container.innerHTML = exps.map((e, i) => `<div class="tl-row sr" style="transition-delay:${i * 0.1 + 0.1}s"><div class="tl-t"><div class="tl-d">${e.dateFrom || ''}<br>— ${e.dateTo || ''}</div></div><div class="tl-n"></div><div class="tl-c">${e.badge ? `<div class="tl-badge">${e.badge}</div>` : ''}<div class="tl-title">${e.title}</div><div class="tl-co">${e.company}</div><ul class="tl-ul">${(e.responsibilities || []).map(r => `<li>${r}</li>`).join('')}</ul>${e.tags && e.tags.length ? `<div class="m-row">${e.tags.map(t => `<span class="mt"><i class="bi bi-tag"></i> ${t}</span>`).join('')}</div>` : ''}</div></div>`).join('');
-            initSeeMore('experience', '.tl-row', 2);
+
             document.querySelectorAll('.tl-wrap .sr').forEach(el => obs.observe(el));
         }
         window.addEventListener('DOMContentLoaded', () => setTimeout(loadFromFirebase, 150));
@@ -122,6 +122,7 @@
             background: radial-gradient(ellipse 800px 500px at 0% 0%, rgba(147, 197, 253, 0.16) 0%, transparent 60%), radial-gradient(ellipse 600px 400px at 100% 100%, rgba(59, 130, 246, 0.07) 0%, transparent 60%)
         }
 
+        /* nav placeholder */
         nav {
             position: fixed;
             top: 0;
@@ -300,18 +301,21 @@
         }
 
         .sec-h {
-            font-size: clamp(1.7rem, 3.8vw, 2.8rem);
-            font-weight: 700;
+            font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+            font-weight: 800;
             color: var(--navy);
             line-height: 1.1;
-            letter-spacing: -.4px;
+            letter-spacing: .04em;
+            text-transform: uppercase;
             margin-bottom: 2.5rem
         }
 
         .sec-h em {
             color: var(--blue);
-            font-style: normal;
-            font-weight: 300
+            font-style: italic;
+            font-weight: 300;
+            text-transform: none;
+            letter-spacing: -.2px
         }
 
         .divline {
@@ -1262,6 +1266,74 @@
             color: var(--text3)
         }
 
+        /* GLASS ORBS */
+        .glass-orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0
+        }
+
+        .glass-orb1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -80px;
+            background: rgba(147, 197, 253, 0.12);
+            border: 1px solid rgba(147, 197, 253, 0.28);
+            box-shadow: inset 0 0 80px rgba(255, 255, 255, 0.18), 0 0 60px rgba(147, 197, 253, 0.1);
+            animation: gorb 20s ease-in-out infinite
+        }
+
+        .glass-orb2 {
+            width: 280px;
+            height: 280px;
+            bottom: 12%;
+            left: -70px;
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: inset 0 0 50px rgba(255, 255, 255, 0.12);
+            animation: gorb 26s ease-in-out infinite reverse
+        }
+
+        .glass-orb3 {
+            width: 180px;
+            height: 180px;
+            top: 38%;
+            right: 6%;
+            background: rgba(186, 230, 253, 0.1);
+            border: 1px solid rgba(186, 230, 253, 0.32);
+            box-shadow: inset 0 0 30px rgba(255, 255, 255, 0.22);
+            animation: gorb 15s ease-in-out infinite 4s
+        }
+
+        .glass-orb4 {
+            width: 120px;
+            height: 120px;
+            top: 65%;
+            left: 20%;
+            background: rgba(96, 165, 250, 0.07);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.15);
+            animation: gorb 19s ease-in-out infinite 2s
+        }
+
+        @keyframes gorb {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1)
+            }
+
+            33% {
+                transform: translate(20px, -16px) scale(1.05)
+            }
+
+            66% {
+                transform: translate(-14px, 12px) scale(.96)
+            }
+        }
+
         .see-more-wrap {
             margin-top: .9rem
         }
@@ -1869,6 +1941,10 @@
 </head>
 
 <body>
+    <div class="glass-orb glass-orb1"></div>
+    <div class="glass-orb glass-orb2"></div>
+    <div class="glass-orb glass-orb3"></div>
+    <div class="glass-orb glass-orb4"></div>
     <nav id="nav">
         <a class="logo" href="#hero">MK<em>.</em></a>
         <ul class="nav-links">
@@ -1936,7 +2012,7 @@
     <section id="about">
         <div class="wrap">
             <div class="tag sr">About</div>
-            <h2 class="sec-h sr" style="transition-delay:.1s">Personal <em>Profile</em></h2>
+            <h2 class="sec-h sr" style="transition-delay:.1s">PERSONAL <em>Profile</em></h2>
             <div class="ab-g">
                 <div class="ab-body sl">
                     <p>Lulusan S1 Sistem Informasi dari Universitas Teknologi Yogyakarta dengan pengalaman di bidang
@@ -1961,7 +2037,7 @@
     <section id="experience">
         <div class="wrap">
             <div class="tag sr">Journey</div>
-            <h2 class="sec-h sr" style="transition-delay:.1s">Work <em>Experience</em></h2>
+            <h2 class="sec-h sr" style="transition-delay:.1s">WORK <em>Experience</em></h2>
             <div class="tl-wrap">
                 <div class="tl-row sr" style="transition-delay:.1s">
                     <div class="tl-t">
@@ -2026,7 +2102,7 @@
     <section id="skills">
         <div class="wrap">
             <div class="tag sr">Expertise</div>
-            <h2 class="sec-h sr" style="transition-delay:.1s">Skills & <em>Technologies</em></h2>
+            <h2 class="sec-h sr" style="transition-delay:.1s">SKILLS & <em>Technologies</em></h2>
             <div class="sk-g">
                 <div class="sk sr" style="transition-delay:.1s">
                     <div class="sk-h">
@@ -2095,7 +2171,7 @@
     <section id="projects">
         <div class="wrap">
             <div class="tag sr">Portfolio</div>
-            <h2 class="sec-h sr" style="transition-delay:.1s">Featured <em>Projects</em></h2>
+            <h2 class="sec-h sr" style="transition-delay:.1s">FEATURED <em>Projects</em></h2>
             <div class="p-tabs sr" style="transition-delay:.18s">
                 <button class="p-tab on" onclick="tab('design',this)"><i class="bi bi-palette"></i> Graphic
                     Design</button>
@@ -2350,7 +2426,7 @@
     <section id="contact">
         <div class="wrap">
             <div class="tag sr">Contact</div>
-            <h2 class="sec-h sr" style="transition-delay:.1s">Get In <em>Touch</em></h2>
+            <h2 class="sec-h sr" style="transition-delay:.1s">GET IN <em>Touch</em></h2>
             <div class="cont-g">
                 <div class="sl">
                     <h2 class="cont-h">Let's Work <em>Together!</em></h2>
@@ -2420,9 +2496,9 @@
         const obs = new IntersectionObserver(en => { en.forEach(e => { if (e.isIntersecting) e.target.classList.add('in') }) }, { threshold: .07, rootMargin: '0px 0px -20px 0px' });
         document.querySelectorAll('.sr,.sl,.srr').forEach(el => obs.observe(el));
         addEventListener('load', () => document.querySelectorAll('#hero .sr,#hero .srr').forEach(el => setTimeout(() => el.classList.add('in'), 60)));
-        function tab(id, btn) { document.querySelectorAll('.pp').forEach(p => p.classList.remove('on')); document.querySelectorAll('.p-tab').forEach(b => b.classList.remove('on')); document.getElementById('pp-' + id).classList.add('on'); btn.classList.add('on'); if (id === 'design') initSeeMore('pp-design', '.dc', 3); if (id === 'uiux') initSeeMore('pp-uiux', '.wc', 3); if (id === 'web') initSeeMore('pp-web', '.wc', 3) }
-        function initSeeMore(sectionId, itemSel, showCount) { const section = document.getElementById(sectionId) || document.querySelector('#' + sectionId); if (!section) return; const items = [...section.querySelectorAll(itemSel)]; const old = section.querySelector('.see-more-wrap'); if (old) old.remove(); if (items.length <= showCount) { items.forEach(i => i.classList.remove('hidden-item', 'visible')); return } items.forEach((item, i) => { item.classList.remove('hidden-item', 'visible'); if (i >= showCount) item.classList.add('hidden-item') }); const wrap = document.createElement('div'); wrap.className = 'see-more-wrap'; const btn = document.createElement('button'); btn.className = 'see-more-btn'; let expanded = false; const update = () => { btn.innerHTML = expanded ? `Sembunyikan <i class="bi bi-chevron-up"></i>` : `Lihat semua ${items.length} item <i class="bi bi-chevron-down"></i>`; btn.classList.toggle('expanded', expanded) }; update(); btn.onclick = () => { expanded = !expanded; items.forEach((item, i) => { if (i >= showCount) { if (expanded) { item.classList.remove('hidden-item'); item.classList.add('visible'); obs.observe(item) } else { item.classList.remove('visible'); item.classList.add('hidden-item') } } }); update() }; wrap.appendChild(btn); section.appendChild(wrap) }
-        window.addEventListener('DOMContentLoaded', () => { initSeeMore('pp-design', '.dc', 3); initSeeMore('certifications', '.cert-card', 4); initSeeMore('experience', '.tl-row', 2) });
+        function tab(id, btn) { document.querySelectorAll('.pp').forEach(p => p.classList.remove('on')); document.querySelectorAll('.p-tab').forEach(b => b.classList.remove('on')); document.getElementById('pp-' + id).classList.add('on'); btn.classList.add('on'); if (id === 'design') initSeeMore('pp-design', '.dc', 6); if (id === 'uiux') initSeeMore('pp-uiux', '.wc', 3); if (id === 'web') initSeeMore('pp-web', '.wc', 3) }
+        function initSeeMore(sectionId, itemSel, showCount) { const section = document.getElementById(sectionId) || document.querySelector('#' + sectionId); if (!section) return; const items = [...section.querySelectorAll(itemSel)]; const old = section.querySelector('.see-more-wrap'); if (old) old.remove(); if (items.length <= showCount) { items.forEach(i => i.classList.remove('hidden-item', 'visible')); return } items.forEach((item, i) => { item.classList.remove('hidden-item', 'visible'); if (i >= showCount) item.classList.add('hidden-item') }); const wrap = document.createElement('div'); wrap.className = 'see-more-wrap'; const btn = document.createElement('button'); btn.className = 'see-more-btn'; let expanded = false; const update = () => { btn.innerHTML = expanded ? `See Less <i class="bi bi-chevron-up"></i>` : `See More <i class="bi bi-chevron-down"></i>`; btn.classList.toggle('expanded', expanded) }; update(); btn.onclick = () => { expanded = !expanded; items.forEach((item, i) => { if (i >= showCount) { if (expanded) { item.classList.remove('hidden-item'); item.classList.add('visible'); obs.observe(item) } else { item.classList.remove('visible'); item.classList.add('hidden-item') } } }); update() }; wrap.appendChild(btn); section.appendChild(wrap) }
+        window.addEventListener('DOMContentLoaded', () => { initSeeMore('pp-design', '.dc', 6); initSeeMore('certifications', '.cert-card', 8) });
         window.PD = { gsh: { title: 'Green Safe & Health', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Infografis kampanye HSE & ESG yang dibuat untuk Divisi ISPB PT IDSurvey.', resp: ['Mendesain infografis kampanye HSE menggunakan Canva', 'Menyusun konten dan visual sesuai branding perusahaan', 'Berkoordinasi dengan tim ISPB untuk memastikan pesan tersampaikan', 'Membuat beberapa alternatif desain untuk review tim'], tools: ['Canva'], imgs: ['Images/GSH2.png'] }, safety: { title: 'Panduan Keselamatan Tim Kunjungan Kerja', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Panduan keselamatan komprehensif untuk tim yang melakukan kunjungan kerja ke lokasi kebencanaan.', resp: ['Mendesain layout panduan keselamatan yang mudah dibaca', 'Mengilustrasikan prosedur keselamatan dengan visual yang jelas', 'Menyusun konten berdasarkan input dari tim HSE', 'Memastikan semua informasi penting tercakup'], tools: ['Canva'], imgs: ['Images/panduankeselamatan2.png'] }, holiday: { title: 'Safe Holiday Season', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Kampanye keselamatan menjelang libur akhir tahun yang berfokus pada keselamatan berkendara.', resp: ['Membuat desain kampanye safety untuk libur akhir tahun', 'Menyusun pesan keselamatan yang mudah diingat', 'Mendesain visual yang menarik perhatian', 'Mempersiapkan materi untuk distribusi internal'], tools: ['Canva'], imgs: ['Images/safetyholidayseason2.png'] }, hse: { title: 'Panduan Perilaku HSE Golden Rules', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Visualisasi perilaku CARE (Commitment, Aware, Respect, Intervene) sebagai panduan keselamatan kerja.', resp: ['Menerjemahkan konsep HSE Golden Rules ke dalam visual infografis', 'Membuat ilustrasi untuk setiap poin CARE', 'Memastikan desain sesuai standar perusahaan', 'Berkolaborasi dengan tim HSE untuk validasi konten'], tools: ['Canva'], imgs: ['Images/panduanhse2.png'] }, k3: { title: 'Bulan K3 Nasional', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Kampanye Bulan K3 Nasional dengan tema safety leadership.', resp: ['Mendesain materi kampanye Bulan K3 Nasional', 'Menjadi panitia teknis Acara Puncak IDSurvey Group', 'Mengelola video bumper dan seluruh media acara', 'Membuat poster dan banner digital tema safety leadership'], tools: ['Canva'], imgs: ['Images/BKN2.png'] } };
         function openDet(id) { const d = PD[id]; if (!d) return; const imgs = d.imgs || []; let gal = imgs.length ? `<div class="dmain"><img src="${imgs[0]}" alt="" id="dmi"></div>${imgs.length > 1 ? `<div class="dthumbs">${imgs.map((s, i) => `<div class="dth ${i === 0 ? 'on' : ''}" onclick="swDet('${s}',this)"><img src="${s}" alt=""></div>`).join('')}</div>` : ''}` : `<div style="background:var(--bg3);border-radius:var(--r);padding:4rem;text-align:center;color:var(--text3)"><i class="bi bi-laptop" style="font-size:2.5rem"></i><p style="margin-top:1rem;font-size:.85rem">Preview tidak tersedia</p></div>`; document.getElementById('det-content').innerHTML = `<div><div class="dh1">${d.title}</div><div class="dco"><i class="bi bi-building"></i> ${d.co} · ${d.yr}</div><p class="ddesc">${d.desc}</p><div class="dsec"><h3>Responsibilities</h3><ul class="dul">${d.resp.map(r => `<li>${r}</li>`).join('')}</ul></div><div class="dsec"><h3>Tools Used</h3><div class="trow">${d.tools.map(t => `<span class="tool">${t}</span>`).join('')}</div></div></div><div>${gal}</div>`; document.getElementById('det').classList.add('open'); document.body.style.overflow = 'hidden'; document.getElementById('det').scrollTop = 0 }
         function swDet(src, el) { document.getElementById('dmi').src = src; document.querySelectorAll('.dth').forEach(t => t.classList.remove('on')); el.classList.add('on') }
