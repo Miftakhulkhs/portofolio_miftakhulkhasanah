@@ -1,697 +1,1221 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel — Portofolio Mifta</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #f4f6fb;
-    --surface: #ffffff;
-    --surface2: #f0f2f8;
-    --border: #e2e6f0;
-    --accent: #4f6ef7;
-    --accent2: #7c5cbf;
-    --success: #10b77f;
-    --danger: #e5484d;
-    --warning: #d97706;
-    --text: #1a1d2e;
-    --muted: #7a82a0;
-    --mono: 'DM Mono', monospace;
-    --sans: 'DM Sans', sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — Portofolio Mifta</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --surface: #ffffff;
+      --surface2: #f0f2f8;
+      --border: #e2e6f0;
+      --accent: #4f6ef7;
+      --accent2: #7c5cbf;
+      --success: #10b77f;
+      --danger: #e5484d;
+      --warning: #d97706;
+      --text: #1a1d2e;
+      --muted: #7a82a0;
+      --mono: 'DM Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+    }
 
-  /* SIDEBAR */
-  .layout { display: flex; min-height: 100vh; }
-  .sidebar {
-    width: 220px; background: #ffffff; border-right: 1px solid var(--border);
-    padding: 24px 0; display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 10;
-    box-shadow: 2px 0 12px rgba(79,110,247,0.06);
-  }
-  .logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
-  .logo h1 { font-size: 15px; font-weight: 600; color: var(--accent); letter-spacing: 0.05em; }
-  .logo p { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: var(--mono); }
-  .nav-item {
-    display: flex; align-items: center; gap: 10px; padding: 10px 20px;
-    cursor: pointer; font-size: 13px; color: var(--muted); transition: all 0.15s;
-    border-left: 3px solid transparent;
-  }
-  .nav-item:hover { color: var(--text); background: var(--surface2); }
-  .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(79,110,247,0.07); }
-  .nav-icon { font-size: 16px; width: 20px; text-align: center; }
-  .nav-label { font-weight: 500; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* MAIN */
-  .main { margin-left: 220px; flex: 1; padding: 32px; }
-  .page { display: none; }
-  .page.active { display: block; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      min-height: 100vh;
+    }
 
-  /* HEADER */
-  .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
-  .page-title { font-size: 22px; font-weight: 600; }
-  .page-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    /* SIDEBAR */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
 
-  /* BUTTONS */
-  .btn {
-    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
-    cursor: pointer; border: none; transition: all 0.15s; font-family: var(--sans);
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #5a7aff; }
-  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
-  .btn-danger:hover { background: rgba(248,113,113,0.1); }
-  .btn-edit { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
-  .btn-edit:hover { background: rgba(108,143,255,0.1); }
-  .btn-sm { padding: 5px 10px; font-size: 12px; }
+    .sidebar {
+      width: 220px;
+      background: #ffffff;
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      height: 100vh;
+      z-index: 10;
+      box-shadow: 2px 0 12px rgba(79, 110, 247, 0.06);
+    }
 
-  /* STATS */
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
-  .stat-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-    padding: 20px; display: flex; align-items: center; gap: 16px;
-  }
-  .stat-icon { font-size: 28px; }
-  .stat-num { font-size: 28px; font-weight: 600; font-family: var(--mono); }
-  .stat-lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .logo {
+      padding: 0 20px 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
 
-  /* TABLE */
-  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  table { width: 100%; border-collapse: collapse; }
-  thead { background: var(--surface2); }
-  th { padding: 12px 16px; text-align: left; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
-  td { padding: 12px 16px; font-size: 13px; border-top: 1px solid var(--border); vertical-align: middle; }
-  tr:hover td { background: var(--surface2); }
-  .badge {
-    display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px;
-    font-weight: 500; font-family: var(--mono);
-  }
-  .badge-design { background: rgba(167,139,250,0.15); color: var(--accent2); }
-  .badge-web { background: rgba(52,211,153,0.15); color: var(--success); }
-  .badge-uiux { background: rgba(251,191,36,0.15); color: var(--warning); }
-  .actions { display: flex; gap: 6px; }
+    .logo h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
 
-  /* MODAL */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    z-index: 100; align-items: center; justify-content: center;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: #ffffff; border: 1px solid var(--border); border-radius: 16px;
-    padding: 28px; width: 560px; max-height: 80vh; overflow-y: auto; position: relative;
-    box-shadow: 0 8px 40px rgba(79,110,247,0.12);
-  }
-  .modal h2 { font-size: 17px; font-weight: 600; margin-bottom: 20px; }
-  .modal-close {
-    position: absolute; top: 16px; right: 16px; background: none; border: none;
-    color: var(--muted); cursor: pointer; font-size: 18px;
-  }
-  .modal-close:hover { color: var(--text); }
+    .logo p {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+      font-family: var(--mono);
+    }
 
-  /* FORM */
-  .form-group { margin-bottom: 16px; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; letter-spacing: 0.04em; }
-  input, select, textarea {
-    width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
-    color: var(--text); font-size: 13px; padding: 9px 12px; font-family: var(--sans);
-    transition: border-color 0.15s;
-  }
-  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); }
-  textarea { resize: vertical; min-height: 80px; }
-  select option { background: var(--surface); }
-  .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--muted);
+      transition: all 0.15s;
+      border-left: 3px solid transparent;
+    }
 
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 24px; right: 24px; background: #ffffff;
-    border: 1px solid var(--border); border-radius: 10px; padding: 12px 18px;
-    font-size: 13px; z-index: 999; transform: translateY(80px); opacity: 0;
-    transition: all 0.3s; display: flex; align-items: center; gap: 8px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  }
-  .toast.show { transform: translateY(0); opacity: 1; }
-  .toast.success { border-color: var(--success); }
-  .toast.error { border-color: var(--danger); }
+    .nav-item:hover {
+      color: var(--text);
+      background: var(--surface2);
+    }
 
-  /* LOADING */
-  .loading { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
-  .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+    .nav-item.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: rgba(79, 110, 247, 0.07);
+    }
 
-  .empty { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
-  .tag { display: inline-block; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px; font-size: 11px; color: var(--muted); margin: 2px; font-family: var(--mono); }
-  .resp-list { list-style: none; }
-  .resp-list li { font-size: 12px; color: var(--muted); padding: 2px 0; }
-  .resp-list li::before { content: '→ '; color: var(--accent); }
-  .img-path { font-size: 11px; color: var(--muted); font-family: var(--mono); }
-</style>
+    .nav-icon {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .nav-label {
+      font-weight: 500;
+    }
+
+    /* MAIN */
+    .main {
+      margin-left: 220px;
+      flex: 1;
+      padding: 32px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* HEADER */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+      font-family: var(--sans);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #5a7aff;
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: rgba(248, 113, 113, 0.1);
+    }
+
+    .btn-edit {
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .btn-edit:hover {
+      background: rgba(108, 143, 255, 0.1);
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-icon {
+      font-size: 28px;
+    }
+
+    .stat-num {
+      font-size: 28px;
+      font-weight: 600;
+      font-family: var(--mono);
+    }
+
+    .stat-lbl {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* TABLE */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: var(--surface2);
+    }
+
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 500;
+    }
+
+    td {
+      padding: 12px 16px;
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: var(--surface2);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: var(--mono);
+    }
+
+    .badge-design {
+      background: rgba(167, 139, 250, 0.15);
+      color: var(--accent2);
+    }
+
+    .badge-web {
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--success);
+    }
+
+    .badge-uiux {
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--warning);
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      width: 560px;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 8px 40px rgba(79, 110, 247, 0.12);
+    }
+
+    .modal h2 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    /* FORM */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 13px;
+      padding: 9px 12px;
+      font-family: var(--sans);
+      transition: border-color 0.15s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    select option {
+      background: var(--surface);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 13px;
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-color: var(--success);
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+    }
+
+    /* LOADING */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 11px;
+      color: var(--muted);
+      margin: 2px;
+      font-family: var(--mono);
+    }
+
+    .resp-list {
+      list-style: none;
+    }
+
+    .resp-list li {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 2px 0;
+    }
+
+    .resp-list li::before {
+      content: '→ ';
+      color: var(--accent);
+    }
+
+    .img-path {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: var(--mono);
+    }
+
+    .upload-zone {
+      border: 1.5px dashed var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--surface2);
+      position: relative;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag {
+      border-color: var(--accent);
+      background: rgba(79, 110, 247, 0.05);
+    }
+
+    .upload-zone input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .upload-zone p {
+      font-size: 13px;
+      color: var(--muted);
+      pointer-events: none;
+    }
+
+    .upload-zone strong {
+      color: var(--accent);
+    }
+
+    .preview-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .preview-item {
+      position: relative;
+      width: 72px;
+      height: 72px;
+    }
+
+    .preview-item img,
+    .preview-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+
+    .preview-item .rm {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 18px;
+      height: 18px;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.3s;
+      width: 0;
+    }
+
+    .url-list {
+      list-style: none;
+      margin-top: 6px;
+    }
+
+    .url-list li {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--muted);
+      padding: 3px 0;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      word-break: break-all;
+    }
+
+    .url-list .copy-btn {
+      flex-shrink: 0;
+      padding: 2px 6px;
+      font-size: 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      cursor: pointer;
+      background: var(--surface2);
+      color: var(--muted);
+      font-family: var(--sans);
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="layout">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="logo">
-      <h1>ADMIN PANEL</h1>
-      <p>portofolio-mifta</p>
-    </div>
-    <div class="nav-item active" onclick="showPage('dashboard')">
-      <span class="nav-icon">⊞</span><span class="nav-label">Dashboard</span>
-    </div>
-    <div class="nav-item" onclick="showPage('projects')">
-      <span class="nav-icon">◈</span><span class="nav-label">Projects</span>
-    </div>
-    <div class="nav-item" onclick="showPage('certifications')">
-      <span class="nav-icon">◉</span><span class="nav-label">Certifications</span>
-    </div>
-    <div class="nav-item" onclick="showPage('experience')">
-      <span class="nav-icon">◐</span><span class="nav-label">Experience</span>
-    </div>
-  </aside>
+  <div class="layout">
+    <!-- SIDEBAR — sama seperti sebelumnya -->
+    <aside class="sidebar">
+      <div class="logo">
+        <h1>ADMIN PANEL</h1>
+        <p>portofolio-mifta</p>
+      </div>
+      <div class="nav-item active" onclick="showPage('dashboard')">
+        <span class="nav-icon">⊞</span><span class="nav-label">Dashboard</span>
+      </div>
+      <div class="nav-item" onclick="showPage('projects')">
+        <span class="nav-icon">◈</span><span class="nav-label">Projects</span>
+      </div>
+      <div class="nav-item" onclick="showPage('certifications')">
+        <span class="nav-icon">◉</span><span class="nav-label">Certifications</span>
+      </div>
+      <div class="nav-item" onclick="showPage('experience')">
+        <span class="nav-icon">◐</span><span class="nav-label">Experience</span>
+      </div>
+      <div class="nav-item" onclick="showPage('media')" style="margin-top:auto">
+        <span class="nav-icon">◧</span><span class="nav-label">Media Library</span>
+      </div>
+    </aside>
 
-  <!-- MAIN -->
-  <main class="main">
+    <main class="main">
 
-    <!-- DASHBOARD -->
-    <div id="page-dashboard" class="page active">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Dashboard</div>
-          <div class="page-subtitle">Ringkasan data portofolio kamu</div>
+      <!-- DASHBOARD — sama seperti sebelumnya -->
+      <div id="page-dashboard" class="page active">
+        <!-- paste isi dashboard lama -->
+      </div>
+
+      <!-- PROJECTS -->
+      <div id="page-projects" class="page">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Projects</div>
+          </div>
+          <button class="btn btn-primary" onclick="openAddProject()">+ Tambah Project</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Judul</th>
+                <th>Perusahaan</th>
+                <th>Tahun</th>
+                <th>Kategori</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="projects-table">
+              <tr>
+                <td colspan="5" class="loading"><span class="spinner"></span>Memuat...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-      <div class="stats">
-        <div class="stat-card">
-          <div class="stat-icon">◈</div>
-          <div><div class="stat-num" id="count-projects">—</div><div class="stat-lbl">Total Projects</div></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">◉</div>
-          <div><div class="stat-num" id="count-certs">—</div><div class="stat-lbl">Certifications</div></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">◐</div>
-          <div><div class="stat-num" id="count-exp">—</div><div class="stat-lbl">Experience</div></div>
-        </div>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Koleksi</th><th>Jumlah Item</th><th>Status</th></tr></thead>
-          <tbody id="db-summary"></tbody>
-        </table>
-      </div>
-    </div>
 
-    <!-- PROJECTS -->
-    <div id="page-projects" class="page">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Projects</div>
-          <div class="page-subtitle">Kelola semua project portofolio</div>
+      <!-- CERTIFICATIONS -->
+      <div id="page-certifications" class="page">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Certifications</div>
+          </div>
+          <button class="btn btn-primary" onclick="openAddCert()">+ Tambah Sertifikasi</button>
         </div>
-        <button class="btn btn-primary" onclick="openAddProject()">+ Tambah Project</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Judul</th><th>Perusahaan</th><th>Tahun</th><th>Kategori</th><th>Aksi</th></tr></thead>
-          <tbody id="projects-table"><tr><td colspan="5" class="loading"><span class="spinner"></span>Memuat data...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- CERTIFICATIONS -->
-    <div id="page-certifications" class="page">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Certifications</div>
-          <div class="page-subtitle">Kelola sertifikasi & pelatihan</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Judul</th>
+                <th>Issuer</th>
+                <th>Tanggal</th>
+                <th>Foto</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="certs-table"></tbody>
+          </table>
         </div>
-        <button class="btn btn-primary" onclick="openAddCert()">+ Tambah Sertifikasi</button>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Judul</th><th>Issuer</th><th>Tanggal</th><th>Foto</th><th>Aksi</th></tr></thead>
-          <tbody id="certs-table"><tr><td colspan="5" class="loading"><span class="spinner"></span>Memuat data...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
 
-    <!-- EXPERIENCE -->
-    <div id="page-experience" class="page">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Experience</div>
-          <div class="page-subtitle">Kelola pengalaman kerja</div>
+      <!-- EXPERIENCE -->
+      <div id="page-experience" class="page">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Experience</div>
+          </div>
+          <button class="btn btn-primary" onclick="openAddExp()">+ Tambah Pengalaman</button>
         </div>
-        <button class="btn btn-primary" onclick="openAddExp()">+ Tambah Pengalaman</button>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Posisi</th>
+                <th>Perusahaan</th>
+                <th>Periode</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="exp-table"></tbody>
+          </table>
+        </div>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Posisi</th><th>Perusahaan</th><th>Periode</th><th>Responsibilities</th><th>Aksi</th></tr></thead>
-          <tbody id="exp-table"><tr><td colspan="5" class="loading"><span class="spinner"></span>Memuat data...</td></tr></tbody>
-        </table>
+
+      <!-- MEDIA LIBRARY -->
+      <div id="page-media" class="page">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Media Library</div>
+            <div class="page-subtitle">Upload gambar &amp; video</div>
+          </div>
+        </div>
+        <!-- Upload zone -->
+        <div class="upload-zone" id="main-upload-zone">
+          <input type="file" id="main-file-input" multiple accept="image/*,video/*"
+            onchange="handleMainUpload(this.files)">
+          <p>Drag &amp; drop atau <strong>klik untuk pilih file</strong></p>
+          <p style="font-size:11px;margin-top:4px">JPG, PNG, WebP, MP4, MOV — maks 50MB per file</p>
+        </div>
+        <div class="progress-bar" id="main-progress">
+          <div class="progress-fill" id="main-progress-fill"></div>
+        </div>
+        <ul class="url-list" id="media-url-list"></ul>
+        <div class="preview-grid" id="media-preview"></div>
       </div>
-    </div>
 
-  </main>
-</div>
+    </main>
+  </div>
 
-<!-- MODAL PROJECT -->
-<div class="modal-overlay" id="modal-project">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-project')">✕</button>
-    <h2 id="modal-project-title">Tambah Project</h2>
-    <input type="hidden" id="proj-id">
-    <div class="form-row">
+  <!-- MODAL PROJECT (dengan upload) -->
+  <div class="modal-overlay" id="modal-project">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('modal-project')">✕</button>
+      <h2 id="modal-project-title">Tambah Project</h2>
+      <input type="hidden" id="proj-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label>JUDUL PROJECT</label>
+          <input type="text" id="proj-title" placeholder="Green Safe & Health">
+        </div>
+        <div class="form-group">
+          <label>PERUSAHAAN</label>
+          <input type="text" id="proj-co">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>TAHUN</label>
+          <input type="text" id="proj-yr" placeholder="2025">
+        </div>
+        <div class="form-group">
+          <label>KATEGORI</label>
+          <select id="proj-category">
+            <option value="design">Design</option>
+            <option value="web">Web</option>
+            <option value="uiux">UI/UX</option>
+          </select>
+        </div>
+      </div>
       <div class="form-group">
-        <label>JUDUL PROJECT</label>
-        <input type="text" id="proj-title" placeholder="Green Safe & Health">
+        <label>DESKRIPSI SINGKAT</label>
+        <input type="text" id="proj-shortDesc">
       </div>
       <div class="form-group">
-        <label>PERUSAHAAN</label>
-        <input type="text" id="proj-co" placeholder="PT IDSurvey (Persero)">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>TAHUN</label>
-        <input type="text" id="proj-yr" placeholder="2025">
+        <label>DESKRIPSI LENGKAP</label>
+        <textarea id="proj-desc"></textarea>
       </div>
       <div class="form-group">
-        <label>KATEGORI</label>
-        <select id="proj-category">
-          <option value="design">Design</option>
-          <option value="web">Web</option>
-          <option value="uiux">UI/UX</option>
-        </select>
+        <label>TOOLS (pisah koma)</label>
+        <input type="text" id="proj-tools" placeholder="Canva, Figma">
       </div>
-    </div>
-    <div class="form-group">
-      <label>DESKRIPSI SINGKAT</label>
-      <input type="text" id="proj-shortDesc" placeholder="Infografis kampanye HSE & ESG...">
-    </div>
-    <div class="form-group">
-      <label>DESKRIPSI LENGKAP</label>
-      <textarea id="proj-desc" placeholder="Deskripsi detail project..."></textarea>
-    </div>
-    <div class="form-group">
-      <label>TOOLS (pisah dengan koma)</label>
-      <input type="text" id="proj-tools" placeholder="Canva, Figma, Adobe XD">
-    </div>
-    <div class="form-group">
-      <label>RESPONSIBILITIES (satu per baris)</label>
-      <textarea id="proj-resp" placeholder="Mendesain infografis...&#10;Menyusun konten..."></textarea>
-    </div>
-    <div class="form-group">
-      <label>PATH GAMBAR (satu per baris)</label>
-      <textarea id="proj-imgs" placeholder="Images/GSH2.png&#10;Images/GSH3.png"></textarea>
-    </div>
-    <div class="form-group">
-      <label>ORDER (urutan tampil)</label>
-      <input type="number" id="proj-order" placeholder="1" min="1">
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-danger" onclick="closeModal('modal-project')">Batal</button>
-      <button class="btn btn-primary" onclick="saveProject()">Simpan</button>
+      <div class="form-group">
+        <label>RESPONSIBILITIES (satu per baris)</label>
+        <textarea id="proj-resp"></textarea>
+      </div>
+
+      <!-- UPLOAD GAMBAR LANGSUNG -->
+      <div class="form-group">
+        <label>UPLOAD GAMBAR PROJECT</label>
+        <div class="upload-zone" id="proj-upload-zone">
+          <input type="file" id="proj-file-input" multiple accept="image/*" onchange="handleProjectUpload(this.files)">
+          <p>Klik atau drag gambar di sini</p>
+        </div>
+        <div class="progress-bar" id="proj-progress">
+          <div class="progress-fill" id="proj-progress-fill"></div>
+        </div>
+        <div class="preview-grid" id="proj-preview"></div>
+      </div>
+
+      <div class="form-group">
+        <label>URL GAMBAR (otomatis terisi setelah upload, atau isi manual)</label>
+        <textarea id="proj-imgs" placeholder="https://xxxx.supabase.co/storage/..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>ORDER</label>
+        <input type="number" id="proj-order" value="1" min="1">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-danger" onclick="closeModal('modal-project')">Batal</button>
+        <button class="btn btn-primary" onclick="saveProject()">Simpan</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- MODAL CERT -->
-<div class="modal-overlay" id="modal-cert">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-cert')">✕</button>
-    <h2 id="modal-cert-title">Tambah Sertifikasi</h2>
-    <input type="hidden" id="cert-id">
-    <div class="form-group">
-      <label>JUDUL SERTIFIKASI</label>
-      <input type="text" id="cert-title" placeholder="Microsoft Excel Basic">
-    </div>
-    <div class="form-row">
+  <!-- MODAL CERT (dengan upload) -->
+  <div class="modal-overlay" id="modal-cert">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('modal-cert')">✕</button>
+      <h2 id="modal-cert-title">Tambah Sertifikasi</h2>
+      <input type="hidden" id="cert-id">
       <div class="form-group">
-        <label>PENERBIT (ISSUER)</label>
-        <input type="text" id="cert-issuer" placeholder="MySkill">
+        <label>JUDUL</label>
+        <input type="text" id="cert-title">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>PENERBIT</label>
+          <input type="text" id="cert-issuer">
+        </div>
+        <div class="form-group">
+          <label>TANGGAL</label>
+          <input type="text" id="cert-date">
+        </div>
       </div>
       <div class="form-group">
-        <label>TANGGAL</label>
-        <input type="text" id="cert-date" placeholder="November 2025">
+        <label>BASE ID</label>
+        <input type="text" id="cert-base" placeholder="microsoft-excel">
       </div>
-    </div>
-    <div class="form-group">
-      <label>BASE ID (untuk referensi file)</label>
-      <input type="text" id="cert-base" placeholder="microsoft-excel">
-    </div>
-    <div class="form-group">
-      <label>PATH GAMBAR (satu per baris)</label>
-      <textarea id="cert-imgs" placeholder="Certificates/microsoft-excel_1.jpg&#10;Certificates/microsoft-excel_2.jpg"></textarea>
-    </div>
-    <div class="form-group">
-      <label>ORDER</label>
-      <input type="number" id="cert-order" placeholder="1" min="1">
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-danger" onclick="closeModal('modal-cert')">Batal</button>
-      <button class="btn btn-primary" onclick="saveCert()">Simpan</button>
+      <div class="form-group">
+        <label>UPLOAD FOTO SERTIFIKAT</label>
+        <div class="upload-zone">
+          <input type="file" id="cert-file-input" multiple accept="image/*" onchange="handleCertUpload(this.files)">
+          <p>Klik atau drag foto sertifikat</p>
+        </div>
+        <div class="progress-bar" id="cert-progress">
+          <div class="progress-fill" id="cert-progress-fill"></div>
+        </div>
+        <div class="preview-grid" id="cert-preview"></div>
+      </div>
+      <div class="form-group">
+        <label>URL FOTO (otomatis terisi)</label>
+        <textarea id="cert-imgs"></textarea>
+      </div>
+      <div class="form-group">
+        <label>ORDER</label>
+        <input type="number" id="cert-order" value="1" min="1">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-danger" onclick="closeModal('modal-cert')">Batal</button>
+        <button class="btn btn-primary" onclick="saveCert()">Simpan</button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- MODAL EXP -->
-<div class="modal-overlay" id="modal-exp">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-exp')">✕</button>
-    <h2 id="modal-exp-title">Tambah Pengalaman</h2>
-    <input type="hidden" id="exp-id">
-    <div class="form-row">
-      <div class="form-group">
-        <label>POSISI / JABATAN</label>
-        <input type="text" id="exp-title" placeholder="Officer ISPB">
-      </div>
-      <div class="form-group">
-        <label>PERUSAHAAN</label>
-        <input type="text" id="exp-company" placeholder="PT IDSurvey (Persero)">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>DARI</label>
-        <input type="text" id="exp-from" placeholder="Nov 2024">
-      </div>
-      <div class="form-group">
-        <label>SAMPAI</label>
-        <input type="text" id="exp-to" placeholder="Mei 2026">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>BADGE (opsional)</label>
-      <input type="text" id="exp-badge" placeholder="Internship — Kemnaker">
-    </div>
-    <div class="form-group">
-      <label>RESPONSIBILITIES (satu per baris)</label>
-      <textarea id="exp-resp" placeholder="Membangun sistem Activity Record...&#10;Menyusun manual book..."></textarea>
-    </div>
-    <div class="form-group">
-      <label>TAGS (pisah dengan koma)</label>
-      <input type="text" id="exp-tags" placeholder="Bumper Video K3, Dokumentasi Acara">
-    </div>
-    <div class="form-group">
-      <label>ORDER</label>
-      <input type="number" id="exp-order" placeholder="1" min="1">
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-danger" onclick="closeModal('modal-exp')">Batal</button>
-      <button class="btn btn-primary" onclick="saveExp()">Simpan</button>
-    </div>
+  <!-- MODAL EXP — sama seperti sebelumnya, tidak perlu upload -->
+  <div class="modal-overlay" id="modal-exp">
+    <!-- paste modal exp dari admin lama -->
   </div>
-</div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+  <div class="toast" id="toast"></div>
 
-<!-- FIREBASE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDV6cJQZtsfJC5Gl6WL5ke--tns71wVYB0",
-    authDomain: "portofolio-mifta.firebaseapp.com",
-    projectId: "portofolio-mifta",
-    storageBucket: "portofolio-mifta.firebasestorage.app",
-    messagingSenderId: "729324423767",
-    appId: "1:729324423767:web:da97cd3a4894d62c79b112"
-  };
+    // ⚠️ Ganti dengan nilai dari Supabase dashboard kamu
+    const SUPABASE_URL = 'https://tbsfcperjyxbxybwfcnq.supabase.co';
+    // Gunakan service_role key di admin panel (tidak dipublish ke publik)
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRic2ZjcGVyanl4Ynh5YndmY25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDU3NjAsImV4cCI6MjA5MTc4MTc2MH0.5yge6IhjoL1ZMB0-a2IFnaiO6-4fBnCj_v8AaMY22to';
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  window.db = db;
-  window.fsDoc = doc;
-  window.fsSetDoc = setDoc;
-  window.fsDeleteDoc = deleteDoc;
-  window.fsCollection = collection;
-  window.fsGetDocs = getDocs;
+    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+    window.sb = supabase;
 
-  window.loadAll();
-</script>
+    // ========== INIT ==========
+    window.addEventListener('DOMContentLoaded', () => loadDashboard());
 
-<script>
-  // ========== NAVIGATION ==========
-  function showPage(name) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.getElementById('page-' + name).classList.add('active');
-    event.currentTarget.classList.add('active');
-    if (name === 'projects') loadProjects();
-    if (name === 'certifications') loadCerts();
-    if (name === 'experience') loadExp();
-  }
-
-  // ========== TOAST ==========
-  function showToast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    t.textContent = (type === 'success' ? '✓ ' : '✕ ') + msg;
-    t.className = 'toast ' + type + ' show';
-    setTimeout(() => t.classList.remove('show'), 3000);
-  }
-
-  // ========== MODAL ==========
-  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-  function openModal(id) { document.getElementById(id).classList.add('open'); }
-
-  // ========== LOAD ALL (DASHBOARD) ==========
-  window.loadAll = async function() {
-    if (!window.db) return setTimeout(window.loadAll, 300);
-    try {
-      const cols = ['projects', 'certifications', 'experience'];
-      const counts = {};
-      for (const c of cols) {
-        const snap = await window.fsGetDocs(window.fsCollection(window.db, c));
-        counts[c] = snap.size;
-      }
-      document.getElementById('count-projects').textContent = counts.projects;
-      document.getElementById('count-certs').textContent = counts.certifications;
-      document.getElementById('count-exp').textContent = counts.experience;
-      document.getElementById('db-summary').innerHTML = `
-        <tr><td>projects</td><td><span style="font-family:var(--mono);color:var(--accent)">${counts.projects} dokumen</span></td><td><span class="badge badge-web">✓ Terhubung</span></td></tr>
-        <tr><td>certifications</td><td><span style="font-family:var(--mono);color:var(--accent)">${counts.certifications} dokumen</span></td><td><span class="badge badge-web">✓ Terhubung</span></td></tr>
-        <tr><td>experience</td><td><span style="font-family:var(--mono);color:var(--accent)">${counts.experience} dokumen</span></td><td><span class="badge badge-web">✓ Terhubung</span></td></tr>
-      `;
-    } catch(e) {
-      document.getElementById('db-summary').innerHTML = `<tr><td colspan="3" style="color:var(--danger);padding:16px">Gagal terhubung ke Firebase: ${e.message}</td></tr>`;
+    // ========== NAVIGATION ==========
+    window.showPage = function (name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      event.currentTarget.classList.add('active');
+      if (name === 'projects') loadProjects();
+      if (name === 'certifications') loadCerts();
+      if (name === 'experience') loadExp();
     }
-  }
 
-  // ========== PROJECTS ==========
-  window.loadProjects = async function() {
-    const tb = document.getElementById('projects-table');
-    tb.innerHTML = '<tr><td colspan="5" class="loading"><span class="spinner"></span>Memuat...</td></tr>';
-    const snap = await window.fsGetDocs(window.fsCollection(window.db, 'projects'));
-    if (snap.empty) { tb.innerHTML = '<tr><td colspan="5" class="empty">Belum ada project.</td></tr>'; return; }
-    const rows = [];
-    snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
-    rows.sort((a,b) => (a.order||99) - (b.order||99));
-    tb.innerHTML = rows.map(r => `
+    // ========== TOAST ==========
+    window.showToast = function (msg, type = 'success') {
+      const t = document.getElementById('toast');
+      t.textContent = (type === 'success' ? '✓ ' : '✕ ') + msg;
+      t.className = 'toast ' + type + ' show';
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ========== MODAL ==========
+    window.closeModal = id => document.getElementById(id).classList.remove('open');
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+
+    // ========== UPLOAD HELPER (inti) ==========
+    // folder: 'projects' | 'certificates' | 'media'
+    async function uploadFiles(files, folder, progressBarId, previewId, targetTextareaId) {
+      const bar = document.getElementById(progressBarId);
+      const fill = bar?.querySelector('.progress-fill') || document.getElementById(progressBarId + '-fill');
+      const preview = document.getElementById(previewId);
+      const textarea = document.getElementById(targetTextareaId);
+
+      if (bar) bar.style.display = 'block';
+      const uploadedUrls = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const ext = file.name.split('.').pop();
+        const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+        const { data, error } = await supabase.storage
+          .from('portfolio')
+          .upload(fileName, file, { cacheControl: '3600', upsert: false });
+
+        if (error) { showToast('Gagal upload: ' + error.message, 'error'); continue; }
+
+        const { data: urlData } = supabase.storage.from('portfolio').getPublicUrl(fileName);
+        const publicUrl = urlData.publicUrl;
+        uploadedUrls.push(publicUrl);
+
+        // Update progress
+        if (fill) fill.style.width = ((i + 1) / files.length * 100) + '%';
+
+        // Preview
+        if (preview) {
+          const item = document.createElement('div');
+          item.className = 'preview-item';
+          const isVideo = file.type.startsWith('video/');
+          item.innerHTML = isVideo
+            ? `<video src="${publicUrl}" muted></video>`
+            : `<img src="${publicUrl}" alt="">`;
+          const rm = document.createElement('button');
+          rm.className = 'rm';
+          rm.textContent = '×';
+          rm.onclick = () => {
+            item.remove();
+            const urls = textarea.value.split('\n').filter(u => u !== publicUrl);
+            textarea.value = urls.join('\n');
+          };
+          item.appendChild(rm);
+          preview.appendChild(item);
+        }
+      }
+
+      // Append URLs ke textarea
+      if (textarea && uploadedUrls.length) {
+        const existing = textarea.value.trim();
+        textarea.value = existing ? existing + '\n' + uploadedUrls.join('\n') : uploadedUrls.join('\n');
+      }
+
+      setTimeout(() => { if (bar) bar.style.display = 'none'; if (fill) fill.style.width = '0'; }, 800);
+      return uploadedUrls;
+    }
+
+    // ========== UPLOAD HANDLERS ==========
+    window.handleProjectUpload = files =>
+      uploadFiles(files, 'projects', 'proj-progress', 'proj-preview', 'proj-imgs');
+
+    window.handleCertUpload = files =>
+      uploadFiles(files, 'certificates', 'cert-progress', 'cert-preview', 'cert-imgs');
+
+    window.handleMainUpload = async function (files) {
+      const urls = await uploadFiles(files, 'media', 'main-progress', 'media-preview', null);
+      const list = document.getElementById('media-url-list');
+      urls.forEach(url => {
+        const li = document.createElement('li');
+        li.innerHTML = `<button class="copy-btn" onclick="navigator.clipboard.writeText('${url}');showToast('URL disalin!')">Copy</button><span>${url}</span>`;
+        list.prepend(li);
+      });
+    }
+
+    // ========== DASHBOARD ==========
+    window.loadDashboard = async function () {
+      try {
+        const counts = {};
+        for (const t of ['projects', 'certifications', 'experience']) {
+          const { count } = await supabase.from(t).select('*', { count: 'exact', head: true });
+          counts[t] = count || 0;
+        }
+        document.getElementById('count-projects').textContent = counts.projects;
+        document.getElementById('count-certs').textContent = counts.certifications;
+        document.getElementById('count-exp').textContent = counts.experience;
+        document.getElementById('db-summary').innerHTML = ['projects', 'certifications', 'experience'].map(t =>
+          `<tr><td>${t}</td><td><span style="font-family:var(--mono);color:var(--accent)">${counts[t]} rows</span></td><td><span class="badge badge-web">✓ Terhubung</span></td></tr>`
+        ).join('');
+      } catch (e) {
+        document.getElementById('db-summary').innerHTML = `<tr><td colspan="3" style="color:var(--danger);padding:16px">Gagal: ${e.message}</td></tr>`;
+      }
+    }
+
+    // ========== PROJECTS CRUD ==========
+    window.loadProjects = async function () {
+      const tb = document.getElementById('projects-table');
+      tb.innerHTML = '<tr><td colspan="5" class="loading"><span class="spinner"></span>Memuat...</td></tr>';
+      const { data, error } = await supabase.from('projects').select('*').order('order');
+      if (error || !data?.length) { tb.innerHTML = '<tr><td colspan="5" class="empty">Belum ada project.</td></tr>'; return; }
+      tb.innerHTML = data.map(r => `
       <tr>
-        <td><strong>${r.title}</strong><div class="img-path">${(r.imgs||[]).length} gambar</div></td>
-        <td style="color:var(--muted);font-size:12px">${r.co||'-'}</td>
-        <td style="font-family:var(--mono);font-size:12px">${r.yr||'-'}</td>
-        <td><span class="badge badge-${r.category||'design'}">${r.category||'-'}</span></td>
+        <td><strong>${r.title}</strong><div class="img-path">${(r.imgs || []).length} gambar</div></td>
+        <td style="color:var(--muted);font-size:12px">${r.co || '-'}</td>
+        <td style="font-family:var(--mono);font-size:12px">${r.yr || '-'}</td>
+        <td><span class="badge badge-${r.category || 'design'}">${r.category || '-'}</span></td>
         <td><div class="actions">
-          <button class="btn btn-edit btn-sm" onclick='editProject(${JSON.stringify({id:r.id,...r})})'>Edit</button>
+          <button class="btn btn-edit btn-sm" onclick='editProject(${JSON.stringify(r)})'>Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteItem('projects','${r.id}',loadProjects)">Hapus</button>
         </div></td>
-      </tr>
-    `).join('');
-  }
+      </tr>`).join('');
+    }
 
-  window.openAddProject = function() {
-    document.getElementById('modal-project-title').textContent = 'Tambah Project';
-    ['proj-id','proj-title','proj-co','proj-yr','proj-shortDesc','proj-desc','proj-tools','proj-resp','proj-imgs','proj-order'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('proj-category').value = 'design';
-    openModal('modal-project');
-  }
+    window.openAddProject = function () {
+      document.getElementById('modal-project-title').textContent = 'Tambah Project';
+      ['proj-id', 'proj-title', 'proj-co', 'proj-yr', 'proj-shortDesc', 'proj-desc', 'proj-tools', 'proj-resp', 'proj-imgs'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('proj-order').value = 1;
+      document.getElementById('proj-category').value = 'design';
+      document.getElementById('proj-preview').innerHTML = '';
+      openModal('modal-project');
+    }
 
-  window.editProject = function(r) {
-    document.getElementById('modal-project-title').textContent = 'Edit Project';
-    document.getElementById('proj-id').value = r.id;
-    document.getElementById('proj-title').value = r.title||'';
-    document.getElementById('proj-co').value = r.co||'';
-    document.getElementById('proj-yr').value = r.yr||'';
-    document.getElementById('proj-category').value = r.category||'design';
-    document.getElementById('proj-shortDesc').value = r.shortDesc||'';
-    document.getElementById('proj-desc').value = r.desc||'';
-    document.getElementById('proj-tools').value = (r.tools||[]).join(', ');
-    document.getElementById('proj-resp').value = (r.resp||[]).join('\n');
-    document.getElementById('proj-imgs').value = (r.imgs||[]).join('\n');
-    document.getElementById('proj-order').value = r.order||1;
-    openModal('modal-project');
-  }
+    window.editProject = function (r) {
+      document.getElementById('modal-project-title').textContent = 'Edit Project';
+      document.getElementById('proj-id').value = r.id;
+      document.getElementById('proj-title').value = r.title || '';
+      document.getElementById('proj-co').value = r.co || '';
+      document.getElementById('proj-yr').value = r.yr || '';
+      document.getElementById('proj-category').value = r.category || 'design';
+      document.getElementById('proj-shortDesc').value = r.short_desc || '';
+      document.getElementById('proj-desc').value = r.description || '';
+      document.getElementById('proj-tools').value = (r.tools || []).join(', ');
+      document.getElementById('proj-resp').value = (r.responsibilities || []).join('\n');
+      document.getElementById('proj-imgs').value = (r.imgs || []).join('\n');
+      document.getElementById('proj-order').value = r.order || 1;
+      // Render preview gambar existing
+      const preview = document.getElementById('proj-preview');
+      preview.innerHTML = (r.imgs || []).map(url => `<div class="preview-item"><img src="${url}" alt=""></div>`).join('');
+      openModal('modal-project');
+    }
 
-  window.saveProject = async function() {
-    const id = document.getElementById('proj-id').value || 'proj-' + Date.now();
-    const data = {
-      title: document.getElementById('proj-title').value,
-      co: document.getElementById('proj-co').value,
-      yr: document.getElementById('proj-yr').value,
-      category: document.getElementById('proj-category').value,
-      shortDesc: document.getElementById('proj-shortDesc').value,
-      desc: document.getElementById('proj-desc').value,
-      tools: document.getElementById('proj-tools').value.split(',').map(s=>s.trim()).filter(Boolean),
-      resp: document.getElementById('proj-resp').value.split('\n').map(s=>s.trim()).filter(Boolean),
-      imgs: document.getElementById('proj-imgs').value.split('\n').map(s=>s.trim()).filter(Boolean),
-      order: parseInt(document.getElementById('proj-order').value)||1,
-    };
-    try {
-      await window.fsSetDoc(window.fsDoc(window.db, 'projects', id), data);
+    window.saveProject = async function () {
+      const id = document.getElementById('proj-id').value || 'proj-' + Date.now();
+      const data = {
+        id,
+        title: document.getElementById('proj-title').value,
+        co: document.getElementById('proj-co').value,
+        yr: document.getElementById('proj-yr').value,
+        category: document.getElementById('proj-category').value,
+        short_desc: document.getElementById('proj-shortDesc').value,
+        description: document.getElementById('proj-desc').value,
+        tools: document.getElementById('proj-tools').value.split(',').map(s => s.trim()).filter(Boolean),
+        responsibilities: document.getElementById('proj-resp').value.split('\n').map(s => s.trim()).filter(Boolean),
+        imgs: document.getElementById('proj-imgs').value.split('\n').map(s => s.trim()).filter(Boolean),
+        order: parseInt(document.getElementById('proj-order').value) || 1,
+      };
+      const { error } = await supabase.from('projects').upsert(data);
+      if (error) { showToast('Gagal: ' + error.message, 'error'); return; }
       showToast('Project berhasil disimpan!');
       closeModal('modal-project');
       loadProjects();
-    } catch(e) { showToast('Gagal: ' + e.message, 'error'); }
-  }
+    }
 
-  // ========== CERTIFICATIONS ==========
-  window.loadCerts = async function() {
-    const tb = document.getElementById('certs-table');
-    tb.innerHTML = '<tr><td colspan="5" class="loading"><span class="spinner"></span>Memuat...</td></tr>';
-    const snap = await window.fsGetDocs(window.fsCollection(window.db, 'certifications'));
-    if (snap.empty) { tb.innerHTML = '<tr><td colspan="5" class="empty">Belum ada sertifikasi.</td></tr>'; return; }
-    const rows = [];
-    snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
-    rows.sort((a,b) => (a.order||99) - (b.order||99));
-    tb.innerHTML = rows.map(r => `
+    // ========== CERTIFICATIONS CRUD ==========
+    window.loadCerts = async function () {
+      const tb = document.getElementById('certs-table');
+      tb.innerHTML = '<tr><td colspan="5" class="loading"><span class="spinner"></span>Memuat...</td></tr>';
+      const { data } = await supabase.from('certifications').select('*').order('order');
+      if (!data?.length) { tb.innerHTML = '<tr><td colspan="5" class="empty">Belum ada sertifikasi.</td></tr>'; return; }
+      tb.innerHTML = data.map(r => `
       <tr>
         <td><strong>${r.title}</strong></td>
-        <td style="color:var(--muted);font-size:12px">${r.issuer||'-'}</td>
-        <td style="font-family:var(--mono);font-size:12px">${r.date||'-'}</td>
-        <td class="img-path">${(r.imgs||[]).length} foto</td>
+        <td style="color:var(--muted);font-size:12px">${r.issuer || '-'}</td>
+        <td style="font-family:var(--mono);font-size:12px">${r.date || '-'}</td>
+        <td class="img-path">${(r.imgs || []).length} foto</td>
         <td><div class="actions">
-          <button class="btn btn-edit btn-sm" onclick='editCert(${JSON.stringify({id:r.id,...r})})'>Edit</button>
+          <button class="btn btn-edit btn-sm" onclick='editCert(${JSON.stringify(r)})'>Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteItem('certifications','${r.id}',loadCerts)">Hapus</button>
         </div></td>
-      </tr>
-    `).join('');
-  }
+      </tr>`).join('');
+    }
 
-  window.openAddCert = function() {
-    document.getElementById('modal-cert-title').textContent = 'Tambah Sertifikasi';
-    ['cert-id','cert-title','cert-issuer','cert-date','cert-base','cert-imgs','cert-order'].forEach(id => document.getElementById(id).value = '');
-    openModal('modal-cert');
-  }
+    window.openAddCert = function () {
+      document.getElementById('modal-cert-title').textContent = 'Tambah Sertifikasi';
+      ['cert-id', 'cert-title', 'cert-issuer', 'cert-date', 'cert-base', 'cert-imgs'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('cert-order').value = 1;
+      document.getElementById('cert-preview').innerHTML = '';
+      openModal('modal-cert');
+    }
 
-  window.editCert = function(r) {
-    document.getElementById('modal-cert-title').textContent = 'Edit Sertifikasi';
-    document.getElementById('cert-id').value = r.id;
-    document.getElementById('cert-title').value = r.title||'';
-    document.getElementById('cert-issuer').value = r.issuer||'';
-    document.getElementById('cert-date').value = r.date||'';
-    document.getElementById('cert-base').value = r.base||'';
-    document.getElementById('cert-imgs').value = (r.imgs||[]).join('\n');
-    document.getElementById('cert-order').value = r.order||1;
-    openModal('modal-cert');
-  }
+    window.editCert = function (r) {
+      document.getElementById('modal-cert-title').textContent = 'Edit Sertifikasi';
+      document.getElementById('cert-id').value = r.id;
+      document.getElementById('cert-title').value = r.title || '';
+      document.getElementById('cert-issuer').value = r.issuer || '';
+      document.getElementById('cert-date').value = r.date || '';
+      document.getElementById('cert-base').value = r.base || '';
+      document.getElementById('cert-imgs').value = (r.imgs || []).join('\n');
+      document.getElementById('cert-order').value = r.order || 1;
+      document.getElementById('cert-preview').innerHTML = (r.imgs || []).map(url => `<div class="preview-item"><img src="${url}"></div>`).join('');
+      openModal('modal-cert');
+    }
 
-  window.saveCert = async function() {
-    const id = document.getElementById('cert-id').value || 'cert-' + Date.now();
-    const data = {
-      title: document.getElementById('cert-title').value,
-      issuer: document.getElementById('cert-issuer').value,
-      date: document.getElementById('cert-date').value,
-      base: document.getElementById('cert-base').value,
-      imgs: document.getElementById('cert-imgs').value.split('\n').map(s=>s.trim()).filter(Boolean),
-      order: parseInt(document.getElementById('cert-order').value)||1,
-    };
-    try {
-      await window.fsSetDoc(window.fsDoc(window.db, 'certifications', id), data);
+    window.saveCert = async function () {
+      const id = document.getElementById('cert-id').value || 'cert-' + Date.now();
+      const data = {
+        id,
+        title: document.getElementById('cert-title').value,
+        issuer: document.getElementById('cert-issuer').value,
+        date: document.getElementById('cert-date').value,
+        base: document.getElementById('cert-base').value,
+        imgs: document.getElementById('cert-imgs').value.split('\n').map(s => s.trim()).filter(Boolean),
+        order: parseInt(document.getElementById('cert-order').value) || 1,
+      };
+      const { error } = await supabase.from('certifications').upsert(data);
+      if (error) { showToast('Gagal: ' + error.message, 'error'); return; }
       showToast('Sertifikasi berhasil disimpan!');
       closeModal('modal-cert');
       loadCerts();
-    } catch(e) { showToast('Gagal: ' + e.message, 'error'); }
-  }
+    }
 
-  // ========== EXPERIENCE ==========
-  window.loadExp = async function() {
-    const tb = document.getElementById('exp-table');
-    tb.innerHTML = '<tr><td colspan="5" class="loading"><span class="spinner"></span>Memuat...</td></tr>';
-    const snap = await window.fsGetDocs(window.fsCollection(window.db, 'experience'));
-    if (snap.empty) { tb.innerHTML = '<tr><td colspan="5" class="empty">Belum ada experience.</td></tr>'; return; }
-    const rows = [];
-    snap.forEach(d => rows.push({ id: d.id, ...d.data() }));
-    rows.sort((a,b) => (a.order||99) - (b.order||99));
-    tb.innerHTML = rows.map(r => `
+    // ========== EXPERIENCE CRUD ==========
+    window.loadExp = async function () {
+      const tb = document.getElementById('exp-table');
+      tb.innerHTML = '<tr><td colspan="4" class="loading"><span class="spinner"></span>Memuat...</td></tr>';
+      const { data } = await supabase.from('experience').select('*').order('order');
+      if (!data?.length) { tb.innerHTML = '<tr><td colspan="4" class="empty">Belum ada experience.</td></tr>'; return; }
+      tb.innerHTML = data.map(r => `
       <tr>
-        <td>
-          <strong>${r.title}</strong>
-          ${r.badge ? `<div><span class="tag">${r.badge}</span></div>` : ''}
-        </td>
-        <td style="color:var(--muted);font-size:12px">${r.company||'-'}</td>
-        <td style="font-family:var(--mono);font-size:12px">${r.dateFrom||''} – ${r.dateTo||''}</td>
-        <td style="font-size:12px;color:var(--muted)">${(r.responsibilities||[]).length} item</td>
+        <td><strong>${r.title}</strong>${r.badge ? `<div><span class="tag">${r.badge}</span></div>` : ''}</td>
+        <td style="color:var(--muted);font-size:12px">${r.company || '-'}</td>
+        <td style="font-family:var(--mono);font-size:12px">${r.date_from || ''} – ${r.date_to || ''}</td>
         <td><div class="actions">
-          <button class="btn btn-edit btn-sm" onclick='editExp(${JSON.stringify({id:r.id,...r})})'>Edit</button>
+          <button class="btn btn-edit btn-sm" onclick='editExp(${JSON.stringify(r)})'>Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteItem('experience','${r.id}',loadExp)">Hapus</button>
         </div></td>
-      </tr>
-    `).join('');
-  }
+      </tr>`).join('');
+    }
 
-  window.openAddExp = function() {
-    document.getElementById('modal-exp-title').textContent = 'Tambah Pengalaman';
-    ['exp-id','exp-title','exp-company','exp-from','exp-to','exp-badge','exp-resp','exp-tags','exp-order'].forEach(id => document.getElementById(id).value = '');
-    openModal('modal-exp');
-  }
+    window.openAddExp = function () {
+      document.getElementById('modal-exp-title').textContent = 'Tambah Pengalaman';
+      ['exp-id', 'exp-title', 'exp-company', 'exp-from', 'exp-to', 'exp-badge', 'exp-resp', 'exp-tags'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('exp-order').value = 1;
+      openModal('modal-exp');
+    }
 
-  window.editExp = function(r) {
-    document.getElementById('modal-exp-title').textContent = 'Edit Pengalaman';
-    document.getElementById('exp-id').value = r.id;
-    document.getElementById('exp-title').value = r.title||'';
-    document.getElementById('exp-company').value = r.company||'';
-    document.getElementById('exp-from').value = r.dateFrom||'';
-    document.getElementById('exp-to').value = r.dateTo||'';
-    document.getElementById('exp-badge').value = r.badge||'';
-    document.getElementById('exp-resp').value = (r.responsibilities||[]).join('\n');
-    document.getElementById('exp-tags').value = (r.tags||[]).join(', ');
-    document.getElementById('exp-order').value = r.order||1;
-    openModal('modal-exp');
-  }
+    window.editExp = function (r) {
+      document.getElementById('modal-exp-title').textContent = 'Edit Pengalaman';
+      document.getElementById('exp-id').value = r.id;
+      document.getElementById('exp-title').value = r.title || '';
+      document.getElementById('exp-company').value = r.company || '';
+      document.getElementById('exp-from').value = r.date_from || '';
+      document.getElementById('exp-to').value = r.date_to || '';
+      document.getElementById('exp-badge').value = r.badge || '';
+      document.getElementById('exp-resp').value = (r.responsibilities || []).join('\n');
+      document.getElementById('exp-tags').value = (r.tags || []).join(', ');
+      document.getElementById('exp-order').value = r.order || 1;
+      openModal('modal-exp');
+    }
 
-  window.saveExp = async function() {
-    const id = document.getElementById('exp-id').value || 'exp-' + Date.now();
-    const data = {
-      title: document.getElementById('exp-title').value,
-      company: document.getElementById('exp-company').value,
-      dateFrom: document.getElementById('exp-from').value,
-      dateTo: document.getElementById('exp-to').value,
-      badge: document.getElementById('exp-badge').value,
-      responsibilities: document.getElementById('exp-resp').value.split('\n').map(s=>s.trim()).filter(Boolean),
-      tags: document.getElementById('exp-tags').value.split(',').map(s=>s.trim()).filter(Boolean),
-      order: parseInt(document.getElementById('exp-order').value)||1,
-    };
-    try {
-      await window.fsSetDoc(window.fsDoc(window.db, 'experience', id), data);
+    window.saveExp = async function () {
+      const id = document.getElementById('exp-id').value || 'exp-' + Date.now();
+      const data = {
+        id,
+        title: document.getElementById('exp-title').value,
+        company: document.getElementById('exp-company').value,
+        date_from: document.getElementById('exp-from').value,
+        date_to: document.getElementById('exp-to').value,
+        badge: document.getElementById('exp-badge').value,
+        responsibilities: document.getElementById('exp-resp').value.split('\n').map(s => s.trim()).filter(Boolean),
+        tags: document.getElementById('exp-tags').value.split(',').map(s => s.trim()).filter(Boolean),
+        order: parseInt(document.getElementById('exp-order').value) || 1,
+      };
+      const { error } = await supabase.from('experience').upsert(data);
+      if (error) { showToast('Gagal: ' + error.message, 'error'); return; }
       showToast('Pengalaman berhasil disimpan!');
       closeModal('modal-exp');
       loadExp();
-    } catch(e) { showToast('Gagal: ' + e.message, 'error'); }
-  }
+    }
 
-  // ========== DELETE ==========
-  window.deleteItem = async function(col, id, reload) {
-    if (!confirm('Yakin mau hapus item ini?')) return;
-    try {
-      await window.fsDeleteDoc(window.fsDoc(window.db, col, id));
+    // ========== DELETE ==========
+    window.deleteItem = async function (table, id, reload) {
+      if (!confirm('Yakin mau hapus item ini?')) return;
+      const { error } = await supabase.from(table).delete().eq('id', id);
+      if (error) { showToast('Gagal hapus: ' + error.message, 'error'); return; }
       showToast('Item berhasil dihapus!');
       reload();
-    } catch(e) { showToast('Gagal hapus: ' + e.message, 'error'); }
-  }
+    }
 
-  // close modal on overlay click
-  document.querySelectorAll('.modal-overlay').forEach(el => {
-    el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
-  });
-</script>
+    // close modal on overlay click
+    document.querySelectorAll('.modal-overlay').forEach(el =>
+      el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); })
+    );
+  </script>
 </body>
+
 </html>

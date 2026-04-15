@@ -11,67 +11,6 @@
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, getDocs, orderBy, query } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        const firebaseConfig = {
-            apiKey: "AIzaSyDV6cJQZtsfJC5Gl6WL5ke--tns71wVYB0",
-            authDomain: "portofolio-mifta.firebaseapp.com",
-            projectId: "portofolio-mifta",
-            storageBucket: "portofolio-mifta.firebasestorage.app",
-            messagingSenderId: "729324423767",
-            appId: "1:729324423767:web:da97cd3a4894d62c79b112",
-            measurementId: "G-453SVD1D3R"
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        async function loadFromFirebase() {
-            try {
-                const projSnap = await getDocs(collection(db, 'projects'));
-                if (!projSnap.empty) {
-                    const projects = {};
-                    projSnap.forEach(d => { projects[d.id] = d.data(); });
-                    window.PD = { ...window.PD, ...projects };
-                    renderProjects(projects);
-                }
-                const certSnap = await getDocs(query(collection(db, 'certifications'), orderBy('order', 'asc')));
-                if (!certSnap.empty) {
-                    const certs = [];
-                    certSnap.forEach(d => certs.push({ id: d.id, ...d.data() }));
-                    renderCertifications(certs);
-                }
-                const expSnap = await getDocs(query(collection(db, 'experience'), orderBy('order', 'asc')));
-                if (!expSnap.empty) {
-                    const exps = [];
-                    expSnap.forEach(d => exps.push({ id: d.id, ...d.data() }));
-                    renderExperience(exps);
-                }
-            } catch (e) { console.log('Firebase offline, using static data'); }
-        }
-        function renderProjects(projects) {
-            const dg = document.querySelector('#pp-design .dg');
-            if (!dg) return;
-            const dp = Object.entries(projects).filter(([k, v]) => v.category === 'design').sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
-            if (!dp.length) return;
-            dg.innerHTML = dp.map(([id, p]) => `<div class="dc" onclick="openDet('${id}')"><div class="car" data-tot="${(p.imgs || []).length || 1}"><div class="ct">${(p.imgs || ['']).map(img => `<div class="cs"><img src="${img}" alt="" loading="lazy"></div>`).join('')}</div>${(p.imgs || []).length > 1 ? `<div class="ca"><button class="cb" onclick="cp(this,event)"><i class="bi bi-chevron-left"></i></button><button class="cb" onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div>` : ``}<div class="cdots">${(p.imgs || ['']).map((_, i) => `<span class="cd ${i === 0 ? 'on' : ''}"></span>`).join('')}</div></div><div class="di"><h3>${p.title}</h3><p>${p.shortDesc || ''}</p><div class="dm"><span>${p.yr || ''} · ${(p.tools || []).join(', ')}</span><span class="det-link">Detail <i class="bi bi-arrow-right"></i></span></div></div></div>`).join('');
-            initSeeMore('pp-design', '.dc', 3);
-        }
-        function renderCertifications(certs) {
-            const grid = document.querySelector('.cg');
-            if (!grid || !certs.length) return;
-            grid.innerHTML = certs.map(c => { const imgs = c.imgs || [c.img]; const tot = imgs.length; return `<div class="cert-card" onclick="openModal('${c.base || c.id}',${tot})"><div class="cth" data-tot="${tot}"><div class="ct">${imgs.map(im => `<div class="cs"><img src="${im}" alt="" loading="lazy"></div>`).join('')}</div>${tot > 1 ? `<div class="ca"><button class="cb" onclick="cp(this,event)"><i class="bi bi-chevron-left"></i></button><button class="cb" onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div><div class="ccnt">1 / ${tot}</div>` : ``}<div class="cdots">${imgs.map((_, j) => `<span class="cd ${j === 0 ? 'on' : ''}"></span>`).join('')}</div></div><div class="ci"><h3>${c.title}</h3><div class="iss">${c.issuer}</div><div class="cdt">${c.date || ''}</div></div></div>`; }).join('');
-            initSeeMore('certifications', '.cert-card', 4);
-            document.querySelectorAll('.cg .cert-card').forEach(el => obs.observe(el));
-        }
-        function renderExperience(exps) {
-            const container = document.querySelector('.tl-wrap');
-            if (!container || !exps.length) return;
-            container.innerHTML = exps.map((e, i) => `<div class="tl-row sr" style="transition-delay:${i * 0.1 + 0.1}s"><div class="tl-t"><div class="tl-d">${e.dateFrom || ''}<br>— ${e.dateTo || ''}</div></div><div class="tl-n"></div><div class="tl-c">${e.badge ? `<div class="tl-badge">${e.badge}</div>` : ''}<div class="tl-title">${e.title}</div><div class="tl-co">${e.company}</div><ul class="tl-ul">${(e.responsibilities || []).map(r => `<li>${r}</li>`).join('')}</ul>${e.tags && e.tags.length ? `<div class="m-row">${e.tags.map(t => `<span class="mt"><i class="bi bi-tag"></i> ${t}</span>`).join('')}</div>` : ''}</div></div>`).join('');
-
-            document.querySelectorAll('.tl-wrap .sr').forEach(el => obs.observe(el));
-        }
-        window.addEventListener('DOMContentLoaded', () => setTimeout(loadFromFirebase, 150));
-    </script>
     <style>
         *,
         *::before,
@@ -2206,6 +2145,7 @@
             </div>
             <div id="pp-design" class="pp on">
                 <div class="dg">
+                    <!-- Static fallback projects will be replaced by Supabase data -->
                     <div class="dc" onclick="openDet('gsh')">
                         <div class="car" data-tot="1">
                             <div class="ct">
@@ -2317,6 +2257,7 @@
             <div class="tag sr">Learning</div>
             <h2 class="sec-h sr" style="transition-delay:.1s"><em>Certifications</em></h2>
             <div class="cg">
+                <!-- Static fallback certifications will be replaced by Supabase data -->
                 <div class="cert-card sr" style="transition-delay:.1s" onclick="openModal('microsoft-excel',4)">
                     <div class="cth" data-tot="4">
                         <div class="ct">
@@ -2511,7 +2452,157 @@
     </footer>
     <button class="topb" id="topb" onclick="scrollTo({top:0,behavior:'smooth'})"><i class="bi bi-arrow-up"></i></button>
 
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+        // TODO: Ganti dengan URL dan Anon Key Supabase Anda
+        const SUPABASE_URL = 'https://tbsfcperjyxbxybwfcnq.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRic2ZjcGVyanl4Ynh5YndmY25xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMDU3NjAsImV4cCI6MjA5MTc4MTc2MH0.5yge6IhjoL1ZMB0-a2IFnaiO6-4fBnCj_v8AaMY22to';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ==================== FUNGSI RENDER ====================
+        function renderProjects(projectsMap) {
+            const designGrid = document.querySelector('#pp-design .dg');
+            if (!designGrid) return;
+            // Filter dan sorting projects berdasarkan category 'design'
+            const designProjects = Object.entries(projectsMap)
+                .filter(([id, p]) => p.category === 'design')
+                .sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+            if (!designProjects.length) return;
+
+            designGrid.innerHTML = designProjects.map(([id, p]) => {
+                const imgs = p.imgs || [];
+                const totalImgs = imgs.length;
+                return `<div class="dc" onclick="openDet('${id}')">
+                            <div class="car" data-tot="${totalImgs || 1}">
+                                <div class="ct">
+                                    ${imgs.map(img => `<div class="cs"><img src="${img}" alt="" loading="lazy"></div>`).join('')}
+                                    ${!imgs.length ? '<div class="cs"><div class="wph"><i class="bi bi-image"></i></div></div>' : ''}
+                                </div>
+                                ${totalImgs > 1 ? `<div class="ca"><button class="cb" onclick="cp(this,event)"><i class="bi bi-chevron-left"></i></button><button class="cb" onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div>` : ''}
+                                <div class="cdots">
+                                    ${imgs.map((_, i) => `<span class="cd ${i === 0 ? 'on' : ''}"></span>`).join('')}
+                                    ${!imgs.length ? '<span class="cd on"></span>' : ''}
+                                </div>
+                            </div>
+                            <div class="di">
+                                <h3>${p.title}</h3>
+                                <p>${p.shortDesc || ''}</p>
+                                <div class="dm">
+                                    <span>${p.yr || ''} · ${(p.tools || []).join(', ')}</span>
+                                    <span class="det-link">Detail <i class="bi bi-arrow-right"></i></span>
+                                </div>
+                            </div>
+                        </div>`;
+            }).join('');
+            // Inisialisasi See More untuk design (tampilkan 6 item awal)
+            initSeeMore('pp-design', '.dc', 6);
+        }
+
+        function renderCertifications(certs) {
+            const grid = document.querySelector('.cg');
+            if (!grid || !certs.length) return;
+            grid.innerHTML = certs.map(cert => {
+                const imgs = certs.imgs || [cert.img];
+                const tot = imgs.length;
+                return `<div class="cert-card" onclick="openModal('${cert.base || cert.id}',${tot})">
+                            <div class="cth" data-tot="${tot}">
+                                <div class="ct">
+                                    ${imgs.map(im => `<div class="cs"><img src="${im}" alt="" loading="lazy"></div>`).join('')}
+                                </div>
+                                ${tot > 1 ? `<div class="ca"><button class="cb" onclick="cp(this,event)"><i class="bi bi-chevron-left"></i></button><button class="cb" onclick="cn(this,event)"><i class="bi bi-chevron-right"></i></button></div><div class="ccnt">1 / ${tot}</div>` : ''}
+                                <div class="cdots">
+                                    ${imgs.map((_, j) => `<span class="cd ${j === 0 ? 'on' : ''}"></span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="ci">
+                                <h3>${cert.title}</h3>
+                                <div class="iss">${cert.issuer}</div>
+                                <div class="cdt">${cert.date || ''}</div>
+                            </div>
+                        </div>`;
+            }).join('');
+            initSeeMore('certifications', '.cert-card', 8);
+            document.querySelectorAll('.cg .cert-card').forEach(el => obs.observe(el));
+        }
+
+        function renderExperience(experiences) {
+            const container = document.querySelector('.tl-wrap');
+            if (!container || !experiences.length) return;
+            container.innerHTML = experiences.map((exp, i) => `
+                <div class="tl-row sr" style="transition-delay:${i * 0.1 + 0.1}s">
+                    <div class="tl-t">
+                        <div class="tl-d">${exp.dateFrom || ''}<br>— ${exp.dateTo || ''}</div>
+                    </div>
+                    <div class="tl-n"></div>
+                    <div class="tl-c">
+                        ${exp.badge ? `<div class="tl-badge">${exp.badge}</div>` : ''}
+                        <div class="tl-title">${exp.title}</div>
+                        <div class="tl-co">${exp.company}</div>
+                        <ul class="tl-ul">
+                            ${(exp.responsibilities || []).map(r => `<li>${r}</li>`).join('')}
+                        </ul>
+                        ${exp.tags && exp.tags.length ? `<div class="m-row">${exp.tags.map(t => `<span class="mt"><i class="bi bi-tag"></i> ${t}</span>`).join('')}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+            document.querySelectorAll('.tl-wrap .sr').forEach(el => obs.observe(el));
+        }
+
+        // ==================== AMBIL DATA DARI SUPABASE ====================
+        async function loadFromSupabase() {
+            try {
+                // Load projects
+                const { data: projects, error: projError } = await supabase
+                    .from('projects')
+                    .select('*')
+                    .order('order', { ascending: true });
+                if (projError) throw projError;
+                if (projects && projects.length) {
+                    const projMap = {};
+                    projects.forEach(p => {
+                        projMap[p.id] = {
+                            title: p.title,
+                            co: p.co,
+                            yr: p.yr,
+                            category: p.category,
+                            shortDesc: p.short_desc,
+                            desc: p.description,
+                            tools: p.tools || [],
+                            resp: p.responsibilities || [],
+                            imgs: p.imgs || [],
+                            order: p.order
+                        };
+                    });
+                    window.PD = { ...window.PD, ...projMap };
+                    renderProjects(projMap);
+                }
+
+                // Load certifications
+                const { data: certs, error: certError } = await supabase
+                    .from('certifications')
+                    .select('*')
+                    .order('order', { ascending: true });
+                if (certError) throw certError;
+                if (certs && certs.length) renderCertifications(certs);
+
+                // Load experience
+                const { data: exps, error: expError } = await supabase
+                    .from('experience')
+                    .select('*')
+                    .order('order', { ascending: true });
+                if (expError) throw expError;
+                if (exps && exps.length) renderExperience(exps);
+            } catch (e) {
+                console.log('Supabase offline or error, using static data', e);
+            }
+        }
+
+        // ==================== INISIALISASI ====================
+        window.addEventListener('DOMContentLoaded', () => setTimeout(loadFromSupabase, 150));
+    </script>
     <script>
+        // ==================== SCRIPT GLOBAL (NON-MODULE) ====================
         const navEl = document.getElementById('nav'), topb = document.getElementById('topb');
         const sects = [...document.querySelectorAll('section[id]')];
         window.addEventListener('scroll', () => { navEl.classList.toggle('solid', scrollY > 40); topb.classList.toggle('show', scrollY > 400); let cur = ''; sects.forEach(s => { if (scrollY >= s.offsetTop - 100) cur = s.id }); document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#' + cur)) });
@@ -2523,8 +2614,8 @@
         function tab(id, btn) { document.querySelectorAll('.pp').forEach(p => p.classList.remove('on')); document.querySelectorAll('.p-tab').forEach(b => b.classList.remove('on')); document.getElementById('pp-' + id).classList.add('on'); btn.classList.add('on'); if (id === 'design') initSeeMore('pp-design', '.dc', 6); if (id === 'uiux') initSeeMore('pp-uiux', '.wc', 3); if (id === 'web') initSeeMore('pp-web', '.wc', 3) }
         function initSeeMore(sectionId, itemSel, showCount) { const section = document.getElementById(sectionId) || document.querySelector('#' + sectionId); if (!section) return; const items = [...section.querySelectorAll(itemSel)]; const old = section.querySelector('.see-more-wrap'); if (old) old.remove(); if (items.length <= showCount) { items.forEach(i => i.classList.remove('hidden-item', 'visible')); return } items.forEach((item, i) => { item.classList.remove('hidden-item', 'visible'); if (i >= showCount) item.classList.add('hidden-item') }); const wrap = document.createElement('div'); wrap.className = 'see-more-wrap'; const btn = document.createElement('button'); btn.className = 'see-more-btn'; let expanded = false; const update = () => { btn.innerHTML = expanded ? `See Less <i class="bi bi-chevron-up"></i>` : `See More <i class="bi bi-chevron-down"></i>`; btn.classList.toggle('expanded', expanded) }; update(); btn.onclick = () => { expanded = !expanded; items.forEach((item, i) => { if (i >= showCount) { if (expanded) { item.classList.remove('hidden-item'); item.classList.add('visible'); obs.observe(item) } else { item.classList.remove('visible'); item.classList.add('hidden-item') } } }); update() }; wrap.appendChild(btn); const grid = section.querySelector('.dg,.cg,.wg,.tl-wrap'); if (grid) grid.after(wrap); else section.appendChild(wrap) }
         window.addEventListener('DOMContentLoaded', () => { initSeeMore('pp-design', '.dc', 6); initSeeMore('certifications', '.cert-card', 8) });
-        window.PD = { gsh: { title: 'Green Safe & Health', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Infografis kampanye HSE & ESG yang dibuat untuk Divisi ISPB PT IDSurvey.', resp: ['Mendesain infografis kampanye HSE menggunakan Canva', 'Menyusun konten dan visual sesuai branding perusahaan', 'Berkoordinasi dengan tim ISPB untuk memastikan pesan tersampaikan', 'Membuat beberapa alternatif desain untuk review tim'], tools: ['Canva'], imgs: ['Images/GSH2.png'] }, safety: { title: 'Panduan Keselamatan Tim Kunjungan Kerja', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Panduan keselamatan komprehensif untuk tim yang melakukan kunjungan kerja ke lokasi kebencanaan.', resp: ['Mendesain layout panduan keselamatan yang mudah dibaca', 'Mengilustrasikan prosedur keselamatan dengan visual yang jelas', 'Menyusun konten berdasarkan input dari tim HSE', 'Memastikan semua informasi penting tercakup'], tools: ['Canva'], imgs: ['Images/panduankeselamatan2.png'] }, holiday: { title: 'Safe Holiday Season', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Kampanye keselamatan menjelang libur akhir tahun yang berfokus pada keselamatan berkendara.', resp: ['Membuat desain kampanye safety untuk libur akhir tahun', 'Menyusun pesan keselamatan yang mudah diingat', 'Mendesain visual yang menarik perhatian', 'Mempersiapkan materi untuk distribusi internal'], tools: ['Canva'], imgs: ['Images/safetyholidayseason2.png'] }, hse: { title: 'Panduan Perilaku HSE Golden Rules', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Visualisasi perilaku CARE (Commitment, Aware, Respect, Intervene) sebagai panduan keselamatan kerja.', resp: ['Menerjemahkan konsep HSE Golden Rules ke dalam visual infografis', 'Membuat ilustrasi untuk setiap poin CARE', 'Memastikan desain sesuai standar perusahaan', 'Berkolaborasi dengan tim HSE untuk validasi konten'], tools: ['Canva'], imgs: ['Images/panduanhse2.png'] }, k3: { title: 'Bulan K3 Nasional', co: 'PT IDSurvey (Persero)', yr: '2025', desc: 'Kampanye Bulan K3 Nasional dengan tema safety leadership.', resp: ['Mendesain materi kampanye Bulan K3 Nasional', 'Menjadi panitia teknis Acara Puncak IDSurvey Group', 'Mengelola video bumper dan seluruh media acara', 'Membuat poster dan banner digital tema safety leadership'], tools: ['Canva'], imgs: ['Images/BKN2.png'] } };
-        function openDet(id) { const d = PD[id]; if (!d) return; const imgs = d.imgs || []; let gal = imgs.length ? `<div class="dmain"><img src="${imgs[0]}" alt="" id="dmi"></div>${imgs.length > 1 ? `<div class="dthumbs">${imgs.map((s, i) => `<div class="dth ${i === 0 ? 'on' : ''}" onclick="swDet('${s}',this)"><img src="${s}" alt=""></div>`).join('')}</div>` : ''}` : `<div style="background:var(--bg3);border-radius:var(--r);padding:4rem;text-align:center;color:var(--text3)"><i class="bi bi-laptop" style="font-size:2.5rem"></i><p style="margin-top:1rem;font-size:.85rem">Preview tidak tersedia</p></div>`; document.getElementById('det-content').innerHTML = `<div><div class="dh1">${d.title}</div><div class="dco"><i class="bi bi-building"></i> ${d.co} · ${d.yr}</div><p class="ddesc">${d.desc}</p><div class="dsec"><h3>Responsibilities</h3><ul class="dul">${d.resp.map(r => `<li>${r}</li>`).join('')}</ul></div><div class="dsec"><h3>Tools Used</h3><div class="trow">${d.tools.map(t => `<span class="tool">${t}</span>`).join('')}</div></div></div><div>${gal}</div>`; document.getElementById('det').classList.add('open'); document.body.style.overflow = 'hidden'; document.getElementById('det').scrollTop = 0 }
+        window.PD = window.PD || {};
+        function openDet(id) { const d = window.PD[id]; if (!d) return; const imgs = d.imgs || []; let gal = imgs.length ? `<div class="dmain"><img src="${imgs[0]}" alt="" id="dmi"></div>${imgs.length > 1 ? `<div class="dthumbs">${imgs.map((s, i) => `<div class="dth ${i === 0 ? 'on' : ''}" onclick="swDet('${s}',this)"><img src="${s}" alt=""></div>`).join('')}</div>` : ''}` : `<div style="background:var(--bg3);border-radius:var(--r);padding:4rem;text-align:center;color:var(--text3)"><i class="bi bi-laptop" style="font-size:2.5rem"></i><p style="margin-top:1rem;font-size:.85rem">Preview tidak tersedia</p></div>`; document.getElementById('det-content').innerHTML = `<div><div class="dh1">${d.title}</div><div class="dco"><i class="bi bi-building"></i> ${d.co} · ${d.yr}</div><p class="ddesc">${d.desc}</p><div class="dsec"><h3>Responsibilities</h3><ul class="dul">${(d.resp || []).map(r => `<li>${r}</li>`).join('')}</ul></div><div class="dsec"><h3>Tools Used</h3><div class="trow">${(d.tools || []).map(t => `<span class="tool">${t}</span>`).join('')}</div></div></div><div>${gal}</div>`; document.getElementById('det').classList.add('open'); document.body.style.overflow = 'hidden'; document.getElementById('det').scrollTop = 0 }
         function swDet(src, el) { document.getElementById('dmi').src = src; document.querySelectorAll('.dth').forEach(t => t.classList.remove('on')); el.classList.add('on') }
         function closeDet() { document.getElementById('det').classList.remove('open'); document.body.style.overflow = '' }
         function getC(btn) { const t = btn.closest('.cth,.car'); if (!t._s) t._s = { cur: 0, tot: parseInt(t.dataset.tot) || 1 }; return t }
