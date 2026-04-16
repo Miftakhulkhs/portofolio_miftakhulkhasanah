@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Portfolio Mifta</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f1f5f9;--white:#fff;--navy:#1e3a5f;--blue:#2563eb;--blue2:#3b82f6;
+  --red:#ef4444;--green:#22c55e;--text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --border:#e2e8f0;--shadow:0 1px 8px rgba(0,0,0,.08);--r:10px}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* LOGIN */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%)}
+.login-box{background:var(--white);border-radius:16px;padding:2.5rem;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.login-logo{font-size:1.4rem;font-weight:700;color:var(--navy);margin-bottom:.3rem}
+.login-logo em{color:var(--blue);font-style:normal}
+.login-sub{font-size:.8rem;color:var(--text3);margin-bottom:2rem}
+.f-label{font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:.4rem;display:block}
+.f-input{width:100%;padding:.7rem 1rem;border:1.5px solid var(--border);border-radius:8px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;outline:none;transition:border .2s;margin-bottom:1rem}
+.f-input:focus{border-color:var(--blue)}
+.btn-login{width:100%;padding:.8rem;background:var(--blue);color:#fff;border:none;border-radius:8px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:.9rem;cursor:pointer;transition:background .2s}
+.btn-login:hover{background:#1d4ed8}
+.login-err{color:var(--red);font-size:.78rem;text-align:center;margin-top:.8rem;display:none}
+
+/* APP SHELL */
+#app{display:none;min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:240px;background:var(--navy);padding:1.5rem 1rem;
+  display:flex;flex-direction:column;z-index:100}
+.s-logo{font-size:1.1rem;font-weight:700;color:#fff;padding:.5rem .75rem;margin-bottom:1.5rem}
+.s-logo em{color:var(--blue2);font-style:normal}
+.s-nav{flex:1}
+.s-link{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;color:rgba(255,255,255,.65);
+  font-size:.83rem;font-weight:500;border-radius:8px;cursor:pointer;transition:all .2s;margin-bottom:.2rem;border:none;background:none;width:100%;text-align:left;font-family:'Plus Jakarta Sans',sans-serif}
+.s-link:hover,.s-link.on{background:rgba(255,255,255,.1);color:#fff}
+.s-link i{font-size:.95rem;width:18px}
+.s-bottom{margin-top:auto}
+.s-logout{display:flex;align-items:center;gap:.6rem;padding:.6rem .75rem;color:rgba(255,255,255,.5);
+  font-size:.8rem;cursor:pointer;border-radius:8px;transition:all .2s;border:none;background:none;width:100%;font-family:'Plus Jakarta Sans',sans-serif}
+.s-logout:hover{background:rgba(239,68,68,.15);color:var(--red)}
+
+.main{margin-left:240px;padding:2rem;min-height:100vh}
+.page-head{margin-bottom:1.5rem}
+.page-title{font-size:1.3rem;font-weight:700;color:var(--navy)}
+.page-sub{font-size:.8rem;color:var(--text3);margin-top:.2rem}
+
+/* CARDS */
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;box-shadow:var(--shadow)}
+.stat-n{font-size:2rem;font-weight:700;color:var(--navy)}
+.stat-l{font-size:.72rem;color:var(--text3);margin-top:.2rem}
+
+/* SECTION PAGES */
+.sec-page{display:none}.sec-page.on{display:block}
+
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;gap:.75rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.55rem 1.1rem;font-size:.8rem;font-weight:600;
+  border-radius:8px;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s}
+.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:#1d4ed8}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{background:#dc2626}
+.btn-ghost{background:var(--white);color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+
+/* TABLE */
+.tbl-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse}
+th{padding:.8rem 1rem;font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;
+  border-bottom:1px solid var(--border);text-align:left;background:var(--bg)}
+td{padding:.85rem 1rem;font-size:.83rem;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:#f8fafc}
+.td-title{font-weight:600;color:var(--navy);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.badge{display:inline-block;padding:.18rem .55rem;font-size:.65rem;font-weight:600;border-radius:4px;text-transform:uppercase;letter-spacing:.06em}
+.badge-design{background:#dbeafe;color:#1d4ed8}
+.badge-uiux{background:#ede9fe;color:#7c3aed}
+.badge-web{background:#dcfce7;color:#16a34a}
+.td-imgs{display:flex;gap:.3rem}
+.td-thumb{width:32px;height:32px;border-radius:4px;object-fit:cover;border:1px solid var(--border)}
+.act-btns{display:flex;gap:.4rem}
+.act-btn{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;border:none;font-size:.82rem;transition:all .2s}
+.act-edit{background:#dbeafe;color:var(--blue)}.act-edit:hover{background:var(--blue);color:#fff}
+.act-del{background:#fee2e2;color:var(--red)}.act-del:hover{background:var(--red);color:#fff}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(15,23,42,.7);z-index:500;
+  align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(4px)}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--white);border-radius:14px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.modal-head{padding:1.5rem 1.5rem 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.modal-title{font-size:1rem;font-weight:700;color:var(--navy)}
+.modal-close{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:none;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text3);transition:all .2s}
+.modal-close:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.modal-body{padding:0 1.5rem 1.5rem}
+.form-group{margin-bottom:1rem}
+.form-label{font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:.4rem;display:block}
+.form-control{width:100%;padding:.65rem .9rem;border:1.5px solid var(--border);border-radius:8px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;outline:none;transition:border .2s;resize:vertical}
+.form-control:focus{border-color:var(--blue)}
+select.form-control{cursor:pointer}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.tags-input{display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem;border:1.5px solid var(--border);border-radius:8px;cursor:text;min-height:42px}
+.tags-input:focus-within{border-color:var(--blue)}
+.tag-pill{display:inline-flex;align-items:center;gap:.3rem;background:#dbeafe;color:var(--blue);
+  padding:.18rem .55rem;border-radius:4px;font-size:.75rem;font-weight:600}
+.tag-pill button{background:none;border:none;cursor:pointer;color:inherit;padding:0;line-height:1;font-size:.85rem}
+.tags-input input{flex:1;min-width:80px;border:none;outline:none;font-size:.83rem;font-family:'Plus Jakarta Sans',sans-serif;background:transparent}
+
+/* UPLOAD */
+.upload-zone{border:2px dashed var(--border);border-radius:8px;padding:2rem;text-align:center;cursor:pointer;transition:all .2s}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:rgba(37,99,235,.03)}
+.upload-zone i{font-size:1.8rem;color:var(--text3);margin-bottom:.5rem}
+.upload-zone p{font-size:.8rem;color:var(--text3)}
+.upload-zone p span{color:var(--blue);font-weight:600}
+.preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:.5rem;margin-top:.75rem}
+.preview-item{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+.preview-item img{width:100%;height:100%;object-fit:cover}
+.preview-item video{width:100%;height:100%;object-fit:cover}
+.preview-del{position:absolute;top:3px;right:3px;width:18px;height:18px;background:rgba(239,68,68,.9);
+  color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:.65rem;border:none;line-height:1}
+.upload-progress{height:4px;background:var(--border);border-radius:2px;margin-top:.5rem;overflow:hidden;display:none}
+.upload-progress-bar{height:100%;background:var(--blue);border-radius:2px;transition:width .3s}
+
+/* TOAST */
+.toast-wrap{position:fixed;top:1.2rem;right:1.2rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem}
+.toast{padding:.75rem 1.2rem;border-radius:8px;font-size:.82rem;font-weight:600;color:#fff;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);animation:tslide .3s ease;display:flex;align-items:center;gap:.5rem}
+@keyframes tslide{from{transform:translateX(120%);opacity:0}to{transform:none;opacity:1}}
+.toast.success{background:var(--green)}.toast.error{background:var(--red)}.toast.info{background:var(--blue)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:4rem 2rem;color:var(--text3)}
+.empty-state i{font-size:2.5rem;margin-bottom:.8rem;display:block}
+.empty-state p{font-size:.85rem}
+
+/* ORDER DRAG */
+tr.dragging{opacity:.4;background:#dbeafe!important}
+tr.drag-over td{border-top:2px solid var(--blue)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">MK<em>.</em> Admin</div>
+    <div class="login-sub">Masuk untuk mengelola portfolio</div>
+    <label class="f-label">Username</label>
+    <input class="f-input" id="u" type="text" placeholder="Username" onkeydown="if(event.key==='Enter')doLogin()">
+    <label class="f-label">Password</label>
+    <input class="f-input" id="p" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn-login" onclick="doLogin()">Masuk</button>
+    <div class="login-err" id="login-err">Username atau password salah.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="sidebar">
+    <div class="s-logo">MK<em>.</em> Admin</div>
+    <nav class="s-nav">
+      <button class="s-link on" onclick="gotoPage('dashboard',this)"><i class="bi bi-grid-1x2"></i> Dashboard</button>
+      <button class="s-link" onclick="gotoPage('projects',this)"><i class="bi bi-collection"></i> Projects</button>
+      <button class="s-link" onclick="gotoPage('certifications',this)"><i class="bi bi-award"></i> Certifications</button>
+      <button class="s-link" onclick="gotoPage('experience',this)"><i class="bi bi-briefcase"></i> Experience</button>
+    </nav>
+    <div class="s-bottom">
+      <button class="s-logout" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Logout</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- DASHBOARD -->
+    <div class="sec-page on" id="page-dashboard">
+      <div class="page-head">
+        <div class="page-title">Dashboard</div>
+        <div class="page-sub">Selamat datang di panel admin portfolio.</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-n" id="cnt-projects">—</div><div class="stat-l">Total Projects</div></div>
+        <div class="stat-card"><div class="stat-n" id="cnt-certs">—</div><div class="stat-l">Sertifikasi</div></div>
+        <div class="stat-card"><div class="stat-n" id="cnt-exp">—</div><div class="stat-l">Pengalaman</div></div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;box-shadow:var(--shadow)">
+        <div style="font-weight:700;color:var(--navy);margin-bottom:.5rem">Akses Cepat</div>
+        <div style="font-size:.83rem;color:var(--text2);line-height:1.8">
+          <p>• Gunakan panel ini untuk menambah, edit, hapus, dan urutkan konten portfolio.</p>
+          <p>• Gambar/video diunggah langsung — tidak perlu ketik nama file manual.</p>
+          <p>• Perubahan langsung tampil di halaman portfolio (index.html).</p>
+          <p style="margin-top:.8rem"><a href="../index.html" target="_blank" style="color:var(--blue);font-weight:600"><i class="bi bi-box-arrow-up-right"></i> Lihat Portfolio →</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="sec-page" id="page-projects">
+      <div class="page-head" style="display:flex;align-items:center;justify-content:space-between">
+        <div><div class="page-title">Projects</div><div class="page-sub">Kelola project portfolio</div></div>
+        <button class="btn btn-primary" onclick="openProjectModal()"><i class="bi bi-plus-lg"></i> Tambah Project</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Judul</th><th>Kategori</th><th>Tahun</th><th>Media</th><th>Urutan</th><th>Aksi</th></tr></thead>
+          <tbody id="projects-tbody"><tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text3)"><i class="bi bi-arrow-repeat" style="animation:none"></i> Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- CERTIFICATIONS -->
+    <div class="sec-page" id="page-certifications">
+      <div class="page-head" style="display:flex;align-items:center;justify-content:space-between">
+        <div><div class="page-title">Certifications</div><div class="page-sub">Kelola sertifikasi</div></div>
+        <button class="btn btn-primary" onclick="openCertModal()"><i class="bi bi-plus-lg"></i> Tambah Sertifikasi</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Judul</th><th>Issuer</th><th>Tanggal</th><th>Media</th><th>Urutan</th><th>Aksi</th></tr></thead>
+          <tbody id="certs-tbody"><tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--text3)">Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div class="sec-page" id="page-experience">
+      <div class="page-head" style="display:flex;align-items:center;justify-content:space-between">
+        <div><div class="page-title">Experience</div><div class="page-sub">Kelola pengalaman kerja</div></div>
+        <button class="btn btn-primary" onclick="openExpModal()"><i class="bi bi-plus-lg"></i> Tambah Pengalaman</button>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Jabatan</th><th>Perusahaan</th><th>Periode</th><th>Urutan</th><th>Aksi</th></tr></thead>
+          <tbody id="exp-tbody"><tr><td colspan="5" style="text-align:center;padding:3rem;color:var(--text3)">Memuat...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECT MODAL -->
+<div class="modal-bg" id="project-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="project-modal-title">Tambah Project</div>
+      <button class="modal-close" onclick="closeModal('project-modal')"><i class="bi bi-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="pm-id">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">ID (unik, tanpa spasi) *</label>
+          <input class="form-control" id="pm-id-field" placeholder="misal: green-safe-health">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Kategori *</label>
+          <select class="form-control" id="pm-cat">
+            <option value="design">Graphic Design</option>
+            <option value="uiux">UI/UX Design</option>
+            <option value="web">Web Development</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Judul *</label>
+        <input class="form-control" id="pm-title" placeholder="Judul project">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Perusahaan</label>
+          <input class="form-control" id="pm-co" placeholder="PT IDSurvey (Persero)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tahun</label>
+          <input class="form-control" id="pm-yr" placeholder="2025">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Deskripsi singkat</label>
+        <input class="form-control" id="pm-short" placeholder="1-2 kalimat singkat">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Deskripsi lengkap</label>
+        <textarea class="form-control" id="pm-desc" rows="3" placeholder="Deskripsi panjang..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tools (tekan Enter untuk tambah)</label>
+        <div class="tags-input" id="pm-tools-wrap" onclick="this.querySelector('input').focus()">
+          <input id="pm-tools-input" placeholder="Canva, Figma..." onkeydown="addTag('pm-tools',event)">
+        </div>
+        <input type="hidden" id="pm-tools-val">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tanggung Jawab (tekan Enter untuk tambah)</label>
+        <div class="tags-input" id="pm-resp-wrap" onclick="this.querySelector('input').focus()">
+          <input id="pm-resp-input" placeholder="Tulis lalu tekan Enter..." onkeydown="addTag('pm-resp',event)">
+        </div>
+        <input type="hidden" id="pm-resp-val">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Gambar / Video</label>
+        <div class="upload-zone" id="pm-drop" onclick="document.getElementById('pm-files').click()" ondragover="dragover(event,'pm-drop')" ondragleave="dragleave('pm-drop')" ondrop="drop(event,'pm')">
+          <i class="bi bi-cloud-upload"></i>
+          <p>Klik atau <span>drag & drop</span> file di sini</p>
+          <p style="font-size:.72rem;margin-top:.3rem">JPG, PNG, GIF, MP4, WEBM (maks 50MB per file)</p>
+        </div>
+        <input type="file" id="pm-files" multiple accept="image/*,video/*" style="display:none" onchange="handleFiles(event,'pm')">
+        <div class="upload-progress" id="pm-progress"><div class="upload-progress-bar" id="pm-progress-bar"></div></div>
+        <div class="preview-grid" id="pm-preview"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Urutan</label>
+          <input class="form-control" id="pm-order" type="number" value="1" min="1">
+        </div>
+      </div>
+      <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem">
+        <button class="btn btn-ghost" onclick="closeModal('project-modal')">Batal</button>
+        <button class="btn btn-primary" onclick="saveProject()"><i class="bi bi-check-lg"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CERT MODAL -->
+<div class="modal-bg" id="cert-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="cert-modal-title">Tambah Sertifikasi</div>
+      <button class="modal-close" onclick="closeModal('cert-modal')"><i class="bi bi-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="cm-id">
+      <div class="form-group">
+        <label class="form-label">ID (unik, tanpa spasi) *</label>
+        <input class="form-control" id="cm-id-field" placeholder="misal: cert-excel-2025">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Judul *</label>
+        <input class="form-control" id="cm-title" placeholder="Microsoft Excel Basic">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Issuer</label>
+          <input class="form-control" id="cm-issuer" placeholder="MySkill">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tanggal</label>
+          <input class="form-control" id="cm-date" placeholder="November 2025">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Gambar Sertifikat (bisa lebih dari 1)</label>
+        <div class="upload-zone" id="cm-drop" onclick="document.getElementById('cm-files').click()" ondragover="dragover(event,'cm-drop')" ondragleave="dragleave('cm-drop')" ondrop="drop(event,'cm')">
+          <i class="bi bi-cloud-upload"></i>
+          <p>Klik atau <span>drag & drop</span> gambar sertifikat</p>
+        </div>
+        <input type="file" id="cm-files" multiple accept="image/*" style="display:none" onchange="handleFiles(event,'cm')">
+        <div class="upload-progress" id="cm-progress"><div class="upload-progress-bar" id="cm-progress-bar"></div></div>
+        <div class="preview-grid" id="cm-preview"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Urutan</label>
+        <input class="form-control" id="cm-order" type="number" value="1" min="1">
+      </div>
+      <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem">
+        <button class="btn btn-ghost" onclick="closeModal('cert-modal')">Batal</button>
+        <button class="btn btn-primary" onclick="saveCert()"><i class="bi bi-check-lg"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EXPERIENCE MODAL -->
+<div class="modal-bg" id="exp-modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title" id="exp-modal-title">Tambah Pengalaman</div>
+      <button class="modal-close" onclick="closeModal('exp-modal')"><i class="bi bi-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="em-id">
+      <div class="form-group">
+        <label class="form-label">ID (unik) *</label>
+        <input class="form-control" id="em-id-field" placeholder="misal: exp-idsurvey-2024">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Jabatan *</label>
+        <input class="form-control" id="em-title" placeholder="Officer ISPB">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Perusahaan *</label>
+        <input class="form-control" id="em-company" placeholder="PT IDSurvey (Persero)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Badge (opsional)</label>
+        <input class="form-control" id="em-badge" placeholder="Internship — Kemnaker">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Dari</label>
+          <input class="form-control" id="em-from" placeholder="Nov 2024">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sampai</label>
+          <input class="form-control" id="em-to" placeholder="Mei 2026">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tanggung Jawab (tekan Enter)</label>
+        <div class="tags-input" id="em-resp-wrap" onclick="this.querySelector('input').focus()">
+          <input id="em-resp-input" placeholder="Tugas & tanggung jawab..." onkeydown="addTag('em-resp',event)">
+        </div>
+        <input type="hidden" id="em-resp-val">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags media (opsional, tekan Enter)</label>
+        <div class="tags-input" id="em-tags-wrap" onclick="this.querySelector('input').focus()">
+          <input id="em-tags-input" placeholder="Bumper Video, Media Event..." onkeydown="addTag('em-tags',event)">
+        </div>
+        <input type="hidden" id="em-tags-val">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Urutan</label>
+        <input class="form-control" id="em-order" type="number" value="1" min="1">
+      </div>
+      <div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem">
+        <button class="btn btn-ghost" onclick="closeModal('exp-modal')">Batal</button>
+        <button class="btn btn-primary" onclick="saveExp()"><i class="bi bi-check-lg"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toasts"></div>
+
+<script src="../js/config.js"></script>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+window._sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+window._bucket = STORAGE_BUCKET;
+
+// State: uploaded URLs per modal
+window._uploads = { pm: [], cm: [] };
+
+// ── AUTH ──
+window.doLogin = function() {
+  const u = document.getElementById('u').value.trim();
+  const p = document.getElementById('p').value;
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    sessionStorage.setItem('adm', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadAll();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+};
+window.logout = function() { sessionStorage.removeItem('adm'); location.reload(); };
+if (sessionStorage.getItem('adm')) {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadAll();
+}
+
+// ── NAVIGATION ──
+window.gotoPage = function(page, btn) {
+  document.querySelectorAll('.sec-page').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.s-link').forEach(b => b.classList.remove('on'));
+  document.getElementById('page-' + page).classList.add('on');
+  btn.classList.add('on');
+};
+
+// ── TOAST ──
+window.toast = function(msg, type='info') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<i class="bi bi-${type==='success'?'check-circle':type==='error'?'x-circle':'info-circle'}"></i> ${msg}`;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+};
+
+// ── MODAL ──
+window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
+
+// ── TAGS INPUT ──
+window.addTag = function(prefix, ev) {
+  if (ev.key !== 'Enter' && ev.key !== ',') return;
+  ev.preventDefault();
+  const inp = document.getElementById(prefix + '-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  const wrap = document.getElementById(prefix + '-wrap');
+  const pill = document.createElement('span');
+  pill.className = 'tag-pill';
+  pill.innerHTML = `${val} <button onclick="this.parentElement.remove();syncTags('${prefix}')">×</button>`;
+  wrap.insertBefore(pill, inp);
+  inp.value = '';
+  syncTags(prefix);
+};
+window.syncTags = function(prefix) {
+  const pills = [...document.querySelectorAll(`#${prefix}-wrap .tag-pill`)].map(p => p.childNodes[0].textContent.trim());
+  document.getElementById(prefix + '-val').value = JSON.stringify(pills);
+};
+function getTags(prefix) {
+  const v = document.getElementById(prefix + '-val').value;
+  try { return JSON.parse(v); } catch { return []; }
+}
+function setTags(prefix, arr) {
+  const wrap = document.getElementById(prefix + '-wrap');
+  const inp = document.getElementById(prefix + '-input');
+  wrap.querySelectorAll('.tag-pill').forEach(p => p.remove());
+  arr.forEach(val => {
+    const pill = document.createElement('span');
+    pill.className = 'tag-pill';
+    pill.innerHTML = `${val} <button onclick="this.parentElement.remove();syncTags('${prefix}')">×</button>`;
+    wrap.insertBefore(pill, inp);
+  });
+  syncTags(prefix);
+}
+function clearTags(prefix) { setTags(prefix, []); }
+
+// ── FILE UPLOAD ──
+window.dragover = function(ev, id) { ev.preventDefault(); document.getElementById(id).classList.add('drag'); };
+window.dragleave = function(id) { document.getElementById(id).classList.remove('drag'); };
+window.drop = function(ev, prefix) {
+  ev.preventDefault();
+  dragleave(prefix + '-drop');
+  handleFilesArr([...ev.dataTransfer.files], prefix);
+};
+window.handleFiles = function(ev, prefix) { handleFilesArr([...ev.target.files], prefix); ev.target.value=''; };
+
+async function handleFilesArr(files, prefix) {
+  if (!files.length) return;
+  const bar = document.getElementById(prefix + '-progress-bar');
+  const prog = document.getElementById(prefix + '-progress');
+  prog.style.display = 'block'; bar.style.width = '0%';
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const ext = file.name.split('.').pop();
+    const path = `${prefix}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const { data, error } = await window._sb.storage.from(window._bucket).upload(path, file, { upsert: true });
+    if (error) { toast('Gagal upload: ' + file.name, 'error'); continue; }
+    const url = window._sb.storage.from(window._bucket).getPublicUrl(path).data.publicUrl;
+    window._uploads[prefix] = window._uploads[prefix] || [];
+    window._uploads[prefix].push(url);
+    addPreview(prefix, url, file.type.startsWith('video'));
+    bar.style.width = `${Math.round(((i + 1) / files.length) * 100)}%`;
+  }
+  setTimeout(() => { prog.style.display = 'none'; }, 800);
+  toast(`${files.length} file berhasil diunggah!`, 'success');
+}
+
+function addPreview(prefix, url, isVideo) {
+  const grid = document.getElementById(prefix + '-preview');
+  const item = document.createElement('div');
+  item.className = 'preview-item';
+  item.dataset.url = url;
+  item.innerHTML = isVideo
+    ? `<video src="${url}" muted></video><button class="preview-del" onclick="removePreview(this,'${prefix}')">×</button>`
+    : `<img src="${url}" alt=""><button class="preview-del" onclick="removePreview(this,'${prefix}')">×</button>`;
+  grid.appendChild(item);
+}
+window.removePreview = function(btn, prefix) {
+  const item = btn.parentElement;
+  const url = item.dataset.url;
+  window._uploads[prefix] = (window._uploads[prefix]||[]).filter(u => u !== url);
+  item.remove();
+};
+function clearPreviews(prefix) {
+  document.getElementById(prefix + '-preview').innerHTML = '';
+  window._uploads[prefix] = [];
+}
+function loadExistingImgs(prefix, imgs) {
+  clearPreviews(prefix);
+  (imgs||[]).forEach(url => {
+    window._uploads[prefix] = window._uploads[prefix] || [];
+    window._uploads[prefix].push(url);
+    const isVideo = /\.(mp4|webm|ogg)$/i.test(url);
+    addPreview(prefix, url, isVideo);
+  });
+}
+
+// ── LOAD ALL ──
+async function loadAll() {
+  const [pr, ce, ex] = await Promise.all([
+    window._sb.from('projects').select('*').order('order'),
+    window._sb.from('certifications').select('*').order('order'),
+    window._sb.from('experience').select('*').order('order')
+  ]);
+  document.getElementById('cnt-projects').textContent = pr.data?.length || 0;
+  document.getElementById('cnt-certs').textContent = ce.data?.length || 0;
+  document.getElementById('cnt-exp').textContent = ex.data?.length || 0;
+  renderProjectsTable(pr.data||[]);
+  renderCertsTable(ce.data||[]);
+  renderExpTable(ex.data||[]);
+}
+
+// ── PROJECTS TABLE ──
+function renderProjectsTable(rows) {
+  const badgeMap = { design:'badge-design Design', uiux:'badge-uiux UI/UX', web:'badge-web Web' };
+  document.getElementById('projects-tbody').innerHTML = rows.length
+    ? rows.map(r => `<tr>
+        <td class="td-title" title="${r.title}">${r.title}</td>
+        <td><span class="badge ${(badgeMap[r.category]||'badge-design Design').split(' ')[0]}">${(badgeMap[r.category]||'badge-design Design').split(' ').slice(1).join(' ')}</span></td>
+        <td>${r.yr||'—'}</td>
+        <td><div class="td-imgs">${(r.imgs||[]).slice(0,3).map(u=>`<img class="td-thumb" src="${u}" alt="" onerror="this.style.display='none'">`).join('')}${(r.imgs||[]).length>3?`<span style="font-size:.72rem;color:var(--text3);align-self:center">+${r.imgs.length-3}</span>`:''}</div></td>
+        <td>${r.order||'—'}</td>
+        <td><div class="act-btns">
+          <button class="act-btn act-edit" onclick="editProject('${r.id}')" title="Edit"><i class="bi bi-pencil"></i></button>
+          <button class="act-btn act-del" onclick="deleteProject('${r.id}')" title="Hapus"><i class="bi bi-trash"></i></button>
+        </div></td>
+      </tr>`).join('')
+    : '<tr><td colspan="6"><div class="empty-state"><i class="bi bi-collection"></i><p>Belum ada project. Klik "+ Tambah Project" untuk mulai.</p></div></td></tr>';
+  window._projectsData = rows;
+}
+
+// ── CERTS TABLE ──
+function renderCertsTable(rows) {
+  document.getElementById('certs-tbody').innerHTML = rows.length
+    ? rows.map(r => `<tr>
+        <td class="td-title">${r.title}</td>
+        <td>${r.issuer||'—'}</td>
+        <td>${r.date||'—'}</td>
+        <td><div class="td-imgs">${(r.imgs||[]).slice(0,3).map(u=>`<img class="td-thumb" src="${u}" alt="" onerror="this.style.display='none'">`).join('')}</div></td>
+        <td>${r.order||'—'}</td>
+        <td><div class="act-btns">
+          <button class="act-btn act-edit" onclick="editCert('${r.id}')" title="Edit"><i class="bi bi-pencil"></i></button>
+          <button class="act-btn act-del" onclick="deleteCert('${r.id}')" title="Hapus"><i class="bi bi-trash"></i></button>
+        </div></td>
+      </tr>`).join('')
+    : '<tr><td colspan="6"><div class="empty-state"><i class="bi bi-award"></i><p>Belum ada sertifikasi.</p></div></td></tr>';
+  window._certsData = rows;
+}
+
+// ── EXP TABLE ──
+function renderExpTable(rows) {
+  document.getElementById('exp-tbody').innerHTML = rows.length
+    ? rows.map(r => `<tr>
+        <td class="td-title">${r.title}</td>
+        <td>${r.company||'—'}</td>
+        <td style="font-size:.78rem">${r.date_from||''} — ${r.date_to||''}</td>
+        <td>${r.order||'—'}</td>
+        <td><div class="act-btns">
+          <button class="act-btn act-edit" onclick="editExp('${r.id}')" title="Edit"><i class="bi bi-pencil"></i></button>
+          <button class="act-btn act-del" onclick="deleteExp('${r.id}')" title="Hapus"><i class="bi bi-trash"></i></button>
+        </div></td>
+      </tr>`).join('')
+    : '<tr><td colspan="5"><div class="empty-state"><i class="bi bi-briefcase"></i><p>Belum ada pengalaman.</p></div></td></tr>';
+  window._expData = rows;
+}
+
+// ── PROJECT CRUD ──
+window.openProjectModal = function() {
+  document.getElementById('project-modal-title').textContent = 'Tambah Project';
+  document.getElementById('pm-id').value = '';
+  ['pm-id-field','pm-title','pm-co','pm-yr','pm-short','pm-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pm-cat').value = 'design';
+  document.getElementById('pm-order').value = '1';
+  clearTags('pm-tools'); clearTags('pm-resp');
+  clearPreviews('pm');
+  document.getElementById('project-modal').classList.add('open');
+};
+
+window.editProject = function(id) {
+  const r = (window._projectsData||[]).find(p=>p.id===id); if(!r) return;
+  document.getElementById('project-modal-title').textContent = 'Edit Project';
+  document.getElementById('pm-id').value = id;
+  document.getElementById('pm-id-field').value = id;
+  document.getElementById('pm-id-field').disabled = true;
+  document.getElementById('pm-title').value = r.title||'';
+  document.getElementById('pm-cat').value = r.category||'design';
+  document.getElementById('pm-co').value = r.co||'';
+  document.getElementById('pm-yr').value = r.yr||'';
+  document.getElementById('pm-short').value = r.short_desc||'';
+  document.getElementById('pm-desc').value = r.description||'';
+  document.getElementById('pm-order').value = r.order||1;
+  setTags('pm-tools', r.tools||[]);
+  setTags('pm-resp', r.responsibilities||[]);
+  loadExistingImgs('pm', r.imgs||[]);
+  document.getElementById('project-modal').classList.add('open');
+};
+
+window.saveProject = async function() {
+  const isEdit = !!document.getElementById('pm-id').value;
+  const id = isEdit ? document.getElementById('pm-id').value : document.getElementById('pm-id-field').value.trim().replace(/\s+/g,'-').toLowerCase();
+  if (!id || !document.getElementById('pm-title').value.trim()) { toast('ID dan Judul wajib diisi!','error'); return; }
+  const payload = {
+    id, title: document.getElementById('pm-title').value.trim(),
+    category: document.getElementById('pm-cat').value,
+    co: document.getElementById('pm-co').value.trim(),
+    yr: document.getElementById('pm-yr').value.trim(),
+    short_desc: document.getElementById('pm-short').value.trim(),
+    description: document.getElementById('pm-desc').value.trim(),
+    tools: getTags('pm-tools'), responsibilities: getTags('pm-resp'),
+    imgs: window._uploads['pm']||[],
+    order: parseInt(document.getElementById('pm-order').value)||1
+  };
+  const { error } = await window._sb.from('projects').upsert(payload);
+  if (error) { toast('Gagal simpan: ' + error.message,'error'); return; }
+  toast('Project berhasil disimpan!','success');
+  closeModal('project-modal');
+  document.getElementById('pm-id-field').disabled = false;
+  loadAll();
+};
+
+window.deleteProject = async function(id) {
+  if (!confirm('Hapus project ini?')) return;
+  const { error } = await window._sb.from('projects').delete().eq('id', id);
+  if (error) { toast('Gagal hapus','error'); return; }
+  toast('Project dihapus','success'); loadAll();
+};
+
+// ── CERT CRUD ──
+window.openCertModal = function() {
+  document.getElementById('cert-modal-title').textContent = 'Tambah Sertifikasi';
+  document.getElementById('cm-id').value = '';
+  ['cm-id-field','cm-title','cm-issuer','cm-date'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('cm-order').value = '1';
+  clearPreviews('cm');
+  document.getElementById('cert-modal').classList.add('open');
+};
+
+window.editCert = function(id) {
+  const r = (window._certsData||[]).find(c=>c.id===id); if(!r) return;
+  document.getElementById('cert-modal-title').textContent = 'Edit Sertifikasi';
+  document.getElementById('cm-id').value = id;
+  document.getElementById('cm-id-field').value = id;
+  document.getElementById('cm-id-field').disabled = true;
+  document.getElementById('cm-title').value = r.title||'';
+  document.getElementById('cm-issuer').value = r.issuer||'';
+  document.getElementById('cm-date').value = r.date||'';
+  document.getElementById('cm-order').value = r.order||1;
+  loadExistingImgs('cm', r.imgs||[]);
+  document.getElementById('cert-modal').classList.add('open');
+};
+
+window.saveCert = async function() {
+  const isEdit = !!document.getElementById('cm-id').value;
+  const id = isEdit ? document.getElementById('cm-id').value : document.getElementById('cm-id-field').value.trim().replace(/\s+/g,'-');
+  if (!id || !document.getElementById('cm-title').value.trim()) { toast('ID dan Judul wajib diisi!','error'); return; }
+  const payload = {
+    id, title: document.getElementById('cm-title').value.trim(),
+    issuer: document.getElementById('cm-issuer').value.trim(),
+    date: document.getElementById('cm-date').value.trim(),
+    imgs: window._uploads['cm']||[],
+    order: parseInt(document.getElementById('cm-order').value)||1
+  };
+  const { error } = await window._sb.from('certifications').upsert(payload);
+  if (error) { toast('Gagal simpan','error'); return; }
+  toast('Sertifikasi berhasil disimpan!','success');
+  closeModal('cert-modal');
+  document.getElementById('cm-id-field').disabled = false;
+  loadAll();
+};
+
+window.deleteCert = async function(id) {
+  if (!confirm('Hapus sertifikasi ini?')) return;
+  const { error } = await window._sb.from('certifications').delete().eq('id', id);
+  if (error) { toast('Gagal hapus','error'); return; }
+  toast('Sertifikasi dihapus','success'); loadAll();
+};
+
+// ── EXP CRUD ──
+window.openExpModal = function() {
+  document.getElementById('exp-modal-title').textContent = 'Tambah Pengalaman';
+  document.getElementById('em-id').value = '';
+  ['em-id-field','em-title','em-company','em-badge','em-from','em-to'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('em-order').value = '1';
+  clearTags('em-resp'); clearTags('em-tags');
+  document.getElementById('exp-modal').classList.add('open');
+};
+
+window.editExp = function(id) {
+  const r = (window._expData||[]).find(e=>e.id===id); if(!r) return;
+  document.getElementById('exp-modal-title').textContent = 'Edit Pengalaman';
+  document.getElementById('em-id').value = id;
+  document.getElementById('em-id-field').value = id;
+  document.getElementById('em-id-field').disabled = true;
+  document.getElementById('em-title').value = r.title||'';
+  document.getElementById('em-company').value = r.company||'';
+  document.getElementById('em-badge').value = r.badge||'';
+  document.getElementById('em-from').value = r.date_from||'';
+  document.getElementById('em-to').value = r.date_to||'';
+  document.getElementById('em-order').value = r.order||1;
+  setTags('em-resp', r.responsibilities||[]);
+  setTags('em-tags', r.tags||[]);
+  document.getElementById('exp-modal').classList.add('open');
+};
+
+window.saveExp = async function() {
+  const isEdit = !!document.getElementById('em-id').value;
+  const id = isEdit ? document.getElementById('em-id').value : document.getElementById('em-id-field').value.trim().replace(/\s+/g,'-');
+  if (!id || !document.getElementById('em-title').value.trim()) { toast('ID dan Jabatan wajib diisi!','error'); return; }
+  const payload = {
+    id, title: document.getElementById('em-title').value.trim(),
+    company: document.getElementById('em-company').value.trim(),
+    badge: document.getElementById('em-badge').value.trim(),
+    date_from: document.getElementById('em-from').value.trim(),
+    date_to: document.getElementById('em-to').value.trim(),
+    responsibilities: getTags('em-resp'),
+    tags: getTags('em-tags'),
+    order: parseInt(document.getElementById('em-order').value)||1
+  };
+  const { error } = await window._sb.from('experience').upsert(payload);
+  if (error) { toast('Gagal simpan','error'); return; }
+  toast('Pengalaman berhasil disimpan!','success');
+  closeModal('exp-modal');
+  document.getElementById('em-id-field').disabled = false;
+  loadAll();
+};
+
+window.deleteExp = async function(id) {
+  if (!confirm('Hapus pengalaman ini?')) return;
+  const { error } = await window._sb.from('experience').delete().eq('id', id);
+  if (error) { toast('Gagal hapus','error'); return; }
+  toast('Pengalaman dihapus','success'); loadAll();
+};
+</script>
+</body>
+</html>
